@@ -1,2 +1,0 @@
-salamat bashi
-2 ta 5 mishe 10
