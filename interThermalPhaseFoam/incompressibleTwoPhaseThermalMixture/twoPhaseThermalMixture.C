@@ -83,7 +83,19 @@ Foam::twoPhaseThermalMixture::twoPhaseThermalMixture
     const word& alpha1Name
 )
 :
-    transportModel(U, phi),
+	//transportModel(U, phi), -ASR: the old version of OpenFOAM had transport model inherit from IODictionary, and had a corresponding constructor with this signature. In the new version they are decoupled, and have to be inherited separately. Hooray for multiple inheritence.
+	transportModel(),
+	IOdictionary
+    (
+        IOobject
+        (
+            "transportProperties",
+            U.time().constant(),
+            U.db(),
+            IOobject::MUST_READ_IF_MODIFIED,
+            IOobject::NO_WRITE
+        )
+    ),
 
     phase1Name_("phase1"),
     phase2Name_("phase2"),

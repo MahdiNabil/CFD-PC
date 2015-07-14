@@ -35,9 +35,9 @@ SourceFiles
 #ifndef twoPhaseThermalMixture_H
 #define twoPhaseThermalMixture_H
 
-#include "incompressible/transportModel/transportModel.H"
-#include "incompressible/viscosityModels/viscosityModel/viscosityModel.H"
-#include "incompressibleTwoPhaseThermalMixture/conductivityModels/conductivityModel/conductivityModel.H"
+#include "transportModel.H"
+#include "viscosityModel.H"
+#include "conductivityModel.H"
 #include "twoPhaseMixture.H"
 #include "dimensionedScalar.H"
 #include "volFields.H"
@@ -54,7 +54,8 @@ namespace Foam
 
 class twoPhaseThermalMixture
 :
-    public transportModel
+    public transportModel,
+    public IOdictionary
 {
 protected:
 

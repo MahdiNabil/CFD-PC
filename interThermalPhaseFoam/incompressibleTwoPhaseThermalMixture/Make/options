@@ -1,7 +1,7 @@
 EXE_INC = \
     -I.. \
-    -I../twoPhaseMixture/lnInclude \
-    -I../incompressible/lnInclude \
+    -I$(LIB_SRC)/transportModels/twoPhaseMixture/lnInclude \
+    -I$(LIB_SRC)/transportModels/incompressible/lnInclude \
     -I$(LIB_SRC)/finiteVolume/lnInclude \
     -I$(LIB_SRC)/meshTools/lnInclude
 
