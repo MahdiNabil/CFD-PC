@@ -51,7 +51,7 @@ Description
 #include "turbulenceModel.H"
 #include "interpolationTable.H"
 #include "pimpleControl.H"
-#include "RiddersRoot.H"
+//#include "RiddersRoot.H" - ASR commented out, we shouldn't need this for now
 #include "wallFvPatch.H"
 #include "MeshGraph.H"
 #include "thermalPhaseChangeModel.H"
