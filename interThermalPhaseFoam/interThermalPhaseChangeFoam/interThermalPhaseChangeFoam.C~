@@ -22,7 +22,7 @@ License
     along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
 
 Application
-    ASRInterThermalPhaseFoam
+    interThermalPhaseChangeFoam
 
 Description
     Solver for 2 incompressible, flow using a VOF (volume of fluid) phase-

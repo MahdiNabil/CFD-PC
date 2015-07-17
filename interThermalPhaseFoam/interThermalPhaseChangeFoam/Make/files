@@ -1,4 +1,4 @@
-ASRInterThermalPhaseFoam.C
+interThermalPhaseChangeFoam.C
 thermalPhaseChangeModels/MeshGraph/MeshGraph.C
 thermalPhaseChangeModels/thermalPhaseChangeModel/thermalPhaseChangeModel.C
 thermalPhaseChangeModels/thermalPhaseChangeModel/newThermalPhaseChangeModel.C
@@ -9,4 +9,4 @@ thermalPhaseChangeModels/HiLoRelaxedSplit/HiLoRelaxedSplit.C
 thermalPhaseChangeModels/HiLoRelaxedResistanceSplit/HiLoRelaxedResistanceSplit.C
 thermalPhaseChangeModels/noPhaseChange/noPhaseChange.C
 
-EXE = $(FOAM_APPBIN)/ASRInterThermalPhaseFoam
+EXE = $(FOAM_APPBIN)/interThermalPhaseChangeFoam
