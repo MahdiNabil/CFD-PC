@@ -1,46 +1,61 @@
 {
-    volScalarField rAU(1.0/UEqn.A());
-    surfaceScalarField rAUf(fvc::interpolate(rAU));
+    volScalarField rAU("rAU", 1.0/UEqn.A());
+    surfaceScalarField rAUf("rAUf", fvc::interpolate(rAU));
 
-    U = rAU*UEqn.H();
-    surfaceScalarField phiU
+    volVectorField HbyA("HbyA", U);
+    HbyA = rAU*UEqn.H();
+
+    surfaceScalarField phiHbyA
     (
-        "phiU",
-        (fvc::interpolate(U) & mesh.Sf())
-      + fvc::ddtPhiCorr(rAU, rho, U, phi)
+        "phiHbyA",
+        (fvc::interpolate(HbyA) & mesh.Sf())
+      + fvc::interpolate(rho*rAU)*fvc::ddtCorr(U, phi)
+    );
+    fvOptions.makeRelative(phiHbyA);
+    adjustPhi(phiHbyA, U, p_rgh);
+
+    surfaceScalarField phig
+    (
+        (
+            mixture.surfaceTensionForce()
+          - ghf*fvc::snGrad(rho)
+        )*rAUf*mesh.magSf()
     );
 
-    adjustPhi(phiU, U, p_rgh);
+    phiHbyA += phig;
 
-
-
-    phi = phiU +
+    // Update the fixedFluxPressure BCs to ensure flux consistency
+    setSnGrad<fixedFluxPressureFvPatchScalarField>
     (
-        fvc::interpolate(interface.sigmaK())*fvc::snGrad(alpha1)
-      - ghf*fvc::snGrad(rho) 
-    )*rAUf*mesh.magSf();
-
+        p_rgh.boundaryField(),
+        (
+            phiHbyA.boundaryField()
+          - fvOptions.relative(mesh.Sf().boundaryField() & U.boundaryField())
+        )/(mesh.magSf().boundaryField()*rAUf.boundaryField())
+    );
 
     while (pimple.correctNonOrthogonal())
     {
-		//No need to correct p_rgh for phase change - already incorporated into div(phi) 
         fvScalarMatrix p_rghEqn
         (
-            fvm::laplacian(rAUf, p_rgh) == fvc::div(phi) - phaseChangeModel->PCV()
+            fvm::laplacian(rAUf, p_rgh) == fvc::div(phiHbyA)
         );
+
         p_rghEqn.setReference(pRefCell, getRefCellValue(p_rgh, pRefCell));
 
         p_rghEqn.solve(mesh.solver(p_rgh.select(pimple.finalInnerIter())));
 
-		//This is -= (unlike phaseChangeFoam) because the sign of the governing equations is changed.
         if (pimple.finalNonOrthogonalIter())
         {
-            phi -= p_rghEqn.flux();
+            phi = phiHbyA - p_rghEqn.flux();
+
+            p_rgh.relax();
+
+            U = HbyA + rAU*fvc::reconstruct((phig - p_rghEqn.flux())/rAUf);
+            U.correctBoundaryConditions();
+            fvOptions.correct(U);
         }
     }
-
-    U += rAU*fvc::reconstruct((phi - phiU)/rAUf);
-    U.correctBoundaryConditions();
 
     #include "continuityErrs.H"
 

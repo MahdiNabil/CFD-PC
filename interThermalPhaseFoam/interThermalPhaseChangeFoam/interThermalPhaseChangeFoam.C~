@@ -96,7 +96,7 @@ int main(int argc, char *argv[])
         Info<< "Time = " << runTime.timeName() << nl << endl;
 
         //Update fields for Kistler model
-        muEffKistler = mixture.mu() + rho*turbulence->nut();
+        muEffKistler = twoPhaseProperties.mu() + rho*turbulence->nut();
 
         //Update phase change rates:
 		phaseChangeModel->correct();
