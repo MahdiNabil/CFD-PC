@@ -1,6 +1,20 @@
 {
     #include "continuityErrs.H"
 
+    wordList pcorrTypes
+    (
+        p_rgh.boundaryField().size(),
+        zeroGradientFvPatchScalarField::typeName
+    );
+
+    forAll (p_rgh.boundaryField(), i)
+    {
+        if (p_rgh.boundaryField()[i].fixesValue())
+        {
+            pcorrTypes[i] = fixedValueFvPatchScalarField::typeName;
+        }
+    }
+
     volScalarField pcorr
     (
         IOobject
@@ -16,11 +30,11 @@
         pcorrTypes
     );
 
-    dimensionedScalar rAUf("rAUf", dimTime/rho.dimensions(), 1.0);
+    dimensionedScalar rAUf("(1|A(U))", dimTime/rho.dimensions(), 1.0);
 
     adjustPhi(phi, U, pcorr);
 
-    while (pimple.correctNonOrthogonal())
+    for (int nonOrth=0; nonOrth<=pimple.nNonOrthCorr(); nonOrth++)
     {
         fvScalarMatrix pcorrEqn
         (
@@ -30,7 +44,7 @@
         pcorrEqn.setReference(pRefCell, pRefValue);
         pcorrEqn.solve();
 
-        if (pimple.finalNonOrthogonalIter())
+        if (nonOrth == pimple.nNonOrthCorr())
         {
             phi -= pcorrEqn.flux();
         }

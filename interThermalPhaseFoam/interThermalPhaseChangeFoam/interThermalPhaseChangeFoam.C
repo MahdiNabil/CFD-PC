@@ -44,13 +44,9 @@ Description
 \*---------------------------------------------------------------------------*/
 
 #include "fvCFD.H"
-#include "CMULES.H"
-#include "EulerDdtScheme.H"
-#include "localEulerDdtScheme.H"
-#include "CrankNicolsonDdtScheme.H"
+#include "MULES.H"
 #include "subCycle.H"
-#include "immiscibleIncompressibleTwoPhaseMixture.H"
-//#include "interfaceProperties.H"
+#include "interfaceProperties.H"
 #include "twoPhaseThermalMixture.H"
 #include "turbulenceModel.H"
 #include "interpolationTable.H"
@@ -59,8 +55,6 @@ Description
 #include "wallFvPatch.H"
 #include "MeshGraph.H"
 #include "thermalPhaseChangeModel.H"
-#include "fixedFluxPressureFvPatchScalarField.H"
-#include "fvIOoptionList.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
@@ -75,7 +69,6 @@ int main(int argc, char *argv[])
     #include "initContinuityErrs.H"
     #include "createFields.H"
     #include "readTimeControls.H"
-    #include "createPrghCorrTypes.H"
     #include "correctPhi.H"
     #include "CourantNo.H"
     #include "setInitialDeltaT.H"
@@ -96,8 +89,11 @@ int main(int argc, char *argv[])
 
         Info<< "Time = " << runTime.timeName() << nl << endl;
 
+		//Update turbulence and two phase properties
+        twoPhaseProperties.correct();
+
         //Update fields for Kistler model
-        muEffKistler = mixture.mu() + rho*turbulence->nut();
+        muEffKistler = twoPhaseProperties.mu() + rho*turbulence->nut();
 
         //Update phase change rates:
 		phaseChangeModel->correct();
@@ -105,17 +101,14 @@ int main(int argc, char *argv[])
 //Check alpha1 content before + after
 //Info<< "****alpha1 before: " << gSum( alpha1.internalField() * mesh.V() ) << " m^3" << endl;
 
+		//Solve for alpha1
+        #include "alphaEqnSubCycle.H"
+
 //Info<< "****alpha1 after: " << gSum( alpha1.internalField() * mesh.V() ) << " m^3" << endl;
 
         // --- Pressure-velocity PIMPLE corrector loop
         while (pimple.loop())
         {
-            #include "alphaControls.H"
-            //Solve for alpha1
-            #include "alphaEqnSubCycle.H"
-
-            mixture.correct();
-
             #include "UEqn.H"
 
             // --- PISO loop

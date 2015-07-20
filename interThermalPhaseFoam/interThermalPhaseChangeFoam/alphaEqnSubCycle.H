@@ -1,33 +1,50 @@
-if (nAlphaSubCycles > 1)
-{
-    dimensionedScalar totalDeltaT = runTime.deltaT();
-    surfaceScalarField rhoPhiSum
+surfaceScalarField rhoPhi
+(
+    IOobject
     (
-        IOobject
-        (
-            "rhoPhiSum",
-            runTime.timeName(),
-            mesh
-        ),
-        mesh,
-        dimensionedScalar("0", rhoPhi.dimensions(), 0)
-    );
+        "rhoPhi",
+        runTime.timeName(),
+        mesh
+    ),
+    mesh,
+    dimensionedScalar("0", dimensionSet(1, 0, -1, 0, 0), 0)
+);
 
-    for
-    (
-        subCycle<volScalarField> alphaSubCycle(alpha1, nAlphaSubCycles);
-        !(++alphaSubCycle).end();
-    )
-    {
-        #include "alphaEqn.H"
-        rhoPhiSum += (runTime.deltaT()/totalDeltaT)*rhoPhi;
-    }
-
-    rhoPhi = rhoPhiSum;
-}
-else
 {
-    #include "alphaEqn.H"
-}
+	label nAlphaCorr(readLabel(pimple.dict().lookup("nAlphaCorr")));
 
-rho == alpha1*rho1 + alpha2*rho2;
+	label nAlphaSubCycles(readLabel(pimple.dict().lookup("nAlphaSubCycles")));
+
+	//Compute limited phi
+	surfaceScalarField phic(mag(phi/mesh.magSf()));
+	
+	phic = min(interface.cAlpha()*phic, max(phic));
+
+	//Don't include PCV in the div term here, it is already there from the updated phi from the previous time step:
+	//volScalarField divU(fvc::div(phi) - phaseChangeModel->PCV());
+	volScalarField divU(fvc::div(phi));
+	//This term is needed for an explicit correction to the mass flux (rhoPhi)
+	dimensionedScalar totalDeltaT = runTime.deltaT();
+
+	if (nAlphaSubCycles > 1)
+	{
+		for
+		(
+		    subCycle<volScalarField> alphaSubCycle(alpha1, nAlphaSubCycles);
+		    !(++alphaSubCycle).end();
+		)
+		{
+		    #include "alphaEqn.H"
+		}
+	}
+	else
+	{
+		#include "alphaEqn.H"
+	}
+
+	//The original interFoam code did not update the interface curvature/forces if there were multiple outer PIMPLE correctors
+	//We should do it even if that is the case:
+	interface.correct();
+
+	rho == alpha1*rho1 + (scalar(1) - alpha1)*rho2;
+}

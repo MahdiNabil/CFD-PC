@@ -38,8 +38,8 @@ scalar FourierNum = 0.0;
 scalar meanFourierNum = 0.0;
 
 
-FourierNum = gMax( ( mixture.alpha() + turbulence->nut() )*runTime.deltaTValue() / pow( CellDims.field(), 2 ) );
-meanFourierNum = gAverage( ( mixture.alpha() + turbulence->nut() )*runTime.deltaTValue() / pow( CellDims.field(), 2 ) );
+FourierNum = gMax( ( twoPhaseProperties.alpha() + turbulence->nut() )*runTime.deltaTValue() / pow( CellDims.field(), 2 ) );
+meanFourierNum = gAverage( ( twoPhaseProperties.alpha() + turbulence->nut() )*runTime.deltaTValue() / pow( CellDims.field(), 2 ) );
 
 Info<< "Fourier number mean: " << meanFourierNum
     << " max: " << FourierNum << endl;
