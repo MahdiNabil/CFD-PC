@@ -60,6 +60,7 @@ Description
 #include "MeshGraph.H"
 #include "thermalPhaseChangeModel.H"
 #include "fixedFluxPressureFvPatchScalarField.H"
+#include "fvIOoptionList.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
