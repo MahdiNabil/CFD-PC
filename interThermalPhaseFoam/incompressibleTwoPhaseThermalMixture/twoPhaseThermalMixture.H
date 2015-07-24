@@ -204,7 +204,11 @@ public:
 
 		//- Return the laminar viscosity for patch
                 //const volScalarField nuP(this->nu()); 
-      		virtual tmp<volScalarField> nuP(const label patchi) const;
+//      		virtual tmp<volScalarField> nuP(const label patchi) const;
+        tmp<scalarField> nu(const label patchi) const
+        {
+            return nu_.boundaryField()[patchi];
+        }
 
 
         //- Return the face-interpolated kinematic laminar viscosity

@@ -395,7 +395,7 @@ Foam::tmp<Foam::surfaceScalarField> Foam::twoPhaseThermalMixture::nuf() const
     );
 }
 
-
+/*
 Foam::tmp<Foam::volScalarField> Foam::twoPhaseThermalMixture::nuP(const label patchi) const
 {
                 //const fvMesh mesh;
@@ -412,7 +412,7 @@ Foam::tmp<Foam::volScalarField> Foam::twoPhaseThermalMixture::nuP(const label pa
 		}
 	return nu_;
 }
-
+*/
 
 
 bool Foam::twoPhaseThermalMixture::read()

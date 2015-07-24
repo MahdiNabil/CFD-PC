@@ -56,7 +56,7 @@ namespace Foam
 
 class thermalPhaseChangeModel
 :
-    public transportModel,
+//    public transportModel,
     public IOdictionary
 {
 

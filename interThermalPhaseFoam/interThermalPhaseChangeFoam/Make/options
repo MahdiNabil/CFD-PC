@@ -11,12 +11,12 @@ EXE_INC = \
 	-IthermalPhaseChangeModels/MeshGraph
 
 EXE_LIBS = \
-    -ltwoPhaseInterfaceProperties \
+    -ltwoPhaseMixture \
     -lincompressibleTransportModels \
-    -lincompressibleTwoPhaseThermalMixture \
     -lincompressibleTurbulenceModel \
     -lincompressibleRASModels \
     -lincompressibleLESModels \
     -lfiniteVolume \
-    -lmeshTools
-
+    -lmeshTools \
+    -L$(FOAM_USER_LIBBIN) \
+    -lincompressibleTwoPhaseThermalMixture 

@@ -44,6 +44,17 @@ Foam::thermalPhaseChangeModel::thermalPhaseChangeModel
 	const volScalarField& alpha1
 )
 :
+	IOdictionary
+    (
+        IOobject
+        (
+            "transportProperties",
+            T.time().constant(),
+            T.db(),
+            IOobject::MUST_READ_IF_MODIFIED,
+            IOobject::NO_WRITE
+        )
+    ),
 	name_(name),
 	thermalPhaseChangeProperties_(thermalPhaseChangeProperties),
 	twoPhaseProperties_(twoPhasePropeties),
