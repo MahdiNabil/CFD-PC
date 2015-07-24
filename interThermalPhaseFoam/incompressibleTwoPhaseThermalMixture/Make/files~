@@ -1,0 +1,10 @@
+conductivityModels/conductivityModel/conductivityModel.C
+conductivityModels/conductivityModel/conductivityModelNew.C
+conductivityModels/Fourier/Fourier.C
+
+twoPhaseThermalMixture.C
+
+/* Wall functions */
+wallFunctions = derivedFvPatchFields/wallFunctions
+
+LIB = $(FOAM_USER_LIBBIN)/libincompressibleTwoPhaseThermalMixture

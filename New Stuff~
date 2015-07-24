@@ -1,0 +1,28 @@
+
+
+        volScalarField nuw;
+
+
+ //- Return the laminar viscosity for patch
+        //const volScalarField nuLam(this->nu());
+      //  virtual tmp<volScalarField> nuP(const label patchi) const 
+      //  {
+      //  return nuw;
+       // }
+
+
+
+
+
+
+
+		//forAll(patches, patchi)
+		//{
+		//const fvPatch& curPatch = patches[patchi];
+		  //if (isA<wallFvPatch>(curPatch))
+		      //{
+			//#include "checkPatchFieldTypes.H"
+			//const scalarField& nuw = nuP.boundaryField()[patchi];
+		     // }
+		//}
+
