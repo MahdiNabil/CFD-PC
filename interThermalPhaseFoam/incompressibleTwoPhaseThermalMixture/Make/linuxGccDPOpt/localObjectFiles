@@ -1,0 +1,5 @@
+LOCAL_OBJECTS = \
+conductivityModel.o\
+conductivityModelNew.o\
+Fourier.o\
+twoPhaseThermalMixture.o

@@ -1,0 +1,11 @@
+DEPENDENCIES = \
+interThermalPhaseChangeFoam.dep\
+thermalPhaseChangeModels/MeshGraph/MeshGraph.dep\
+thermalPhaseChangeModels/thermalPhaseChangeModel/thermalPhaseChangeModel.dep\
+thermalPhaseChangeModels/thermalPhaseChangeModel/newThermalPhaseChangeModel.dep\
+thermalPhaseChangeModels/LimitedInterfaceEquilibrium/LimitedInterfaceEquilibrium.dep\
+thermalPhaseChangeModels/HiLoFacePair/HiLoFacePair.dep\
+thermalPhaseChangeModels/HiLoRelaxed/HiLoRelaxed.dep\
+thermalPhaseChangeModels/HiLoRelaxedSplit/HiLoRelaxedSplit.dep\
+thermalPhaseChangeModels/HiLoRelaxedResistanceSplit/HiLoRelaxedResistanceSplit.dep\
+thermalPhaseChangeModels/noPhaseChange/noPhaseChange.dep

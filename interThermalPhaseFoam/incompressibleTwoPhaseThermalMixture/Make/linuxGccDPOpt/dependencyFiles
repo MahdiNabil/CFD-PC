@@ -1,0 +1,5 @@
+DEPENDENCIES = \
+conductivityModels/conductivityModel/conductivityModel.dep\
+conductivityModels/conductivityModel/conductivityModelNew.dep\
+conductivityModels/Fourier/Fourier.dep\
+twoPhaseThermalMixture.dep

@@ -1,0 +1,5 @@
+OBJECTS = \
+$(OBJECTS_DIR)/conductivityModel.o\
+$(OBJECTS_DIR)/conductivityModelNew.o\
+$(OBJECTS_DIR)/Fourier.o\
+$(OBJECTS_DIR)/twoPhaseThermalMixture.o

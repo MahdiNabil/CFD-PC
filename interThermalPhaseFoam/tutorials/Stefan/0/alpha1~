@@ -1,7 +1,7 @@
 /*--------------------------------*- C++ -*----------------------------------*\
 | =========                 |                                                 |
 | \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
-|  \\    /   O peration     | Version:  2.0.x                                 |
+|  \\    /   O peration     | Version:  2.1.1                                 |
 |   \\  /    A nd           | Web:      www.OpenFOAM.org                      |
 |    \\/     M anipulation  |                                                 |
 \*---------------------------------------------------------------------------*/
@@ -11,48 +11,43 @@ FoamFile
     format      ascii;
     class       volScalarField;
     location    "0";
-    object      p_rgh;
+    object      alpha1;
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-dimensions      [1 -1 -2 0 0 0 0];
+dimensions      [0 0 0 0 0 0 0];
 
-internalField   uniform 0;
+internalField uniform 0; 
 
 boundaryField
 {
     BotWall
     {
-        type            fixedFluxPressure;
-        gradient        uniform 0;
-        value           uniform 0;
-    }    
-
+        type            dynamicAlphaContactAngle;
+        thetaA          90;
+        thetaR          10;
+        muEffKistler    muEffKistler;
+        sigmaKistler    sigmaKistler;
+        value           uniform 1;
+    }
     FreeStream
     {
-        type            totalPressure;
-        rho             rho;
-        psi             none;
-        gamma           1;
-        p0              uniform 0;
+        type            inletOutlet;
+        inletValue      uniform 0;
         value           uniform 0;
     }
-
     FrontNBack
     {
         type            empty;
     }
-
-	LeftSide
-	{
-		type            cyclic;
-	}
-
-	RightSide
-	{
-		type            cyclic;
-	}
-
+    LeftSide
+    {
+        type            cyclic;
+    }
+    RightSide
+    {
+        type            cyclic;
+    }
 }
 
 

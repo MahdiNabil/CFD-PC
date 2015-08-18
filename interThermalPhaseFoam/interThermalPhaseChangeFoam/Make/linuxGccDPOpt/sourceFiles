@@ -1,0 +1,11 @@
+SOURCE = \
+interThermalPhaseChangeFoam.C\
+thermalPhaseChangeModels/MeshGraph/MeshGraph.C\
+thermalPhaseChangeModels/thermalPhaseChangeModel/thermalPhaseChangeModel.C\
+thermalPhaseChangeModels/thermalPhaseChangeModel/newThermalPhaseChangeModel.C\
+thermalPhaseChangeModels/LimitedInterfaceEquilibrium/LimitedInterfaceEquilibrium.C\
+thermalPhaseChangeModels/HiLoFacePair/HiLoFacePair.C\
+thermalPhaseChangeModels/HiLoRelaxed/HiLoRelaxed.C\
+thermalPhaseChangeModels/HiLoRelaxedSplit/HiLoRelaxedSplit.C\
+thermalPhaseChangeModels/HiLoRelaxedResistanceSplit/HiLoRelaxedResistanceSplit.C\
+thermalPhaseChangeModels/noPhaseChange/noPhaseChange.C

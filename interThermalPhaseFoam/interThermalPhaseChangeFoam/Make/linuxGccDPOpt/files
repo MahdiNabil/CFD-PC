@@ -1,0 +1,16 @@
+# 1 "files"
+# 1 "<built-in>"
+# 1 "<command-line>"
+# 1 "files"
+interThermalPhaseChangeFoam.C
+thermalPhaseChangeModels/MeshGraph/MeshGraph.C
+thermalPhaseChangeModels/thermalPhaseChangeModel/thermalPhaseChangeModel.C
+thermalPhaseChangeModels/thermalPhaseChangeModel/newThermalPhaseChangeModel.C
+thermalPhaseChangeModels/LimitedInterfaceEquilibrium/LimitedInterfaceEquilibrium.C
+thermalPhaseChangeModels/HiLoFacePair/HiLoFacePair.C
+thermalPhaseChangeModels/HiLoRelaxed/HiLoRelaxed.C
+thermalPhaseChangeModels/HiLoRelaxedSplit/HiLoRelaxedSplit.C
+thermalPhaseChangeModels/HiLoRelaxedResistanceSplit/HiLoRelaxedResistanceSplit.C
+thermalPhaseChangeModels/noPhaseChange/noPhaseChange.C
+
+EXE = $(FOAM_APPBIN)/interThermalPhaseChangeFoam

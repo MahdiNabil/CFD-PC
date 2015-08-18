@@ -1,0 +1,11 @@
+OBJECTS = \
+$(OBJECTS_DIR)/interThermalPhaseChangeFoam.o\
+$(OBJECTS_DIR)/MeshGraph.o\
+$(OBJECTS_DIR)/thermalPhaseChangeModel.o\
+$(OBJECTS_DIR)/newThermalPhaseChangeModel.o\
+$(OBJECTS_DIR)/LimitedInterfaceEquilibrium.o\
+$(OBJECTS_DIR)/HiLoFacePair.o\
+$(OBJECTS_DIR)/HiLoRelaxed.o\
+$(OBJECTS_DIR)/HiLoRelaxedSplit.o\
+$(OBJECTS_DIR)/HiLoRelaxedResistanceSplit.o\
+$(OBJECTS_DIR)/noPhaseChange.o

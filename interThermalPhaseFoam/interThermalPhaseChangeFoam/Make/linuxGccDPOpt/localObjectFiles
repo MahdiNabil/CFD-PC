@@ -1,0 +1,11 @@
+LOCAL_OBJECTS = \
+interThermalPhaseChangeFoam.o\
+MeshGraph.o\
+thermalPhaseChangeModel.o\
+newThermalPhaseChangeModel.o\
+LimitedInterfaceEquilibrium.o\
+HiLoFacePair.o\
+HiLoRelaxed.o\
+HiLoRelaxedSplit.o\
+HiLoRelaxedResistanceSplit.o\
+noPhaseChange.o

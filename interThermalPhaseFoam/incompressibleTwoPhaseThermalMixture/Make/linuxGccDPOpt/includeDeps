@@ -1,0 +1,4 @@
+include conductivityModels/conductivityModel/conductivityModel.dep
+include conductivityModels/conductivityModel/conductivityModelNew.dep
+include conductivityModels/Fourier/Fourier.dep
+include twoPhaseThermalMixture.dep
