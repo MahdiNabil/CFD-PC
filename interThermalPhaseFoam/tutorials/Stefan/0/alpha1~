@@ -28,6 +28,7 @@ boundaryField
         thetaR          10;
         muEffKistler    muEffKistler;
         sigmaKistler    sigmaKistler;
+        limit           gradient;
         value           uniform 1;
     }
     FreeStream
