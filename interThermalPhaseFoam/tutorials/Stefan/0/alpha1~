@@ -23,12 +23,11 @@ boundaryField
 {
     BotWall
     {
-        type            dynamicAlphaContactAngle;
+        type            dynamicKistlerAlphaContactAngle;
         thetaA          90;
         thetaR          10;
         muEffKistler    muEffKistler;
         sigmaKistler    sigmaKistler;
-        limit           gradient;
         value           uniform 1;
     }
     FreeStream

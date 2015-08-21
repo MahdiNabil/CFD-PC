@@ -48,7 +48,6 @@ solvers
         CoCoeff          2;
         maxIter          5;
         nLimiterIter     2;
-        cAlpha           1;
 
         solver           PBiCG;
         preconditioner   DILU;
