@@ -20,23 +20,33 @@
       - ghf*fvc::snGrad(rho) 
     )*rAUf*mesh.magSf();
 
-
+    Info<<"Test 1"<< endl;
     while (pimple.correctNonOrthogonal())
     {
-		//No need to correct p_rgh for phase change - already incorporated into div(phi) 
+        Info<<"Test 2"<< endl;
+
+	//No need to correct p_rgh for phase change - already incorporated into div(phi) 
         fvScalarMatrix p_rghEqn
         (
             fvm::laplacian(rAUf, p_rgh) == fvc::div(phi) - phaseChangeModel->PCV()
         );
+
+        Info<<"Test 3"<< endl;
+
         p_rghEqn.setReference(pRefCell, getRefCellValue(p_rgh, pRefCell));
+
+        Info<<"Test 4"<< endl;
 
         p_rghEqn.solve(mesh.solver(p_rgh.select(pimple.finalInnerIter())));
 
-		//This is -= (unlike phaseChangeFoam) because the sign of the governing equations is changed.
+        Info<<"Test 5"<< endl;
+
+	//This is -= (unlike phaseChangeFoam) because the sign of the governing equations is changed.
         if (pimple.finalNonOrthogonalIter())
         {
             phi -= p_rghEqn.flux();
         }
+        Info<<"Test 6"<< endl;
     }
 
     U += rAU*fvc::reconstruct((phi - phiU)/rAUf);
