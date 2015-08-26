@@ -16,12 +16,13 @@ Info<<"Test 3"<< endl;
         (fvc::interpolate(U) & mesh.Sf())
         + fvc::interpolate(rho*rAU)*fvc::ddtCorr(U, phi)
     );
-
-Info<<"Test 4"<< endl;
+   Info<<"Test 4_0"<< endl;
+   fvOptions.makeRelative(phiU);
+   Info<<"Test 4"<< endl;
 
     adjustPhi(phiU, U, p_rgh);
 
-Info<<"Test 5"<< endl;
+    Info<<"Test 5"<< endl;
 
     phi = phiU +
     (
@@ -30,6 +31,16 @@ Info<<"Test 5"<< endl;
     )*rAUf*mesh.magSf();
 
     Info<<"Test 6"<< endl;
+
+   // Update the fixedFluxPressure BCs to ensure flux consistency
+    setSnGrad<fixedFluxPressureFvPatchScalarField>
+    (
+        p_rgh.boundaryField(),
+        (
+            phiU.boundaryField()
+          - fvOptions.relative(mesh.Sf().boundaryField() & U.boundaryField())
+        )/(mesh.magSf().boundaryField()*rAUf.boundaryField())
+    );
 
     while (pimple.correctNonOrthogonal())
     {

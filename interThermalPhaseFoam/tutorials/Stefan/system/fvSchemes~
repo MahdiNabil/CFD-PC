@@ -38,7 +38,8 @@ divSchemes
     div(phi,nuTilda) Gauss upwind;
     div(phi,H)       Gauss upwind;
     // Added by MN
-    //div((muEff*dev(T(grad(U))))) Gauss linear;
+    div((muEff*dev(T(grad(U))))) Gauss linear;
+    div(rhoPhi,H)        Gauss upwind;
     default		none;
 }
 

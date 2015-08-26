@@ -2,7 +2,7 @@
 # 1 "<built-in>"
 # 1 "<command-line>"
 # 1 "options"
-EXE_INC = -I../incompressibleTwoPhaseThermalMixture/lnInclude -I$(LIB_SRC)/transportModels -I$(LIB_SRC)/transportModels/incompressible/lnInclude -I$(LIB_SRC)/transportModels/interfaceProperties/lnInclude -I$(LIB_SRC)/turbulenceModels/incompressible/turbulenceModel -I$(LIB_SRC)/transportModels/twoPhaseProperties/alphaContactAngle/alphaContactAngle -I$(LIB_SRC)/finiteVolume/lnInclude 	-IthermalPhaseChangeModels/thermalPhaseChangeModel -I$(LIB_SRC)/meshTools/lnInclude 	-IthermalPhaseChangeModels/MeshGraph
-# 12 "options"
+EXE_INC = -I../incompressibleTwoPhaseThermalMixture/lnInclude -I$(LIB_SRC)/transportModels -I$(LIB_SRC)/transportModels/incompressible/lnInclude -I$(LIB_SRC)/transportModels/interfaceProperties/lnInclude -I$(LIB_SRC)/turbulenceModels/incompressible/turbulenceModel -I$(LIB_SRC)/transportModels/twoPhaseProperties/alphaContactAngle/alphaContactAngle -I$(LIB_SRC)/fvOptions/lnInclude -I$(LIB_SRC)/finiteVolume/lnInclude 	-IthermalPhaseChangeModels/thermalPhaseChangeModel -I$(LIB_SRC)/meshTools/lnInclude 	-IthermalPhaseChangeModels/MeshGraph -I$(LIB_SRC)/sampling/lnInclude
+# 14 "options"
 
-EXE_LIBS = -ltwoPhaseProperties -linterfaceProperties -ltwoPhaseMixture -lincompressibleTransportModels -lincompressibleTurbulenceModel -lincompressibleRASModels -lincompressibleLESModels -lfiniteVolume -lmeshTools -L$(FOAM_USER_LIBBIN) -lincompressibleTwoPhaseThermalMixture 
+EXE_LIBS = -ltwoPhaseProperties -linterfaceProperties -ltwoPhaseMixture -lincompressibleTransportModels -lincompressibleTurbulenceModel -lincompressibleRASModels -lincompressibleLESModels -lfiniteVolume -lfvOptions -lmeshTools -lsampling -L$(FOAM_USER_LIBBIN) -lincompressibleTwoPhaseThermalMixture 

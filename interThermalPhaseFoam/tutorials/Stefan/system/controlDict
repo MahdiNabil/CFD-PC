@@ -28,7 +28,7 @@ endTime         5;
 deltaT          1E-6;
 
 writeControl    adjustableRunTime;
-writeInterval   0.02;
+writeInterval   0.1;
 
 //writeControl    timeStep;
 //writeInterval   5;

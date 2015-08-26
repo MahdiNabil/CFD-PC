@@ -53,8 +53,10 @@ Description
 #include "pimpleControl.H"
 //#include "RiddersRoot.H" - ASR commented out, we shouldn't need this for now
 #include "wallFvPatch.H"
+#include "fvIOoptionList.H"
 #include "MeshGraph.H"
 #include "thermalPhaseChangeModel.H"
+#include "fixedFluxPressureFvPatchScalarField.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
