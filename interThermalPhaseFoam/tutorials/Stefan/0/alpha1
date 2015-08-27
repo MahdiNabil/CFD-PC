@@ -21,6 +21,7 @@ internalField uniform 0;
 
 boundaryField
 {
+/*
     BotWall
     {
 	type            constantAlphaContactAngle;
@@ -28,6 +29,15 @@ boundaryField
         limit           gradient;
         value           uniform 1;
     }
+*/    
+
+    BotWall
+    {
+		type            fixedValue;
+        value           uniform 1;
+    }
+
+
     FreeStream
     {
         type            inletOutlet;
