@@ -39,23 +39,17 @@ FoamFile
     }
     LeftSide
     {
-        type            cyclic;
-        inGroups        1(cyclic);
+        type            symmetryPlane;
+        inGroups        1(symmetryPlane);
         nFaces          50;
         startFace       1960;
-        matchTolerance  0.0001;
-        transform       unknown;
-        neighbourPatch  RightSide;
     }
     RightSide
     {
-        type            cyclic;
-        inGroups        1(cyclic);
+        type            symmetryPlane;
+        inGroups        1(symmetryPlane);
         nFaces          50;
         startFace       2010;
-        matchTolerance  0.0001;
-        transform       unknown;
-        neighbourPatch  LeftSide;
     }
 )
 

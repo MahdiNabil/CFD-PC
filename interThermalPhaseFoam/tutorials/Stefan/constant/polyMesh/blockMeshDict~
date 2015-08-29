@@ -70,7 +70,7 @@ boundary
 
 	LeftSide
 	{
-		type     symmetryPlane;
+		type     cyclic;
 		faces
 		(
 			( 0  4  7  3)
@@ -80,7 +80,7 @@ boundary
 	
 	RightSide
 	{
-		type     symmetryPlane;
+		type     cyclic;
 		faces
 		(
 			( 1  2  6  5)

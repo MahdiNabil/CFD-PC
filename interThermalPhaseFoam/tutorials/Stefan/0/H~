@@ -11,11 +11,13 @@ FoamFile
     format      ascii;
     class       volScalarField;
     location    "0";
-    object      p_rgh;
+    object      T;
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-dimensions      [1 -1 -2 0 0 0 0];
+//H is actually calculated automatically during operation, no need to do anything here, I guess...
+
+dimensions      [0 2 -2 0 0 0 0];
 
 internalField   uniform 0;
 
@@ -23,19 +25,12 @@ boundaryField
 {
     BotWall
     {
-        type            fixedFluxPressure;
-        gradient        uniform 0;
-        value           uniform 0;
-    }    
+        type            zeroGradient;
+    }
 
     FreeStream
     {
-        type            totalPressure;
-        rho             rho;
-        psi             none;
-        gamma           1;
-        p0              uniform 0;
-        value           uniform 0;
+        type            zeroGradient;
     }
 
     FrontNBack
@@ -45,14 +40,13 @@ boundaryField
 
 	LeftSide
 	{
-		type            symmetryPlane;
+		type            cyclic;
 	}
 
 	RightSide
 	{
-		type            symmetryPlane;
+		type            cyclic;
 	}
-
 }
 
 

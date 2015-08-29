@@ -9,33 +9,27 @@ FoamFile
 {
     version     2.0;
     format      ascii;
-    class       volScalarField;
+    class       volVectorField;
     location    "0";
-    object      p_rgh;
+    object      U;
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-dimensions      [1 -1 -2 0 0 0 0];
+dimensions      [0 1 -1 0 0 0 0];
 
-internalField   uniform 0;
+internalField   uniform (0 0 0);
 
 boundaryField
 {
     BotWall
     {
-        type            fixedFluxPressure;
-        gradient        uniform 0;
-        value           uniform 0;
-    }    
+        type            fixedValue;
+        value           uniform (0 0 0);
+    }
 
     FreeStream
     {
-        type            totalPressure;
-        rho             rho;
-        psi             none;
-        gamma           1;
-        p0              uniform 0;
-        value           uniform 0;
+        type            zeroGradient;
     }
 
     FrontNBack
@@ -45,14 +39,13 @@ boundaryField
 
 	LeftSide
 	{
-		type            symmetryPlane;
+		type            cyclic;
 	}
 
 	RightSide
 	{
-		type            symmetryPlane;
+		type            cyclic;
 	}
-
 }
 
 

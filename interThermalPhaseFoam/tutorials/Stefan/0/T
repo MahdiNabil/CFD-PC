@@ -37,11 +37,11 @@ boundaryField
     }
     LeftSide
     {
-        type            cyclic;
+        type            symmetryPlane;
     }
     RightSide
     {
-        type            cyclic;
+        type            symmetryPlane;
     }
 }
 

@@ -21,15 +21,23 @@ internalField uniform 0;
 
 boundaryField
 {
+/*
     BotWall
     {
-        type            dynamicKistlerAlphaContactAngle;
-        thetaA          90;
-        thetaR          10;
-        muEffKistler    muEffKistler;
-        sigmaKistler    sigmaKistler;
+	type            constantAlphaContactAngle;
+        theta0          30;
+        limit           gradient;
         value           uniform 1;
     }
+*/    
+
+    BotWall
+    {
+		type            fixedValue;
+        value           uniform 1;
+    }
+
+
     FreeStream
     {
         type            inletOutlet;
