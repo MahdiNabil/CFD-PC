@@ -1,7 +1,7 @@
 /*--------------------------------*- C++ -*----------------------------------*\
 | =========                 |                                                 |
 | \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
-|  \\    /   O peration     | Version:  2.4.0                                 |
+|  \\    /   O peration     | Version:  2.1.1                                 |
 |   \\  /    A nd           | Web:      www.OpenFOAM.org                      |
 |    \\/     M anipulation  |                                                 |
 \*---------------------------------------------------------------------------*/
@@ -9,48 +9,54 @@ FoamFile
 {
     version     2.0;
     format      ascii;
-    class       polyBoundaryMesh;
-    location    "constant/polyMesh";
-    object      boundary;
+    class       volScalarField;
+    location    "0";
+    object      alpha1;
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-5
-(
+dimensions      [0 0 0 0 0 0 0];
+
+internalField uniform 0; 
+
+boundaryField
+{
+/*
     BotWall
     {
-        type            wall;
-        inGroups        1(wall);
-        nFaces          5;
-        startFace       445;
+	type            constantAlphaContactAngle;
+        theta0          30;
+        limit           gradient;
+        value           uniform 1;
     }
+*/    
+
+    BotWall
+    {
+		type            fixedValue;
+        value           uniform 1;
+    }
+
+
     FreeStream
     {
-        type            patch;
-        nFaces          5;
-        startFace       450;
+        type            inletOutlet;
+        inletValue      uniform 0;
+        value           uniform 0;
     }
     FrontNBack
     {
         type            empty;
-        inGroups        1(empty);
-        nFaces          500;
-        startFace       455;
     }
     LeftSide
     {
-        type            symmetryPlane;
-        inGroups        1(symmetryPlane);
-        nFaces          50;
-        startFace       955;
+        type            cyclic;
     }
     RightSide
     {
-        type            symmetryPlane;
-        inGroups        1(symmetryPlane);
-        nFaces          50;
-        startFace       1005;
+        type            cyclic;
     }
-)
+}
+
 
 // ************************************************************************* //
