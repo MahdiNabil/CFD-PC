@@ -27,7 +27,7 @@ phase1
 {
     transportModel  		Newtonian;
     //nu              		nu [ 0 2 -1 0 0 0 0 ] 2.74E-6;
-nu              		nu [ 0 2 -1 0 0 0 0 ] 2.74E-4;
+	nu              		nu [ 0 2 -1 0 0 0 0 ] 2.74E-4;
     rho             		rho [ 1 -3 0 0 0 0 0 ] 550.6;
     thermalTransportModel	Fourier;
     lambda			lambda [1 1 -3 -1 0 0 0] 0.0892;

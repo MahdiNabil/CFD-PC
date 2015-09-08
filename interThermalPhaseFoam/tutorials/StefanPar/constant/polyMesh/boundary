@@ -22,34 +22,34 @@ FoamFile
         type            wall;
         inGroups        1(wall);
         nFaces          5;
-        startFace       445;
+        startFace       895;
     }
     FreeStream
     {
         type            patch;
         nFaces          5;
-        startFace       450;
+        startFace       900;
     }
     FrontNBack
     {
         type            empty;
         inGroups        1(empty);
-        nFaces          500;
-        startFace       455;
+        nFaces          1000;
+        startFace       905;
     }
     LeftSide
     {
         type            symmetryPlane;
         inGroups        1(symmetryPlane);
-        nFaces          50;
-        startFace       955;
+        nFaces          100;
+        startFace       1905;
     }
     RightSide
     {
         type            symmetryPlane;
         inGroups        1(symmetryPlane);
-        nFaces          50;
-        startFace       1005;
+        nFaces          100;
+        startFace       2005;
     }
 )
 
