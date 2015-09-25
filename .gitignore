@@ -45,4 +45,6 @@ Temporary Items
 
 #For this OpenFOAM project
 *.dep
+*.H~
+*.C~
 linux64GccDPOpt
