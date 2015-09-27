@@ -42,9 +42,6 @@ Network Trash Folder
 Temporary Items
 .apdisk
 
-#Subversion files
-.svn
-
 #For this OpenFOAM project
 *.dep
 *.H~
