@@ -46,5 +46,4 @@ Temporary Items
 *.dep
 *.H~
 *.C~
-*~
 linux64GccDPOpt
