@@ -1,0 +1,184 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  2.4.0                                 |
+|   \\  /    A nd           | Web:      www.OpenFOAM.org                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       volScalarField;
+    location    "0.5";
+    object      alpha1;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+dimensions      [0 0 0 0 0 0 0];
+
+internalField   nonuniform List<scalar> 
+125
+(
+1
+1
+1
+1
+1
+1
+1
+1
+1
+1
+1
+1
+1
+1
+1
+1
+1
+1
+1
+1
+1
+1
+1
+1
+1
+1
+1
+1
+1
+1
+1
+1
+1
+1
+1
+1
+1
+1
+1
+1
+0.274252
+0.274264
+0.274268
+0.274271
+0.274249
+4.93204e-281
+1.84765e-276
+3.7011e-272
+4.80548e-276
+4.2357e-280
+7.0145e-287
+2.59567e-282
+4.84778e-278
+6.747e-282
+6.34915e-286
+1.24119e-292
+4.51586e-288
+7.89608e-284
+1.1663e-287
+1.15151e-291
+6.67898e-300
+2.38999e-295
+3.9362e-291
+6.11507e-295
+6.25158e-299
+4.7742e-308
+1.6843e-303
+2.63886e-299
+4.27803e-303
+4.48597e-307
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+)
+;
+
+boundaryField
+{
+    BotWall
+    {
+        type            fixedValue;
+        value           uniform 1;
+    }
+    FreeStream
+    {
+        type            inletOutlet;
+        inletValue      nonuniform 0();
+        value           nonuniform 0();
+    }
+    FrontNBack
+    {
+        type            empty;
+    }
+    LeftSide
+    {
+        type            symmetryPlane;
+    }
+    RightSide
+    {
+        type            symmetryPlane;
+    }
+    procBoundary0to1
+    {
+        type            processor;
+        value           uniform 0;
+    }
+}
+
+
+// ************************************************************************* //
