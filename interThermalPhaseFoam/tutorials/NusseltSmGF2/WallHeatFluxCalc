@@ -1,0 +1,26 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  1.7.0                                 |
+|   \\  /    A nd           | Web:      www.OpenFOAM.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      binary;
+    class       dictionary;
+    location    "system";
+    object      controlDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+WallHeatFlux
+{
+    valueType patch;
+    patchName LeftSide;
+    //condition "pos().y<0.65 && pos().y>0.3";
+    accumulations (average);
+	variables ( "k=0.892;" );
+	expression "snGrad(T)*k"; //(pos().y<0.65 && pos().y>0.3) ? snGrad(T)*k : 672
+}
