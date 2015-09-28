@@ -46,4 +46,8 @@ Temporary Items
 *.dep
 *.H~
 *.C~
+<<<<<<< HEAD
+=======
+*~
+>>>>>>> 055071741ec0b9661217f9d96087ec754d0f80c0
 linux64GccDPOpt
