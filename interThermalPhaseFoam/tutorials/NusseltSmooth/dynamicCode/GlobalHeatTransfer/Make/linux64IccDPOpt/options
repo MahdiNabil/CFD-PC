@@ -1,0 +1,13 @@
+# 1 "options"
+# 1 "<built-in>"
+# 1 "<command-line>"
+# 1 "options"
+
+
+
+EXE_INC = -g -I$(LIB_SRC)/finiteVolume/lnInclude -I$(LIB_SRC)/meshTools/lnInclude 
+
+
+
+
+LIB_LIBS = -lOpenFOAM -lfiniteVolume -lmeshTools 

@@ -1,0 +1,20 @@
+#!/bin/bash -l
+#PBS -N NusseltSmooth_2
+#PBS -l nodes=1:ppn=20
+#PBS -l walltime=20:00:00
+#PBS -A asr20_collab
+
+#Setup openfoam
+source /storage/work/asr20/OpenFOAM/SetupOpenFOAM.sh
+
+#Set some consts
+N_PROCS=20
+PROB_DIR=NusseltSmooth_LowVisc2
+SOLVER=interThermalPhaseChangeFoam
+
+#Set up the job
+cd $HOME/scratch/$PROB_DIR
+
+#Initial run
+mpirun -np $N_PROCS $SOLVER -parallel > $PROB_DIR.txt
+

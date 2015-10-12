@@ -1,0 +1,3 @@
+OBJECTS = \
+$(OBJECTS_DIR)/functionObjectTemplate.o\
+$(OBJECTS_DIR)/FilterFunctionObjectTemplate.o
