@@ -13,4 +13,4 @@ thermalPhaseChangeModels/HiLoRelaxedSplit/HiLoRelaxedSplit.C
 thermalPhaseChangeModels/HiLoRelaxedResistanceSplit/HiLoRelaxedResistanceSplit.C
 thermalPhaseChangeModels/noPhaseChange/noPhaseChange.C
 
-EXE = $(FOAM_APPBIN)/interThermalPhaseChangeFoam
+EXE = $(FOAM_USER_APPBIN)/interThermalPhaseChangeFoam

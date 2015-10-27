@@ -1,3 +1,12 @@
+
+Switch CombinedHSPressure("no");
+runTime.controlDict().readIfPresent("CombinedHSPressure", CombinedHSPressure);
+const scalar CHSP = CombinedHSPressure ? 1.0 : 0;
+
+Switch ModifiedST("no");
+runTime.controlDict().readIfPresent("ModifiedST", ModifiedST);
+//const scalar MST = ModifiedST ? 1.0 : 0;
+
     Info<< "Reading field p_rgh\n" << endl;
     volScalarField p_rgh
     (
@@ -204,7 +213,40 @@
     volScalarField gh("gh", g & mesh.C());
     surfaceScalarField ghf("ghf", g & mesh.Cf());
 
-    volScalarField p
+	//Capillary pressure field:
+
+	//Set up the pc object depending on whether or not we are using the sharp surface tension force model
+	/*volScalarField pc
+	(
+	    IOobject
+	    (
+	        "pc",
+	        runTime.timeName(),
+	        mesh,
+	        IOobject::NO_READ,
+	        IOobject::NO_WRITE
+	    ),
+		mesh,
+	    dimensionedScalar("pressureScalar", dimMass/(dimLength*dimTime*dimTime), 0)
+	);*/
+
+	volScalarField pc
+	(
+		IOobject
+		(
+			"pc",
+			runTime.timeName(),
+			mesh,
+			IOobject::MUST_READ,
+			IOobject::AUTO_WRITE
+		),
+		mesh
+	);
+
+Info<< "pc average: " << gAverage(pc.internalField()) << endl;
+
+    //Total Pressure Field:
+	volScalarField p
     (
         IOobject
         (
@@ -214,7 +256,7 @@
             IOobject::NO_READ,
             IOobject::AUTO_WRITE
         ),
-        p_rgh + rho*gh
+        p_rgh + (1.0-CHSP)*rho*gh + pc    //Add in surface tension
     );
 
     label pRefCell = 0;
@@ -228,16 +270,78 @@
         pRefValue
     );
 
-    if (p_rgh.needReference())
-    {
-        p += dimensionedScalar
+  if ( ModifiedST )
+	{
+		if (p_rgh.needReference())
+		{
+		    p += dimensionedScalar
+		    (
+		        "p",
+		        p.dimensions(),
+		        pRefValue - getRefCellValue(p, pRefCell)
+		    );
+		    p_rgh = p - (1.0-CHSP)*rho*gh - pc;  //Add in surface tension
+		}
+	}
+ else
+	{
+		if (p_rgh.needReference())
+		{
+		    p += dimensionedScalar
+		    (
+		        "p",
+		        p.dimensions(),
+		        pRefValue - getRefCellValue(p, pRefCell)
+		    );
+		    p_rgh = p - (1.0-CHSP)*rho*gh;
+		}
+	}
+
+
+	//Sharp surface force (capillary forces on cell faces)
+    volVectorField fc
+    (
+        IOobject
         (
-            "p",
-            p.dimensions(),
-            pRefValue - getRefCellValue(p, pRefCell)
-        );
-        p_rgh = p - rho*gh;
-    }
+            "fc",
+            runTime.timeName(),
+            mesh,
+            IOobject::NO_READ,
+            IOobject::AUTO_WRITE
+        ),
+        mesh,
+        dimensionedVector("fc0", dimMass/(dimLength*dimLength*dimTime*dimTime), vector(0,0,0))
+    );
+
+	//Sharp surface force (capillary forces on cell faces)
+    surfaceScalarField fcf
+    (
+        IOobject
+        (
+            "fcf",
+            runTime.timeName(),
+            mesh,
+            IOobject::NO_READ,
+            IOobject::NO_WRITE
+        ),
+        mesh,
+        dimensionedScalar("fc0", dimMass/(dimLength*dimLength*dimTime*dimTime), 0)
+    );
+
+	//Sharp surface force (capillary forces on cell faces)
+    surfaceScalarField fcf_filter
+    (
+        IOobject
+        (
+            "fcf_filter",
+            runTime.timeName(),
+            mesh,
+            IOobject::NO_READ,
+            IOobject::NO_WRITE
+        ),
+        mesh,
+        dimensionedScalar("fc0", dimMass/(dimLength*dimLength*dimTime*dimTime), 0)
+    );
 
     
     fv::IOoptionList fvOptions(mesh);

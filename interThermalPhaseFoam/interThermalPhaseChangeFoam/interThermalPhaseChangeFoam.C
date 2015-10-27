@@ -44,6 +44,7 @@ Description
 \*---------------------------------------------------------------------------*/
 
 #include "fvCFD.H"
+#include "IOobject.H"
 #include "MULES.H"
 #include "subCycle.H"
 #include "interfaceProperties.H"
@@ -107,7 +108,13 @@ int main(int argc, char *argv[])
         #include "alphaEqnSubCycle.H"
 
 //Info<< "****alpha1 after: " << gSum( alpha1.internalField() * mesh.V() ) << " m^3" << endl;
-
+     	//Info<< "check 0" << endl;
+        //Evaluate sharp surface tension force:
+		if ( ModifiedST )
+		{
+			#include "EvalSSF.H"
+		}
+		//Info<< "check 14" << endl;
         // --- Pressure-velocity PIMPLE corrector loop
         while (pimple.loop())
         {

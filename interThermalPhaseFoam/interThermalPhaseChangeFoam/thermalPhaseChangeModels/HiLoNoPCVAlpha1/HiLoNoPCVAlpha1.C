@@ -23,7 +23,7 @@ License
 
 \*---------------------------------------------------------------------------*/
 
-#include "DropwiseSGS.H"
+#include "HiLoNoPCVAlpha1.H"
 #include "addToRunTimeSelectionTable.H"
 
 // * * * * * * * * * * * * * * Static Data Members * * * * * * * * * * * * * //
@@ -32,14 +32,14 @@ namespace Foam
 {
 namespace thermalPhaseChangeModels
 {
-    defineTypeNameAndDebug(DropwiseSGS, 0);
-    addToRunTimeSelectionTable(thermalPhaseChangeModel, DropwiseSGS, dictionary);
+    defineTypeNameAndDebug(HiLoNoPCVAlpha1, 0);
+    addToRunTimeSelectionTable(thermalPhaseChangeModel, HiLoNoPCVAlpha1, dictionary);
 }
 }
 
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
 
-Foam::thermalPhaseChangeModels::DropwiseSGS::DropwiseSGS
+Foam::thermalPhaseChangeModels::HiLoNoPCVAlpha1::HiLoNoPCVAlpha1
 (
 		const word& name,
 		const dictionary& thermalPhaseChangeProperties,
@@ -55,19 +55,6 @@ Foam::thermalPhaseChangeModels::DropwiseSGS::DropwiseSGS
         IOobject
         (
             "PhaseChangeHeat",
-            T_.time().timeName(),
-            mesh_,
-            IOobject::NO_READ,
-            IOobject::AUTO_WRITE
-        ),
-		mesh_,
-		dimensionedScalar( "dummy", dimensionSet(1,-1,-3,0,0,0,0), 0 )
-    ),
-   	Q_pc_sgs_
-    (
-        IOobject
-        (
-            "sgsPhaseChangeHeat",
             T_.time().timeName(),
             mesh_,
             IOobject::NO_READ,
@@ -102,12 +89,39 @@ Foam::thermalPhaseChangeModels::DropwiseSGS::DropwiseSGS
         ),
         mesh_,
         scalar(0)
-    )
+    ),
+	PCVField //Is initialized to zero, and stays as such...
+	(
+        IOobject
+        (
+            "PhaseChangeVolume",
+            T_.time().timeName(),
+            mesh_,
+            IOobject::NO_READ,
+            IOobject::AUTO_WRITE
+        ),
+		mesh_,
+		dimensionedScalar( "dummy", dimensionSet(0,0,-1,0,0,0,0), 0 )
+	),
+
+	alpha1Field //Is initialized to zero, and stays as such...
+	(
+        IOobject
+        (
+            "PhaseChangeAlpha1",
+            T_.time().timeName(),
+            mesh_,
+            IOobject::NO_READ,
+            IOobject::AUTO_WRITE
+        ),
+		mesh_,
+		dimensionedScalar( "dummy", dimensionSet(0,0,-1,0,0,0,0), 0 )
+	)
+
 {
 	//Read in the cond/evap int. thresholds
 	thermalPhaseChangeProperties_.lookup("CondThresh") >> CondThresh;
 	thermalPhaseChangeProperties_.lookup("EvapThresh") >> EvapThresh;
-	thermalPhaseChangeProperties_.lookup("RelaxFac") >> RelaxFac;	
 
 	correct();
 }
@@ -115,7 +129,7 @@ Foam::thermalPhaseChangeModels::DropwiseSGS::DropwiseSGS
 
 // * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * * //
 
-void Foam::thermalPhaseChangeModels::DropwiseSGS::calcQ_pc()
+void Foam::thermalPhaseChangeModels::HiLoNoPCVAlpha1::calcQ_pc()
 {
 	//Get the sets of interface cell face pairs for evaporation/condensation
 	std::vector<MeshGraph::CellFacePair> CondIntCellFacePairs, EvapIntCellFacePairs;
@@ -149,9 +163,29 @@ void Foam::thermalPhaseChangeModels::DropwiseSGS::calcQ_pc()
 		{   InterfaceField_[(*it).c1] = 1;  InterfaceField_[(*it).c2] = 1;  }
 	}
 
+	//Spit out internal interface cells count
+	//Info<< "Internal interface cells: " << gSum(InterfaceField_) << endl;
+
+
+	//Now add wall cells to the interfaceField:
+	labelList WallCells;
+	forAll( mesh_.boundary(), pI )
+	{
+		if( isA<wallFvPatch>( mesh_.boundary()[pI] ) )    
+		{  WallCells.append( mesh_.boundary()[pI].faceCells() );  }
+	}
+	WallField = 0;
+	forAll( WallCells, cI )
+	{   
+		WallField[WallCells[cI]] = 1;
+		InterfaceField_[WallCells[cI]] = 1;
+	}
+
+	//List total int. cells
+	//Info<< "Total interface cells: " << gSum(InterfaceField_) << endl;
+
 	//Reset all Q_pc to 0
 	Q_pc_ = dimensionedScalar( "dummy", dimensionSet(1,-1,-3,0,0,0,0), 0 );
-	Q_pc_sgs_ = dimensionedScalar( "dummy", dimensionSet(1,-1,-3,0,0,0,0), 0 );
 
 	//Compute some helpful props:
 	//For some reason dT is dimensionless
@@ -167,6 +201,7 @@ void Foam::thermalPhaseChangeModels::DropwiseSGS::calcQ_pc()
 	volScalarField LimCond = (1.0-alpha1_)*( rho2*h_lv_ / dT );
 	//No evaporation on wall cells!
 	volScalarField LimEvap = (1.0-WallField)*alpha1_*rho1*h_lv_ / dT;
+	//volScalarField LimEvap = alpha1_*rho1*h_lv_ / dT;
 
 	//Apply fluid limiting
 	volScalarField Q_pc_fluid = neg(Q_pc_)*max(Q_pc_, -LimCond) + pos(Q_pc_)*min(Q_pc_, LimEvap) ;
@@ -174,57 +209,22 @@ void Foam::thermalPhaseChangeModels::DropwiseSGS::calcQ_pc()
 	//Volume-based limiting (i.e. relative phase change rate can't exceed |1| per time step
 	volScalarField PCV_fac = dT*(Q_pc_ / h_lv_)*( (scalar(1.0)/twoPhaseProperties_.rho2()) - (scalar(1.0)/twoPhaseProperties_.rho1()) );
 
-	//Again, allow regular evap on wall	
+	//Again, don't allow evap on wall	
 	volScalarField Q_pc_vol = Q_pc_ * mag( min( max(1.0/(PCV_fac+SMALL), -1.0), (1.0-WallField) ) );
+	//volScalarField Q_pc_vol = Q_pc_ * mag( min( max(1.0/(PCV_fac+SMALL), -1.0), 1.0 ) );
 
 	//Composite limit
 	Q_pc_ = neg(Q_pc_)*max( max( Q_pc_, Q_pc_fluid ), Q_pc_vol) + pos(Q_pc_)*min( min( Q_pc_, Q_pc_fluid ), Q_pc_vol);
-
-	//Under relax phase change rate per user specification
-	Q_pc_ = RelaxFac * Q_pc_;
-
-Info<< "Pre-SGS Q_pc: " << gSum( Q_pc_.field() * mesh_.V() ) << endl;
-
-	//Now apply subgridscale model on the wall patches
-	labelList WallCells;
-	scalarField WallFaceAreas;
-	forAll( mesh_.boundary(), pI )
-	{
-		if( isA<wallFvPatch>( mesh_.boundary()[pI] ) )    
-		{
-			WallCells.append( mesh_.boundary()[pI].faceCells() );
-			
-			const fvPatch& fPatch = mesh_.boundary()[pI];
-			WallFaceAreas.append( fPatch.magSf() );
-		}
-	}
-	
-	//Now loop over all the wall faces, and apply SGS heat transfer
-	const volScalarField::DimensionedInternalField& VolCs = mesh_.V();
-	const surfaceScalarField alpha1f = fvc::interpolate(alpha1_);
-
-	forAll( WallCells, cI )
-	{
-		const scalar RMax = 0.5 * Foam::sqrt( WallFaceAreas[cI] ); //Maximum SGS drop size
-		const scalar qFlux = 1.62E5 * Foam::pow(RMax,-0.33); //Heat flux correlation - specific to water and certain other assumptions
-		const scalar qCell = (1-alpha1_[WallCells[cI]])*qFlux*WallFaceAreas[cI]; //W of heat transfer on sgs portion of wall patch
-		Q_pc_sgs_[WallCells[cI]] -= qCell/VolCs[WallCells[cI]];
-	}
-
-Info<< "SGS Q_pc: " << gSum( Q_pc_sgs_.field() * mesh_.V() ) << endl;
-	
 }
 
 
-bool Foam::thermalPhaseChangeModels::DropwiseSGS::read(const dictionary& thermalPhaseChangeProperties)
+bool Foam::thermalPhaseChangeModels::HiLoNoPCVAlpha1::read(const dictionary& thermalPhaseChangeProperties)
 {
 	thermalPhaseChangeModel::read(thermalPhaseChangeProperties);
 
 	//Read in the cond/evap int. thresholds
 	thermalPhaseChangeProperties_.lookup("CondThresh") >> CondThresh;
 	thermalPhaseChangeProperties_.lookup("EvapThresh") >> EvapThresh;
-	thermalPhaseChangeProperties_.lookup("RelaxFac") >> RelaxFac;
-
 	return true;
 }
 

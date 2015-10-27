@@ -8,4 +8,6 @@ thermalPhaseChangeModels/HiLoFacePair/HiLoFacePair.dep\
 thermalPhaseChangeModels/HiLoRelaxed/HiLoRelaxed.dep\
 thermalPhaseChangeModels/HiLoRelaxedSplit/HiLoRelaxedSplit.dep\
 thermalPhaseChangeModels/HiLoRelaxedResistanceSplit/HiLoRelaxedResistanceSplit.dep\
-thermalPhaseChangeModels/noPhaseChange/noPhaseChange.dep
+thermalPhaseChangeModels/noPhaseChange/noPhaseChange.dep\
+thermalPhaseChangeModels/HiLoNoPCV/HiLoNoPCV.dep\
+thermalPhaseChangeModels/HiLoNoPCVAlpha1/HiLoNoPCVAlpha1.dep

@@ -5,9 +5,10 @@ thermalPhaseChangeModels/thermalPhaseChangeModel/newThermalPhaseChangeModel.C
 thermalPhaseChangeModels/LimitedInterfaceEquilibrium/LimitedInterfaceEquilibrium.C
 thermalPhaseChangeModels/HiLoFacePair/HiLoFacePair.C
 thermalPhaseChangeModels/HiLoRelaxed/HiLoRelaxed.C
-thermalPhaseChangeModels/DropwiseSGS/DropwiseSGS.C
 thermalPhaseChangeModels/HiLoRelaxedSplit/HiLoRelaxedSplit.C
 thermalPhaseChangeModels/HiLoRelaxedResistanceSplit/HiLoRelaxedResistanceSplit.C
 thermalPhaseChangeModels/noPhaseChange/noPhaseChange.C
+thermalPhaseChangeModels/HiLoNoPCV/HiLoNoPCV.C
+thermalPhaseChangeModels/HiLoNoPCVAlpha1/HiLoNoPCVAlpha1.C
 
 EXE = $(FOAM_USER_APPBIN)/interThermalPhaseChangeFoam

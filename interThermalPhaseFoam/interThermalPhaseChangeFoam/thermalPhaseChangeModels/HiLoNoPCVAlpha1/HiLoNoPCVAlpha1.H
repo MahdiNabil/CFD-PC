@@ -22,7 +22,7 @@ License
     along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
 
 Class
-	Foam::thermalPhaseChangeModel::DropwiseSGS
+	Foam::thermalPhaseChangeModel::HiLoNoPCVAlpha1
 
 Description
     This model forces wall and interface cells to the equilibrium state,
@@ -33,20 +33,18 @@ Description
     This model uses different interface thresholds for identifying
 	evaporating and condensing cell pairs.
 
-	This is similar to the previous HiLoFacePair code, but the phase change
-	rate is numerically relaxed by some user-defined value (should be <= 1,
-	where 0 is no phase change, and 1 is no relaxation). This seems to help
-	with overshooting where the temperature in a cell can go from superheated
-	to subcooled in one time step.
+	This version has phase change heating, but no change in liquid volume 
+        fraction due to phase change and no volumetric source due to phase change. Convenient for cases 
+        where there is an unlimited source of low momentum phase (e.g. film evaporation or condensation)
 
 
 SourceFiles
-    DropwiseSGS.C
+    HiLoNoPCVAlpha1.C
 
 \*--------------------------------------------------------------------*/
 
-#ifndef DropwiseSGS_H
-#define DropwiseSGS_H
+#ifndef HiLoNoPCVAlpha1_H
+#define HiLoNoPCVAlpha1_H
 
 #include "thermalPhaseChangeModel.H"
 #include "MeshGraph.H"
@@ -59,17 +57,17 @@ namespace thermalPhaseChangeModels
 {
 
 /*--------------------------------------------------------------------*\
-                              Class DropwiseSGS
+                              Class HiLoNoPCVAlpha1
 \*--------------------------------------------------------------------*/
 
-class DropwiseSGS
+class HiLoNoPCVAlpha1
 :
     public thermalPhaseChangeModel
 {
 
 // Private Member Functions
 
-	//- Calculate and return the phase change heat rate
+	//- Calculate the phase change heat rate
 	void calcQ_pc();
 
 	//- This phase change model needs access to the mesh:
@@ -77,9 +75,6 @@ class DropwiseSGS
 
 	//- Phase change heat
 	volScalarField Q_pc_;
-
-	//- Subgridscale condensation on the wall
-	volScalarField Q_pc_sgs_;
 
 	//- Graph of mesh grid, used for finding interface cells
 	MeshGraph InterfaceMeshGraph;
@@ -90,21 +85,26 @@ class DropwiseSGS
 	//- Field for blocking evaporation on wall cells
 	volScalarField WallField;
 
+	//- Volume change field (from phase change)
+	volScalarField PCVField;
+
+	//- Volumetric production rate of the alpha1 field (from phase change)
+	volScalarField alpha1Field;
+
 	//Scalar parameters for identifying condensation and evaporation int. cell pairs:
 	scalar CondThresh;
 	scalar EvapThresh;
-	scalar RelaxFac; //The relaxation factor (0-1)
 
 public:
 
     //- Runtime type information
-    TypeName("DropwiseSGS");
+    TypeName("HiLoNoPCVAlpha1");
 
 
     // Constructors
 
 	//- construct from components
-	DropwiseSGS
+	HiLoNoPCVAlpha1
 	(
 		const word& name,
 		const dictionary& thermalPhaseChangeProperties,
@@ -115,7 +115,7 @@ public:
 
 
     //- Destructor
-    ~DropwiseSGS()
+    ~HiLoNoPCVAlpha1()
     {}
 
 
@@ -139,20 +139,21 @@ public:
 			return InterfaceField_;
 		}
 		
-		//Return phase change volume - includes both Q_sgs and Q_main
-        tmp<volScalarField> PCV() const
-        {
-            return tmp<volScalarField> ( 0.0*( (Q_pc_+Q_pc_sgs_) / h_lv_)*( (scalar(1.0)/twoPhaseProperties_.rho2()) - (scalar(1.0)/twoPhaseProperties_.rho1()) ) );
-        }
-        
-                //- Return volumetric production rate of the alpha1 field due to phase change
+		//- Gets volume generation (split and applied slightly away from interface)
+		tmp<volScalarField> PCV() const
+		{
+			return PCVField;
+		}
+
+
+		//- Returns the Change in Liquid Volume Fraction due to Phase Change
 		//  This is positive in the case of condensation, or negative
 		//  for evaporation, units (1/s)
-        tmp<volScalarField> alpha1Gen() const
-        {
-       	    return tmp<volScalarField>( -(Q_pc_+Q_pc_sgs_) / (twoPhaseProperties_.rho1()  * h_lv_) );
-        }
-		
+		tmp<volScalarField> alpha1Gen() const
+		{
+			return alpha1Field;
+		}
+
 
         //- Read the transportProperties dictionary and update
         bool read(const dictionary& thermalPhaseChangeProperties);
