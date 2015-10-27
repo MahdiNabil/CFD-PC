@@ -142,7 +142,7 @@ public:
 		//Return phase change volume - includes both Q_sgs and Q_main
         tmp<volScalarField> PCV() const
         {
-            return tmp<volScalarField> ( ( (Q_pc_+Q_pc_sgs_) / h_lv_)*( (scalar(1.0)/twoPhaseProperties_.rho2()) - (scalar(1.0)/twoPhaseProperties_.rho1()) ) );
+            return tmp<volScalarField> ( 0.0*( (Q_pc_+Q_pc_sgs_) / h_lv_)*( (scalar(1.0)/twoPhaseProperties_.rho2()) - (scalar(1.0)/twoPhaseProperties_.rho1()) ) );
         }
         
                 //- Return volumetric production rate of the alpha1 field due to phase change
