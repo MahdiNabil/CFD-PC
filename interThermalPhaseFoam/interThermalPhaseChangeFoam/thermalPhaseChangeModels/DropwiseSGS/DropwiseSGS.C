@@ -186,30 +186,45 @@ void Foam::thermalPhaseChangeModels::DropwiseSGS::calcQ_pc()
 Info<< "Pre-SGS Q_pc: " << gSum( Q_pc_.field() * mesh_.V() ) << endl;
 
 	//Now apply subgridscale model on the wall patches
-	labelList WallCells;
-	scalarField WallFaceAreas;
+
+	surfaceScalarField Q_pc_sgsf //Wall heat transfer rate through each face
+	(
+        IOobject
+        (
+            "Q_pc_sgsf",
+            T_.time().timeName(),
+            mesh_,
+            IOobject::NO_READ,
+            IOobject::NO_WRITE
+        ),
+        mesh_,
+		dimensionedScalar( "dummy", dimensionSet(1,2,-3,0,0,0,0), 0 ) //In units of W
+	);
+
+	const surfaceScalarField alpha1f = fvc::interpolate(alpha1_); //Alpha1 on faces
+	
+	
 	forAll( mesh_.boundary(), pI )
 	{
-		if( isA<wallFvPatch>( mesh_.boundary()[pI] ) )    
+		if( isA<wallFvPatch>( mesh_.boundary()[pI] ) )    //Do SGS heat transfer for this wall patch
 		{
-			WallCells.append( mesh_.boundary()[pI].faceCells() );
-			
 			const fvPatch& fPatch = mesh_.boundary()[pI];
-			WallFaceAreas.append( fPatch.magSf() );
+			const scalarField& WallFaceAreas = fPatch.magSf(); //Areas of the patch
+			const scalarField WallRMax = 0.5*Foam::sqrt( WallFaceAreas ); //Maximum SGS drop size radius
+
+			//Assign heat flux for whole wall patch at once!
+			scalarField& Wall_Q_pc_sgs = Q_pc_sgsf.boundaryField()[pI];
+			const scalarField& Wall_alpha1 = alpha1f.boundaryField()[pI];
+			Wall_Q_pc_sgs = -1.62E5 * Foam::pow(WallRMax,-0.33)*(1-Wall_alpha1)*WallFaceAreas;
+
 		}
 	}
-	
-	//Now loop over all the wall faces, and apply SGS heat transfer
-	const volScalarField::DimensionedInternalField& VolCs = mesh_.V();
-	const surfaceScalarField alpha1f = fvc::interpolate(alpha1_);
 
-	forAll( WallCells, cI )
-	{
-		const scalar RMax = 0.5 * Foam::sqrt( WallFaceAreas[cI] ); //Maximum SGS drop size
-		const scalar qFlux = 1.62E5 * Foam::pow(RMax,-0.33); //Heat flux correlation - specific to water and certain other assumptions
-		const scalar qCell = (1-alpha1_[WallCells[cI]])*qFlux*WallFaceAreas[cI]; //W of heat transfer on sgs portion of wall patch
-		Q_pc_sgs_[WallCells[cI]] -= qCell/VolCs[WallCells[cI]];
-	}
+
+	//Calculate volumetric SGS phase change rate in the cell	
+	Q_pc_sgs_ = fvc::surfaceSum( Q_pc_sgsf )/dimensionedScalar( "Volume", dimensionSet(0,3,0,0,0,0,0), 1 );
+	Q_pc_sgs_.internalField() /= mesh_.V();
+	
 
 Info<< "SGS Q_pc: " << gSum( Q_pc_sgs_.field() * mesh_.V() ) << endl;
 	
