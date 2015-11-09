@@ -222,8 +222,7 @@ Info<< "Pre-SGS Q_pc: " << gSum( Q_pc_.field() * mesh_.V() ) << endl;
 
 
 	//Calculate volumetric SGS phase change rate in the cell	
-	Q_pc_sgs_ = fvc::surfaceSum( Q_pc_sgsf )/dimensionedScalar( "Volume", dimensionSet(0,3,0,0,0,0,0), 1 );
-	Q_pc_sgs_.internalField() /= mesh_.V();
+	Q_pc_sgs_ = fvc::surfaceIntegrate( Q_pc_sgsf );
 	
 
 Info<< "SGS Q_pc: " << gSum( Q_pc_sgs_.field() * mesh_.V() ) << endl;
