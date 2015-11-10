@@ -25,11 +25,11 @@ fvVectorMatrix UEqn
         (
             UEqn
          ==
-	    (MST*fc) + 
+	    	(MST*fc) + 
             fvc::reconstruct
             (
                 (
-				  - MST*fvc::snGrad(pc)
+				   (fcf * mesh.magSf()) - MST*fvc::snGrad(pc)
                   - (1.0-CHSP)*ghf*fvc::snGrad(rho)
                   - fvc::snGrad(p_rgh)
                 ) * mesh.magSf()

@@ -5,7 +5,7 @@ const scalar CHSP = CombinedHSPressure ? 1.0 : 0;
 
 Switch ModifiedST("no");
 runTime.controlDict().readIfPresent("ModifiedST", ModifiedST);
-//const scalar MST = ModifiedST ? 1.0 : 0;
+const scalar MST = ModifiedST ? 1.0 : 0;
 
     Info<< "Reading field p_rgh\n" << endl;
     volScalarField p_rgh
@@ -81,8 +81,6 @@ runTime.controlDict().readIfPresent("ModifiedST", ModifiedST);
         mesh
     );
 
-
-
     Info<< "Reading transportProperties\n" << endl;
     twoPhaseThermalMixture twoPhaseProperties(U, phi);
 
@@ -91,7 +89,6 @@ runTime.controlDict().readIfPresent("ModifiedST", ModifiedST);
     const dimensionedScalar& rho2 = twoPhaseProperties.rho2();
     const dimensionedScalar& cp1 = twoPhaseProperties.cp1();
     const dimensionedScalar& cp2 = twoPhaseProperties.cp2();
-
 
     // Need to store rho for ddt(rho, U)
     volScalarField rho
@@ -227,22 +224,6 @@ runTime.controlDict().readIfPresent("ModifiedST", ModifiedST);
     surfaceScalarField ghf("ghf", g & mesh.Cf());
 
 	//Capillary pressure field:
-
-	//Set up the pc object depending on whether or not we are using the sharp surface tension force model
-	/*volScalarField pc
-	(
-	    IOobject
-	    (
-	        "pc",
-	        runTime.timeName(),
-	        mesh,
-	        IOobject::NO_READ,
-	        IOobject::NO_WRITE
-	    ),
-		mesh,
-	    dimensionedScalar("pressureScalar", dimMass/(dimLength*dimTime*dimTime), 0)
-	);*/
-
 	volScalarField pc
 	(
 		IOobject
@@ -256,7 +237,7 @@ runTime.controlDict().readIfPresent("ModifiedST", ModifiedST);
 		mesh
 	);
 
-Info<< "pc average: " << gAverage(pc.internalField()) << endl;
+	Info<< "pc average: " << gAverage(pc.internalField()) << endl;
 
     //Total Pressure Field:
 	volScalarField p
@@ -283,82 +264,19 @@ Info<< "pc average: " << gAverage(pc.internalField()) << endl;
         pRefValue
     );
 
-  if ( ModifiedST )
+
+	if (p_rgh.needReference())
 	{
-		if (p_rgh.needReference())
-		{
-		    p += dimensionedScalar
-		    (
-		        "p",
-		        p.dimensions(),
-		        pRefValue - getRefCellValue(p, pRefCell)
-		    );
-		    p_rgh = p - (1.0-CHSP)*rho*gh - pc;  //Add in surface tension
-		}
-	}
- else
-	{
-		if (p_rgh.needReference())
-		{
-		    p += dimensionedScalar
-		    (
-		        "p",
-		        p.dimensions(),
-		        pRefValue - getRefCellValue(p, pRefCell)
-		    );
-		    p_rgh = p - (1.0-CHSP)*rho*gh;
-		}
+	    p += dimensionedScalar
+	    (
+	        "p",
+	        p.dimensions(),
+	        pRefValue - getRefCellValue(p, pRefCell)
+	    );
+	    p_rgh = p - (1.0-CHSP)*rho*gh - pc;  //Add in surface tension
 	}
 
-
-	//Sharp surface force (capillary forces on cell faces)
-    volVectorField fc
-    (
-        IOobject
-        (
-            "fc",
-            runTime.timeName(),
-            mesh,
-            IOobject::NO_READ,
-            IOobject::AUTO_WRITE
-        ),
-        mesh,
-        dimensionedVector("fc0", dimMass/(dimLength*dimLength*dimTime*dimTime), vector(0,0,0))
-    );
-
-	//Sharp surface force (capillary forces on cell faces)
-    surfaceScalarField fcf
-    (
-        IOobject
-        (
-            "fcf",
-            runTime.timeName(),
-            mesh,
-            IOobject::NO_READ,
-            IOobject::NO_WRITE
-        ),
-        mesh,
-        dimensionedScalar("fc0", dimMass/(dimLength*dimLength*dimTime*dimTime), 0)
-    );
-
-	//Sharp surface force (capillary forces on cell faces)
-    surfaceScalarField fcf_filter
-    (
-        IOobject
-        (
-            "fcf_filter",
-            runTime.timeName(),
-            mesh,
-            IOobject::NO_READ,
-            IOobject::NO_WRITE
-        ),
-        mesh,
-        dimensionedScalar("fc0", dimMass/(dimLength*dimLength*dimTime*dimTime), 0)
-    );
-
-    
     fv::IOoptionList fvOptions(mesh);
-
 
 	//Create kEff here so it can be accessed globally
 	surfaceScalarField kEff

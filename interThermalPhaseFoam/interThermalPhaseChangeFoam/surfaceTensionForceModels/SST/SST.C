@@ -23,8 +23,9 @@ License
 
 \*---------------------------------------------------------------------------*/
 
-#include "Brackbill.H"
+#include "SST.H"
 #include "addToRunTimeSelectionTable.H"
+#include "EvalSSF.H"
 
 // * * * * * * * * * * * * * * Static Data Members * * * * * * * * * * * * * //
 
@@ -32,14 +33,14 @@ namespace Foam
 {
 namespace surfaceTensionForceModels
 {
-    defineTypeNameAndDebug(Brackbill, 0);
-    addToRunTimeSelectionTable(surfaceTensionForceModel, Brackbill, dictionary);
+    defineTypeNameAndDebug(SST, 0);
+    addToRunTimeSelectionTable(surfaceTensionForceModel, SST, dictionary);
 }
 }
 
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
 
-Foam::surfaceTensionForceModels::Brackbill::Brackbill
+Foam::surfaceTensionForceModels::SST::SST
 (
 	const word& name,
 	const dictionary& surfaceTensionForceProperties,
@@ -61,7 +62,53 @@ Foam::surfaceTensionForceModels::Brackbill::Brackbill
         ),
 		mesh_,
 		dimensionedScalar( "dummy", dimensionSet(1,-2,-2,0,0,0,0), 0 )
-    )
+    );
+
+	//Sharp surface force (capillary forces on cell faces)
+    volVectorField fc
+    (
+        IOobject
+        (
+            "fc",
+            runTime.timeName(),
+            mesh,
+            IOobject::NO_READ,
+            IOobject::AUTO_WRITE
+        ),
+        mesh,
+        dimensionedVector("fc0", dimMass/(dimLength*dimLength*dimTime*dimTime), vector(0,0,0))
+    );
+
+	//Sharp surface force (capillary forces on cell faces)
+    surfaceScalarField fcf
+    (
+        IOobject
+        (
+            "fcf",
+            runTime.timeName(),
+            mesh,
+            IOobject::NO_READ,
+            IOobject::NO_WRITE
+        ),
+        mesh,
+        dimensionedScalar("fc0", dimMass/(dimLength*dimLength*dimTime*dimTime), 0)
+    );
+
+	//Sharp surface force (capillary forces on cell faces)
+    surfaceScalarField fcf_filter
+    (
+        IOobject
+        (
+            "fcf_filter",
+            runTime.timeName(),
+            mesh,
+            IOobject::NO_READ,
+            IOobject::NO_WRITE
+        ),
+        mesh,
+        dimensionedScalar("fc0", dimMass/(dimLength*dimLength*dimTime*dimTime), 0)
+    );
+
 {
 	correct();
 }
@@ -69,13 +116,12 @@ Foam::surfaceTensionForceModels::Brackbill::Brackbill
 
 // * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * * //
 
-void Foam::surfaceTensionForceModels::Brackbill::correct()
+void Foam::surfaceTensionForceModels::SST::correct()
 {
 	Fstffv = fvc::interpolate(interface_.sigmaK())*fvc::snGrad(alpha1_);
-
 }
 
-bool Foam::surfaceTensionForceModels::Brackbill::read(const dictionary& surfaceTensionForceProperties)
+bool Foam::surfaceTensionForceModels::SST::read(const dictionary& surfaceTensionForceProperties)
 {
 	surfaceTensionForceModel::read(surfaceTensionForceProperties);
 

@@ -7,9 +7,6 @@ Switch ModifiedST("no");
 runTime.controlDict().readIfPresent("ModifiedST", ModifiedST);
 const scalar MST = ModifiedST ? 1.0 : 0;
 
-//Info<< "CHSP: " << CHSP << endl;
-//Info<< "MST : " << MST  << endl;
-
 {
     volScalarField rAU(1.0/UEqn.A());
     surfaceScalarField rAUf(fvc::interpolate(rAU));
@@ -25,26 +22,6 @@ const scalar MST = ModifiedST ? 1.0 : 0;
    fvOptions.makeRelative(phiU);
 
     adjustPhi(phiU, U, p_rgh);
-
-// Added Condition for Modified Surface Tension
-
-		//surface tension flux (capillary)
-		//surfaceScalarField phi_c( ( (fvc::interpolate(fc) & mesh.Sf()) - (fvc::snGrad(pc) * mesh.magSf()) )*rAUf );
-
-/*
-	if ( ModifiedST )
-	{
-		phiU += phi_c - (1.0-CHSP)*ghf*fvc::snGrad(rho)*rAUf*mesh.magSf();;
-	}
-	else
-	{
-		phi = phiU +
-		(
-		    fvc::interpolate(interface.sigmaK())*fvc::snGrad(alpha1)
-		  - (1.0-CHSP)*ghf*fvc::snGrad(rho) 
-		)*rAUf*mesh.magSf();
-	}
-*/
 
 	//Calculate the flux from surface tension:
 	surfaceScalarField phi_c
@@ -62,7 +39,7 @@ const scalar MST = ModifiedST ? 1.0 : 0;
     );
 
 
-	if (ModifiedST) //Using SSF model
+	if (ModifiedST) //Using SST model
 	{
 		phi_c =  ( (fcf * mesh.magSf()) - (fvc::snGrad(pc) * mesh.magSf()) )*rAUf;
 
@@ -75,7 +52,6 @@ const scalar MST = ModifiedST ? 1.0 : 0;
 	{
 		phi_c = fvc::interpolate(interface.sigmaK())*fvc::snGrad(alpha1) * rAUf*mesh.magSf();
 	}
-
 
 
 	//Calculate the flux from gravitational forces
@@ -93,12 +69,10 @@ const scalar MST = ModifiedST ? 1.0 : 0;
         dimensionedScalar("flux", dimLength*dimLength*dimLength/dimTime, 0)
     );
 
-
 	if (!CombinedHSPressure)
 	{
 		phi_rgh =  -ghf*fvc::snGrad(rho) * rAUf*mesh.magSf();
 	}
-
 
 	phi = phiU + phi_c + phi_rgh;
 
@@ -134,47 +108,29 @@ const scalar MST = ModifiedST ? 1.0 : 0;
 
     }
 
-// Added Condition for Modified Surface Tension Case 
+	// Added Condition for Modified Surface Tension Case 
 	U += rAU*fvc::reconstruct((phi - phiU)/rAUf);
 
     U.correctBoundaryConditions();
 
-const word pc_name("SurfaceTensionForceA");
-const bool found_pc = mesh.foundObject<surfaceScalarField>( pc_name );
-Info<< found_pc << endl;
+	const word pc_name("SurfaceTensionForce");
+	const bool found_pc = mesh.foundObject<surfaceScalarField>( pc_name );
+	Info<< found_pc << endl;
 
     #include "continuityErrs.H"
-	if ( ModifiedST )
-	{
-		p == p_rgh + (1.0-CHSP)*rho*gh + pc;    //Add in surface tension
+	p == p_rgh + (1.0-CHSP)*rho*gh + pc;    //Add in surface tension
 
-		if (p_rgh.needReference())
-		{
-		    p += dimensionedScalar
-		    (
-		       "p",
-		        p.dimensions(),
-		        pRefValue - getRefCellValue(p, pRefCell)
-		    );
-		    p_rgh = p - (1.0-CHSP)*rho*gh - pc; //Add in surface tension
-		}
-	}
-else
+	if (p_rgh.needReference())
 	{
-		p == p_rgh + (1.0-CHSP)*rho*gh;    
-
-		if (p_rgh.needReference())
-		{
-		    p += dimensionedScalar
-		    (
-		       "p",
-		        p.dimensions(),
-		        pRefValue - getRefCellValue(p, pRefCell)
-		    );
-		    p_rgh = p - (1.0-CHSP)*rho*gh; 
-		}
+	    p += dimensionedScalar
+	    (
+	       "p",
+	        p.dimensions(),
+	        pRefValue - getRefCellValue(p, pRefCell)
+	    );
+	    p_rgh = p - (1.0-CHSP)*rho*gh - pc; //Add in surface tension
 	}
-}
+
 
 
 

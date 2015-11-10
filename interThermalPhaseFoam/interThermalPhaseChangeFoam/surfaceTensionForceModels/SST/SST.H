@@ -22,18 +22,18 @@ License
     along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
 
 Class
-	Foam::surfaceTensionForceModel::Brackbill
+	Foam::surfaceTensionForceModel::SST
 
 Description
-	Default surface tension force model, from Brackbill (1992)
+	Sharp surface tension force model, from Raeini (2012)
 
 SourceFiles
-    Brackbill.C
+    SST.C
 
 \*--------------------------------------------------------------------*/
 
-#ifndef Brackbill_H
-#define Brackbill_H
+#ifndef SST_H
+#define SST_H
 
 #include "surfaceTensionForceModel.H"
 #include "fvCFD.H"
@@ -49,7 +49,7 @@ namespace surfaceTensionForceModels
                               Class LimitedInterfaceEquilibrium
 \*--------------------------------------------------------------------*/
 
-class Brackbill
+class SST
 :
     public surfaceTensionForceModel
 {
@@ -61,17 +61,19 @@ class Brackbill
 
 	//- Surface tension forces on cell faces
 	surfaceScalarField Fstffv;
+	volVectorField fc;
+    surfaceScalarField fcf;
+    surfaceScalarField fcf_filter;
 
 public:
 
     //- Runtime type information
-    TypeName("Brackbill");
-
+    TypeName("SST");
 
     // Constructors
 
 	//- construct from components
-	Brackbill
+	SST
 	(
 		const word& name,
 		const dictionary& surfaceTensionForceProperties,
@@ -80,9 +82,8 @@ public:
 	);
 
 
-
     //- Destructor
-    ~Brackbill()
+    ~SST()
     {}
 
 
@@ -97,11 +98,9 @@ public:
 			return Fstffv;
 		}
 
-
         //- Read the transportProperties dictionary and update
         bool read(const dictionary& surfaceTensionForceProperties);
 };
-
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
