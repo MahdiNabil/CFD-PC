@@ -200,10 +200,23 @@ runTime.controlDict().readIfPresent("ModifiedST", ModifiedST);
         transportProperties.subDict("thermalPhaseChange")
     );
 
+	//This dictionary contains important props for phase change:
+    const dictionary& surfaceTensionForceProperties
+    (
+        transportProperties.subDict("surfaceTensionForce")
+    );
+
+
 	//Initialize the phase change model:
 	autoPtr<thermalPhaseChangeModel> phaseChangeModel
 	(
 		thermalPhaseChangeModel::New( thermalPhaseChangeProperties.lookup("model"), thermalPhaseChangeProperties, twoPhaseProperties, T, alpha1 )
+	);
+
+	//Initialize the surface tension force model:
+	autoPtr<surfaceTensionForceModel> stfModel
+	(
+		surfaceTensionForceModel::New( surfaceTensionForceProperties.lookup("model"), surfaceTensionForceProperties, interface, alpha1 )
 	);
 	
 

@@ -10,7 +10,8 @@ EXE_INC = \
 	-IthermalPhaseChangeModels/thermalPhaseChangeModel \ 
     -I$(LIB_SRC)/meshTools/lnInclude \
 	-IthermalPhaseChangeModels/MeshGraph \
-    -I$(LIB_SRC)/sampling/lnInclude
+    -I$(LIB_SRC)/sampling/lnInclude \
+   	-IsurfaceTensionForceModels/surfaceTensionForceModel
 
 EXE_LIBS = \
     -ltwoPhaseProperties \

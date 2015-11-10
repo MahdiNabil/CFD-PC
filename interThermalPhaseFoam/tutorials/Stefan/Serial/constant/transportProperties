@@ -57,5 +57,10 @@ thermalPhaseChange
 	EvapThresh  0.01; //Interface threshold for evaporating cell pairs
 }
 
+surfaceTensionForce
+{
+	model       Brackbill;
+}
+
 
 // ************************************************************************* //

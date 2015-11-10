@@ -139,6 +139,9 @@ const scalar MST = ModifiedST ? 1.0 : 0;
 
     U.correctBoundaryConditions();
 
+const word pc_name("SurfaceTensionForceA");
+const bool found_pc = mesh.foundObject<surfaceScalarField>( pc_name );
+Info<< found_pc << endl;
 
     #include "continuityErrs.H"
 	if ( ModifiedST )

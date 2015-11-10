@@ -57,6 +57,7 @@ Description
 #include "fvIOoptionList.H"
 #include "MeshGraph.H"
 #include "thermalPhaseChangeModel.H"
+#include "surfaceTensionForceModel.H"
 #include "fixedFluxPressureFvPatchScalarField.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
@@ -101,11 +102,15 @@ int main(int argc, char *argv[])
         //Update phase change rates:
 		phaseChangeModel->correct();
 
+
 //Check alpha1 content before + after
 //Info<< "****alpha1 before: " << gSum( alpha1.internalField() * mesh.V() ) << " m^3" << endl;
 
 		//Solve for alpha1
         #include "alphaEqnSubCycle.H"
+
+		//Update the surface tension force model
+		stfModel->correct();
 
 //Info<< "****alpha1 after: " << gSum( alpha1.internalField() * mesh.V() ) << " m^3" << endl;
      	//Info<< "check 0" << endl;
