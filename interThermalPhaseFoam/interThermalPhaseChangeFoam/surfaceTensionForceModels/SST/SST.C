@@ -174,7 +174,6 @@ Foam::surfaceTensionForceModels::SST::SST
 	);
 
 	label pRefCell = 0;
-	//pcEqn.setReference(pRefCell, getRefCellValue(p_rgh, pRefCell));
 	pcEqn.setReference(pRefCell, getRefCellValue(p_rgh, pRefCell));
 	//Info<< "P ref value: " << getRefCellValue(p, pRefCell) << endl;
 	pcEqn.solve();

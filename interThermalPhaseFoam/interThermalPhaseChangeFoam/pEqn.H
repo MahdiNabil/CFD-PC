@@ -35,13 +35,8 @@ const scalar CHSP = CombinedHSPressure ? 1.0 : 0;
     );
 
 
-	 	//Using SST model
-		phi_c   = stfModel->phi_c( rAUf );		
-		//phi_c =	Fstffv * rAUf*mesh.magSf();
-		//phi_c =  ( (fcf * mesh.magSf()) - (fvc::snGrad(pc) * mesh.magSf()) )*rAUf;
+	phi_c   = stfModel->phi_c( rAUf );		
 
-		//Using default surface tension model
-		//phi_c = fvc::interpolate(interface.sigmaK())*fvc::snGrad(alpha1) * rAUf*mesh.magSf();
 
 	//Calculate the flux from gravitational forces
 	surfaceScalarField phi_rgh
