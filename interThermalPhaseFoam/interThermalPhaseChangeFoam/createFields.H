@@ -3,10 +3,6 @@ Switch CombinedHSPressure("no");
 runTime.controlDict().readIfPresent("CombinedHSPressure", CombinedHSPressure);
 const scalar CHSP = CombinedHSPressure ? 1.0 : 0;
 
-Switch ModifiedST("no");
-runTime.controlDict().readIfPresent("ModifiedST", ModifiedST);
-const scalar MST = ModifiedST ? 1.0 : 0;
-
     Info<< "Reading field p_rgh\n" << endl;
     volScalarField p_rgh
     (
@@ -103,7 +99,6 @@ const scalar MST = ModifiedST ? 1.0 : 0;
         alpha1*rho1 + (scalar(1) - alpha1)*rho2,
         alpha1.boundaryField().types()
     );
-
 
     rho.oldTime();
 

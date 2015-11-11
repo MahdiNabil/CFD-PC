@@ -144,6 +144,9 @@ public:
   		//  Returns the capillary pressure
         virtual tmp<volScalarField> pcap() const;
 
+  		//  Returns the capillary flux
+        virtual tmp<surfaceScalarField> phi_c(const surfaceScalarField& rAUf_) const;
+
         //- Read the thermalPhaseChange dictionary and update
         virtual bool read(const dictionary& surfaceTensionForceProperties) = 0;
 };

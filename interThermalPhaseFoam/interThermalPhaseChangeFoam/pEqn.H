@@ -3,10 +3,6 @@ Switch CombinedHSPressure("no");
 runTime.controlDict().readIfPresent("CombinedHSPressure", CombinedHSPressure);
 const scalar CHSP = CombinedHSPressure ? 1.0 : 0;
 
-Switch ModifiedST("no");
-runTime.controlDict().readIfPresent("ModifiedST", ModifiedST);
-const scalar MST = ModifiedST ? 1.0 : 0;
-
 {
     volScalarField rAU(1.0/UEqn.A());
     surfaceScalarField rAUf(fvc::interpolate(rAU));
@@ -39,20 +35,13 @@ const scalar MST = ModifiedST ? 1.0 : 0;
     );
 
 
-	if (ModifiedST) //Using SST model
-	{
-		phi_c =  ( (fcf * mesh.magSf()) - (fvc::snGrad(pc) * mesh.magSf()) )*rAUf;
+	 	//Using SST model
+		phi_c   = stfModel->phi_c( rAUf );		
+		//phi_c =	Fstffv * rAUf*mesh.magSf();
+		//phi_c =  ( (fcf * mesh.magSf()) - (fvc::snGrad(pc) * mesh.magSf()) )*rAUf;
 
-		//Apply limiting (filtering)
-		const dimensionedScalar dummyFlux("dummyFlux", dimensionSet(0,3,-1,0,0,0,0), 1.0);
-		dimensionedScalar phi_c_thresh( 0.01* gAverage( mag(phi_c.field()) ) * dummyFlux );
-		phi_c = phi_c - max( min(phi_c, phi_c_thresh), -phi_c_thresh );
-	}
-	else //Using default surface tension model
-	{
-		phi_c = fvc::interpolate(interface.sigmaK())*fvc::snGrad(alpha1) * rAUf*mesh.magSf();
-	}
-
+		//Using default surface tension model
+		//phi_c = fvc::interpolate(interface.sigmaK())*fvc::snGrad(alpha1) * rAUf*mesh.magSf();
 
 	//Calculate the flux from gravitational forces
 	surfaceScalarField phi_rgh
@@ -131,7 +120,7 @@ const scalar MST = ModifiedST ? 1.0 : 0;
 	    p_rgh = p - (1.0-CHSP)*rho*gh - pc; //Add in surface tension
 	}
 
-
+}
 
 
 

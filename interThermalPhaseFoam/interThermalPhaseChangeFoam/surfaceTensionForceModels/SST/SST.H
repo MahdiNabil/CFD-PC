@@ -64,6 +64,7 @@ class SST
 	volVectorField fc;
     surfaceScalarField fcf;
     surfaceScalarField fcf_filter;
+	volScalarField p_rgh;
 
 public:
 
@@ -97,6 +98,9 @@ public:
 		{
 			return Fstffv;
 		}
+
+		//- Calculates and Return phi_c
+		tmp<surfaceScalarField> phi_c(const surfaceScalarField& rAUf_) const;
 
         //- Read the transportProperties dictionary and update
         bool read(const dictionary& surfaceTensionForceProperties);

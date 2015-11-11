@@ -113,12 +113,6 @@ int main(int argc, char *argv[])
 
 		//Info<< "****alpha1 after: " << gSum( alpha1.internalField() * mesh.V() ) << " m^3" << endl;
 
-        //Evaluate sharp surface tension force:
-		/*if ( ModifiedST )
-		{
-			#include "EvalSSF.H"
-		}*/
-
         // --- Pressure-velocity PIMPLE corrector loop
         while (pimple.loop())
         {
