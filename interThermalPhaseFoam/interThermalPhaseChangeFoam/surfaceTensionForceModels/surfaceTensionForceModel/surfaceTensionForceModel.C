@@ -57,20 +57,8 @@ Foam::surfaceTensionForceModel::surfaceTensionForceModel
 	name_(name),
 	surfaceTensionForceProperties_(surfaceTensionForceProperties),
 	interface_(interface),
-	alpha1_(alpha1),
-	pc
-    (
-        IOobject
-        (
-            "CapillaryPressure",
-            alpha1_.time().timeName(),
-            alpha1.mesh(),
-            IOobject::NO_READ,
-            IOobject::NO_WRITE
-        ),
-		alpha1.mesh(),
-		dimensionedScalar( "dummy", dimensionSet(1,-1,-2,0,0,0,0), 0 )
-    )
+	alpha1_(alpha1)
+
 {
 }
 
@@ -79,7 +67,20 @@ Foam::surfaceTensionForceModel::surfaceTensionForceModel
 
 Foam::tmp<Foam::volScalarField> Foam::surfaceTensionForceModel::pcap() const
 {
-    return tmp<volScalarField> ( pc );
+    return tmp<volScalarField>
+    (
+        new volScalarField
+        (
+            IOobject
+            (
+                "DummyPC",
+           		alpha1_.time().timeName(),
+				alpha1_.mesh()
+            ),
+            alpha1_.mesh(),
+            dimensionedScalar("0", dimensionSet(1, -1, -2, 0, 0), 0)
+        )
+    );
 }
 
 

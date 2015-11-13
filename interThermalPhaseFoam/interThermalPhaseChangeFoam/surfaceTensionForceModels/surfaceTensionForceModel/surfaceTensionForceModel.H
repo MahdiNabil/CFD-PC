@@ -43,6 +43,7 @@ SourceFiles
 #include "tmp.H"
 #include "autoPtr.H"
 #include "interfaceProperties.H"
+#include "geometricZeroField.H"
 
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
@@ -70,7 +71,7 @@ protected:
 		const volScalarField& alpha1_;
 		
 		//Capillary pressure, by default 0
-		volScalarField pc;
+		//volScalarField pc;
 
     // Private Member Functions
 

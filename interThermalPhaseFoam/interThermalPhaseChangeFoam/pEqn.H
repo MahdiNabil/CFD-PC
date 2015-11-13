@@ -37,6 +37,7 @@ const scalar CHSP = CombinedHSPressure ? 1.0 : 0;
 
 	phi_c   = stfModel->phi_c( rAUf );		
 
+Info<< "phi_c: " << gAverage( mag( phi_c.field() ) ) << endl;
 
 	//Calculate the flux from gravitational forces
 	surfaceScalarField phi_rgh
@@ -97,12 +98,9 @@ const scalar CHSP = CombinedHSPressure ? 1.0 : 0;
 
     U.correctBoundaryConditions();
 
-	const word pc_name("SurfaceTensionForce");
-	const bool found_pc = mesh.foundObject<surfaceScalarField>( pc_name );
-	Info<< found_pc << endl;
 
     #include "continuityErrs.H"
-	p == p_rgh + (1.0-CHSP)*rho*gh + pc;    //Add in surface tension
+	p == p_rgh + (1.0-CHSP)*rho*gh + stfModel->pcap();    //Add in surface tension
 
 	if (p_rgh.needReference())
 	{
@@ -112,7 +110,7 @@ const scalar CHSP = CombinedHSPressure ? 1.0 : 0;
 	        p.dimensions(),
 	        pRefValue - getRefCellValue(p, pRefCell)
 	    );
-	    p_rgh = p - (1.0-CHSP)*rho*gh - pc; //Add in surface tension
+	    p_rgh = p - (1.0-CHSP)*rho*gh - stfModel->pcap(); //Add in surface tension
 	}
 
 }

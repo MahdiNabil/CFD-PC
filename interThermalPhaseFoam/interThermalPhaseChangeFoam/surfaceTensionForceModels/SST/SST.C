@@ -49,6 +49,18 @@ Foam::surfaceTensionForceModels::SST::SST
 :
     surfaceTensionForceModel(name, surfaceTensionForceProperties, interface, alpha1),
 	mesh_(alpha1.mesh()),
+	pc
+    (
+        IOobject
+        (
+            "pc",
+            alpha1_.time().timeName(),
+            alpha1.mesh(),
+            IOobject::MUST_READ,
+            IOobject::AUTO_WRITE
+        ),
+		alpha1.mesh()
+    ),
 	Fstffv
     (
         IOobject
@@ -103,24 +115,17 @@ Foam::surfaceTensionForceModels::SST::SST
         ),
         mesh_,
         dimensionedScalar("fc0", dimMass/(dimLength*dimLength*dimTime*dimTime), 0)
-    ),
-
-	p_rgh
-    (
-        IOobject
-        (
-            "p_rgh",
-            alpha1_.time().timeName(),
-            mesh_,
-            IOobject::MUST_READ,
-            IOobject::AUTO_WRITE
-        ),
-        mesh_
     )
 
 {
-	correct();
+	//correct();
+}
 
+
+// * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * * //
+
+void Foam::surfaceTensionForceModels::SST::correct()
+{
 	//Step 1: smoothing the phase fraction field (2 passes)
 	scalar CSK = 0.5;
 	//pass 1
@@ -135,8 +140,8 @@ Foam::surfaceTensionForceModels::SST::SST
 	volScalarField K = fvc::div(ns);
 
 	//Step 3: smooth curvature field (2 passes)
-	volScalarField w = Foam::sqrt( mag( alpha1*(1.0 - alpha1) ) + 1.0E-6);
-	volScalarField factor = 2.0*Foam::sqrt( mag( alpha1*(1.0 - alpha1) ) );
+	volScalarField w = Foam::sqrt( mag( alpha1_*(1.0 - alpha1_) ) + 1.0E-6);
+	volScalarField factor = 2.0*Foam::sqrt( mag( alpha1_*(1.0 - alpha1_) ) );
 	//pass 1
 	volScalarField Ks_star = fvc::average(fvc::interpolate(K*w))/fvc::average(fvc::interpolate(w));
 	volScalarField Ks = factor * K + (1.0 - factor) * Ks_star;
@@ -149,17 +154,19 @@ Foam::surfaceTensionForceModels::SST::SST
 
 	//Step 5: compute interface delta function from sharpened interface field
 	scalar Cpc = 0.5;
-	volScalarField alpha1_pc = 1.0/(1.0-Cpc) * (min( max(alpha1,Cpc/2.0), (1.0-Cpc/2.0) ) - Cpc/2.0);
+	volScalarField alpha1_pc = 1.0/(1.0-Cpc) * (min( max(alpha1_,Cpc/2.0), (1.0-Cpc/2.0) ) - Cpc/2.0);
 	surfaceScalarField deltasf = fvc::snGrad(alpha1_pc);
 
 	//Step 6: compute surface tension force on faces
 	const dimensionedScalar dummyA("DummyA", dimensionSet(0,2,0,0,0,0,0), 1.0);
 	//surfaceScalarField fcf = -interface.sigma()*Kf*deltasf;
-	fcf = -interface.sigma()*Kf*deltasf;
+	fcf = -interface_.sigma()*Kf*deltasf;
 	//Step 7: filter surface tension forces to only be normal to interfaces - not 100% sure if sure be dotted with face normals or interface normals...
 	const scalar filterRelax = 0.9;
 	fcf_filter = (deltasf/(mag(deltasf)+deltaN)) * ( filterRelax*fcf_filter + (1.0-filterRelax)*( fvc::interpolate( fvc::grad(pc) - (fvc::grad(pc) & ns)*ns ) & (mesh_.Sf()/mesh_.magSf()) ) );
 	fcf = fcf - fcf_filter;
+
+Info<< "fcf_avg: " << gAverage( fcf.internalField() ) << endl;
 
 	//Try corrective weighting by rho?
 	//fcf = fcf * fvc::interpolate(2*rho/(twoPhaseProperties.rho1()+twoPhaseProperties.rho2()));
@@ -167,30 +174,36 @@ Foam::surfaceTensionForceModels::SST::SST
 	//Step 8: produce fc on cell centers
 	fc = fvc::average(fcf*mesh_.Sf()/mesh_.magSf());
 
+//Info<< "pc_avg 1: " << gAverage( pc.internalField() ) << endl;
+
 	//Step 9: solve for capillary pressure field:
+const volScalarField RHS = fvc::div(fcf * mesh_.magSf() );
+Info<< "***RHS: " << gAverage( RHS.internalField() ) << endl;
+
 	fvScalarMatrix pcEqn
 	(
 		fvm::laplacian(pc) == fvc::div(fcf * mesh_.magSf() )
 	);
 
+	//Get reference to p_rgh
+	const volScalarField& p_rgh = mesh_.lookupObject<volScalarField>("p_rgh");
+
 	label pRefCell = 0;
-	pcEqn.setReference(pRefCell, getRefCellValue(p_rgh, pRefCell));
-	//Info<< "P ref value: " << getRefCellValue(p, pRefCell) << endl;
+//	pcEqn.setReference(pRefCell, getRefCellValue(p_rgh, pRefCell));
+	pcEqn.setReference(pRefCell, 0);
+Info<< "Pc ref value 1: " << getRefCellValue(pc, pRefCell) << endl;
 	pcEqn.solve();
-}
+Info<< "Pc ref value 2: " << getRefCellValue(pc, pRefCell) << endl;
 
 
-// * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * * //
-
-void Foam::surfaceTensionForceModels::SST::correct()
-{
-	Fstffv = fvc::interpolate(interface_.sigmaK())*fvc::snGrad(alpha1_);
+    Fstffv = fcf  - (fvc::snGrad(pc)) ;
 }
 
 
 Foam::tmp<Foam::surfaceScalarField> Foam::surfaceTensionForceModels::SST::phi_c(const surfaceScalarField& rAUf_) const
 {
-	const surfaceScalarField phi_c_i( this->Fstff() * rAUf_ * alpha1_.mesh().magSf() );
+	//const surfaceScalarField phi_c_i( this->Fstff() * rAUf_ * alpha1_.mesh().magSf() );
+	const surfaceScalarField phi_c_i( Fstffv * rAUf_ * mesh_.magSf() );
 
 	//Apply limiting (filtering)
 	const dimensionedScalar dummyFlux("dummyFlux", dimensionSet(0,3,-1,0,0,0,0), 1.0);

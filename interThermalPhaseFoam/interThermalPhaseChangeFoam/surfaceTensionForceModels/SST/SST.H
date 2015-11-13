@@ -60,11 +60,12 @@ class SST
 	const fvMesh& mesh_;
 
 	//- Surface tension forces on cell faces
+	volScalarField pc;
 	surfaceScalarField Fstffv;
 	volVectorField fc;
     surfaceScalarField fcf;
     surfaceScalarField fcf_filter;
-	volScalarField p_rgh;
+	//const volScalarField& p_rgh;
 
 public:
 
@@ -97,6 +98,12 @@ public:
         tmp<surfaceScalarField> Fstff() const
 		{
 			return Fstffv;
+		}
+
+		//Return actual capillary pressure
+        tmp<volScalarField> pcap() const
+		{
+			return pc;
 		}
 
 		//- Calculates and Return phi_c

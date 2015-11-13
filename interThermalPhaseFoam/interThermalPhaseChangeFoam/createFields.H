@@ -218,21 +218,7 @@ const scalar CHSP = CombinedHSPressure ? 1.0 : 0;
     volScalarField gh("gh", g & mesh.C());
     surfaceScalarField ghf("ghf", g & mesh.Cf());
 
-	//Capillary pressure field:
-	volScalarField pc
-	(
-		IOobject
-		(
-			"pc",
-			runTime.timeName(),
-			mesh,
-			IOobject::MUST_READ,
-			IOobject::AUTO_WRITE
-		),
-		mesh
-	);
 
-	Info<< "pc average: " << gAverage(pc.internalField()) << endl;
 
     //Total Pressure Field:
 	volScalarField p
@@ -245,7 +231,7 @@ const scalar CHSP = CombinedHSPressure ? 1.0 : 0;
             IOobject::NO_READ,
             IOobject::AUTO_WRITE
         ),
-        p_rgh + (1.0-CHSP)*rho*gh + pc    //Add in surface tension
+        p_rgh + (1.0-CHSP)*rho*gh + stfModel->pcap()   //Add in surface tension
     );
 
     label pRefCell = 0;
@@ -268,7 +254,7 @@ const scalar CHSP = CombinedHSPressure ? 1.0 : 0;
 	        p.dimensions(),
 	        pRefValue - getRefCellValue(p, pRefCell)
 	    );
-	    p_rgh = p - (1.0-CHSP)*rho*gh - pc;  //Add in surface tension
+	    p_rgh = p - (1.0-CHSP)*rho*gh - stfModel->pcap();  //Add in surface tension
 	}
 
     fv::IOoptionList fvOptions(mesh);
