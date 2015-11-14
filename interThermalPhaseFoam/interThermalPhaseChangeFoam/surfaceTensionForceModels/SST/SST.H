@@ -65,7 +65,9 @@ class SST
 	volVectorField fc;
     surfaceScalarField fcf;
     surfaceScalarField fcf_filter;
-	//const volScalarField& p_rgh;
+	label pcRefCell;
+    scalar pcRefValue;
+
 
 public:
 

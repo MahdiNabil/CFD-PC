@@ -118,7 +118,21 @@ Foam::surfaceTensionForceModels::SST::SST
     )
 
 {
-	//correct();
+
+	//Set reference pressure stuff:	
+	//const volScalarField& p = mesh_.lookupObject<volScalarField>("p");
+    setRefCell
+    (
+        pc,
+        pc,
+        mesh_.solutionDict().subDict("PIMPLE"),
+        pcRefCell,
+        pcRefValue
+    );
+Info<< "PRefCell " << pcRefCell << endl;
+	pcRefValue = 0;
+
+	correct();
 }
 
 
@@ -186,14 +200,18 @@ Info<< "***RHS: " << gAverage( RHS.internalField() ) << endl;
 	);
 
 	//Get reference to p_rgh
-	const volScalarField& p_rgh = mesh_.lookupObject<volScalarField>("p_rgh");
+	//const volScalarField& p_rgh = mesh_.lookupObject<volScalarField>("p_rgh");
 
-	label pRefCell = 0;
-//	pcEqn.setReference(pRefCell, getRefCellValue(p_rgh, pRefCell));
-	pcEqn.setReference(pRefCell, 0);
-Info<< "Pc ref value 1: " << getRefCellValue(pc, pRefCell) << endl;
+	//label pRefCell = 0;
+	//pcEqn.setReference(pRefCell, getRefCellValue(p_rgh, pRefCell));
+	//pcEqn.setReference(pRefCell, 0);
+//	pcEqn.setReference(pRefCell, getRefCellValue(pc, pRefCell));
+
+	pcEqn.setReference(pcRefCell, getRefCellValue(pc, pcRefCell));
+
+//Info<< "Pc ref value 1: " << getRefCellValue(pc, pRefCell) << endl;
 	pcEqn.solve();
-Info<< "Pc ref value 2: " << getRefCellValue(pc, pRefCell) << endl;
+//Info<< "Pc ref value 2: " << getRefCellValue(pc, pRefCell) << endl;
 
 
     Fstffv = fcf  - (fvc::snGrad(pc)) ;

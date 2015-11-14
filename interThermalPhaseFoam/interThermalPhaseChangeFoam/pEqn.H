@@ -59,7 +59,8 @@ Info<< "phi_c: " << gAverage( mag( phi_c.field() ) ) << endl;
 		phi_rgh =  -ghf*fvc::snGrad(rho) * rAUf*mesh.magSf();
 	}
 
-	phi = phiU + phi_c + phi_rgh;
+//	phi = phiU + phi_c + phi_rgh;
+	phi = phiU + stfModel->phi_c( rAUf ) + phi_rgh;
 
 
    // Update the fixedFluxPressure BCs to ensure flux consistency
