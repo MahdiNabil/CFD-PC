@@ -1,13 +1,4 @@
 
-/*
-    surfaceScalarField kEffrho
-    (
-         "kEffrho",
-         fvc::interpolate( twoPhaseProperties.lambda() / rho )
-         + fvc::interpolate( twoPhaseProperties.cp()*turbulence->nut() )
-    );
-*/
-
 	//Update kEff
 	kEff = fvc::interpolate( twoPhaseProperties.lambda() ) + fvc::interpolate( rho*twoPhaseProperties.cp()*turbulence->nut() );
 

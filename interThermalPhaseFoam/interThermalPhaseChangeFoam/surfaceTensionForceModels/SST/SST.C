@@ -120,7 +120,6 @@ Foam::surfaceTensionForceModels::SST::SST
 {
 
 	//Set reference pressure stuff:	
-	//const volScalarField& p = mesh_.lookupObject<volScalarField>("p");
     setRefCell
     (
         pc,
@@ -188,31 +187,17 @@ Info<< "fcf_avg: " << gAverage( fcf.internalField() ) << endl;
 	//Step 8: produce fc on cell centers
 	fc = fvc::average(fcf*mesh_.Sf()/mesh_.magSf());
 
-//Info<< "pc_avg 1: " << gAverage( pc.internalField() ) << endl;
-
 	//Step 9: solve for capillary pressure field:
-const volScalarField RHS = fvc::div(fcf * mesh_.magSf() );
-Info<< "***RHS: " << gAverage( RHS.internalField() ) << endl;
-
 	fvScalarMatrix pcEqn
 	(
 		fvm::laplacian(pc) == fvc::div(fcf * mesh_.magSf() )
 	);
 
-	//Get reference to p_rgh
-	//const volScalarField& p_rgh = mesh_.lookupObject<volScalarField>("p_rgh");
-
-	//label pRefCell = 0;
-	//pcEqn.setReference(pRefCell, getRefCellValue(p_rgh, pRefCell));
-	//pcEqn.setReference(pRefCell, 0);
-//	pcEqn.setReference(pRefCell, getRefCellValue(pc, pRefCell));
-
+	//Get reference to pc
+	//Reference point should be located outside of the film thickness (condensate) in order to have stable pressure solution runtime
 	pcEqn.setReference(pcRefCell, getRefCellValue(pc, pcRefCell));
 
-//Info<< "Pc ref value 1: " << getRefCellValue(pc, pRefCell) << endl;
 	pcEqn.solve();
-//Info<< "Pc ref value 2: " << getRefCellValue(pc, pRefCell) << endl;
-
 
     Fstffv = fcf  - (fvc::snGrad(pc)) ;
 }
@@ -220,7 +205,6 @@ Info<< "***RHS: " << gAverage( RHS.internalField() ) << endl;
 
 Foam::tmp<Foam::surfaceScalarField> Foam::surfaceTensionForceModels::SST::phi_c(const surfaceScalarField& rAUf_) const
 {
-	//const surfaceScalarField phi_c_i( this->Fstff() * rAUf_ * alpha1_.mesh().magSf() );
 	const surfaceScalarField phi_c_i( Fstffv * rAUf_ * mesh_.magSf() );
 
 	//Apply limiting (filtering)
