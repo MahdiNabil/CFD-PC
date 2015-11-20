@@ -302,7 +302,7 @@ void Foam::thermalPhaseChangeModels::DropwiseSGS::GSLIntegral()
 		double result, error;
 		//double rMin = 2*sigma*T_sat / ((T_sat-WallT[cI])*rho_l.value()*h_lv); // because we need a type double for GSL, we can test later if a simple scalar works we can change the values presently double to scalar, just to maintain uniformity
 		//double rMax = 0.5 * sqrt( WallFaceAreas[cI] ); //Maximum SGS drop size
-		struct GSLFunction_params params = { Gamma, h_lv, k_l, rho_l.value(), rho_v.value(), R_g, sigma, T_sat, WallT[cI], C_1, C_2 };		
+		struct GSLFunction_params params = { Gamma, h_lv_.value(), k_l, rho_l.value(), rho_v.value(), R_g, sigma, T_sat, WallT[cI], C_1, C_2 };		
 		gsl_function F;
 		// F.function = &GSLFunction;
 		F.function = &Foam::thermalPhaseChangeModels::DropwiseSGS::GSLFunction;
