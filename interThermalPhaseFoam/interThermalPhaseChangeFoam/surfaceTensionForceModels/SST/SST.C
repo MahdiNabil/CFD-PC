@@ -179,8 +179,6 @@ void Foam::surfaceTensionForceModels::SST::correct()
 	fcf_filter = (deltasf/(mag(deltasf)+deltaN)) * ( filterRelax*fcf_filter + (1.0-filterRelax)*( fvc::interpolate( fvc::grad(pc) - (fvc::grad(pc) & ns)*ns ) & (mesh_.Sf()/mesh_.magSf()) ) );
 	fcf = fcf - fcf_filter;
 
-Info<< "fcf_avg: " << gAverage( fcf.internalField() ) << endl;
-
 	//Try corrective weighting by rho?
 	//fcf = fcf * fvc::interpolate(2*rho/(twoPhaseProperties.rho1()+twoPhaseProperties.rho2()));
 

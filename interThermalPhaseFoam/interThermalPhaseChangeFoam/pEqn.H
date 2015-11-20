@@ -37,8 +37,6 @@ const scalar CHSP = CombinedHSPressure ? 1.0 : 0;
 
 	phi_c   = stfModel->phi_c( rAUf );		
 
-Info<< "phi_c: " << gAverage( mag( phi_c.field() ) ) << endl;
-
 	//Calculate the flux from gravitational forces
 	surfaceScalarField phi_rgh
     (
