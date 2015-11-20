@@ -51,6 +51,9 @@ SourceFiles
 #include "thermalPhaseChangeModel.H"
 #include "MeshGraph.H"
 
+#include <math.h>
+#include <gsl/gsl_integration.h>
+
 // * * * * * * * * * * * * * * * * *  * * * * * * * * * * * * * * * * //
 
 namespace Foam
@@ -61,7 +64,6 @@ namespace thermalPhaseChangeModels
 /*--------------------------------------------------------------------*\
                               Class DropwiseSGS
 \*--------------------------------------------------------------------*/
-
 class DropwiseSGS
 :
     public thermalPhaseChangeModel
@@ -71,6 +73,12 @@ class DropwiseSGS
 
 	//- Calculate and return the phase change heat rate
 	void calcQ_pc();
+		
+	//- The integral in function form
+	static double GSLFunction(double r, void *params);
+	
+	//- Calculate qFlux_sgs_
+	void GSLIntegral();
 
 	//- This phase change model needs access to the mesh:
 	const fvMesh& mesh_;
@@ -80,6 +88,9 @@ class DropwiseSGS
 
 	//- Subgridscale condensation on the wall
 	volScalarField Q_pc_sgs_;
+		
+	//- Subgridscale heatflux from the integral
+	volScalarField qFlux_sgs_;
 
 	//- Graph of mesh grid, used for finding interface cells
 	MeshGraph InterfaceMeshGraph;
@@ -94,6 +105,19 @@ class DropwiseSGS
 	scalar CondThresh;
 	scalar EvapThresh;
 	scalar RelaxFac; //The relaxation factor (0-1)
+		
+	// Some constants for the GSL integral  (All these should be supplied from a dictionary later)
+	const double C_1 = 1.0;               // the first constant in Rose 1998
+	const double C_2 = 1.0 * 0.627/0.664; // the second constant bundled with the correction factor
+	const double Gamma = 1.337;      // Cp/Cv
+	//const double h_lv = 2.257e6;     // latent heat of vaporization
+	//const double k_l = 0.02508;      // thermal conductivity of liquid phase
+	const double R_g = 461.5;        // specific ideal gas constant
+	const double sigma = 0.05891;    // surface tension
+	const double T_sat = 372.8;      // temperature of the saturated vapor phase
+	//double T_sat = (p->T_sat);
+	//const double T_w = 370;             // temperature of the wall(Get it from here)
+
 
 public:
 
@@ -131,6 +155,7 @@ public:
         void correct()
 		{
 			calcQ_pc();
+			GSLIntegral();
 		}
 
 		//- Return interface cells marker field:
@@ -153,7 +178,10 @@ public:
        	    return tmp<volScalarField>( -(Q_pc_+Q_pc_sgs_) / (twoPhaseProperties_.rho1()  * h_lv_) );
         }
 		
-
+		// Declare the structure for the integral
+		struct GSLFunction_params { double Gamma; double h_lv; double k_l; double rho_l; double rho_v; double R_g; double sigma; double T_sat; double T_w; double C_1; double C_2; }; // declaration
+		
+		
         //- Read the transportProperties dictionary and update
         bool read(const dictionary& thermalPhaseChangeProperties);
 };

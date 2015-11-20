@@ -76,8 +76,21 @@ Foam::thermalPhaseChangeModels::DropwiseSGS::DropwiseSGS
 		mesh_,
 		dimensionedScalar( "dummy", dimensionSet(1,-1,-3,0,0,0,0), 0 )
     ),
+	qFlux_sgs_ // Declare the flux from integral as a volumeScalarField
+    (
+        IOobject
+        (
+            "sgsPhaseChangeHeatFlux",
+            T_.time().timeName(),
+            mesh_,
+            IOobject::NO_READ,
+            IOobject::AUTO_WRITE
+        ),
+		mesh_,
+		dimensionedScalar( "dummy", dimensionSet(1,0,-3,0,0,0,0), 0 )
+    ),
 	InterfaceMeshGraph( mesh_, alpha1 ),
-    InterfaceField_
+    InterfaceField_	
     (
         IOobject
         (
@@ -114,6 +127,7 @@ Foam::thermalPhaseChangeModels::DropwiseSGS::DropwiseSGS
 
 
 // * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * * //
+
 
 void Foam::thermalPhaseChangeModels::DropwiseSGS::calcQ_pc()
 {
@@ -212,6 +226,81 @@ Info<< "Pre-SGS Q_pc: " << gSum( Q_pc_.field() * mesh_.V() ) << endl;
 	}
 
 Info<< "SGS Q_pc: " << gSum( Q_pc_sgs_.field() * mesh_.V() ) << endl;
+	
+}
+
+double Foam::thermalPhaseChangeModels::DropwiseSGS::GSLFunction(double r, void *params)
+{
+	
+	struct GSLFunction_params * p = static_cast<struct GSLFunction_params *>(params);
+	double Gamma1 = (p->Gamma);      // Cp/Cv
+	double h_lv1 = (p->h_lv);        // latent heat of vaporization
+	double k_l1 = (p->k_l);          // thermal conductivity of liquid phase
+	double rho_l1 = (p->rho_l);      // density of liquid phase
+	double rho_v1 = (p->rho_v);      // density of vapor phase
+	double R_g1 = (p->R_g);          // specific ideal gas constant
+	double sigma1 = (p->sigma);      // surface tension
+	double T_sat1 = (p->T_sat);      // temperature of the saturated vapor phase
+	//double T_sat1 = (p->T_sat);
+	double T_w1 = (p->T_w);          // temperature of the wall
+	double C_11 = (p->C_1);          // constant 1 from Rose 1998
+	double C_21 = (p->C_2);          // constant 2 multiplied by the correction factor from Rose 1998
+
+
+	double GSLFunction = pow(r, -2.0/3.0) * ((T_sat1-T_w1) - (2*sigma1*T_sat1/(r*rho_l1*h_lv1))) / 
+	(C_11*r/k_l1 + C_21*T_sat1*(Gamma1+1)/(h_lv1*h_lv1*rho_v1*(Gamma1-1))*pow(R_g1*T_sat1/(2*M_PI),0.5));
+	
+	GSLFunction = r;
+
+	return  GSLFunction;	
+}
+
+void Foam::thermalPhaseChangeModels::DropwiseSGS::GSLIntegral()
+{
+	qFlux_sgs_ = dimensionedScalar( "dummy", dimensionSet(1,0,-3,0,0,0,0), 0 ); // set the flux to 0 initialy
+	
+	// some interpolated variables that would be used in the calculation
+	const dimensionedScalar& rho_l = twoPhaseProperties_.rho1();  // Density of the liquid face
+	const dimensionedScalar& rho_v = twoPhaseProperties_.rho2();  // Density of the vapor phase
+	const surfaceScalarField Tf = fvc::interpolate(T_);	    // Temperature interpolated to cell faces
+	const surfaceScalarField::GeometricBoundaryField& patchTf = Tf.boundaryField();  // Temperature on boundary patches
+	labelList WallCells;    	// Get all the wall patches	
+	scalarField WallFaceAreas;
+	scalarField WallT;  // Temperature on Wall
+	
+	forAll( mesh_.boundary(), pI )
+	{
+		if( isA<wallFvPatch>( mesh_.boundary()[pI] ) )    
+		{
+			WallCells.append( mesh_.boundary()[pI].faceCells() );
+			
+			const fvPatch& fPatch = mesh_.boundary()[pI];
+			WallFaceAreas.append( fPatch.magSf() );
+			WallT.append(patchTf[pI]);
+		}
+	}
+	
+
+	// Now loop over all the wall faces and calculate the inegral
+	gsl_integration_workspace * w = gsl_integration_workspace_alloc (1000);  // A sufficiently large number
+	forAll( WallCells, cI )
+	{
+		double result, error;
+		//double rMin = 2*sigma*T_sat / ((T_sat-WallT[cI])*rho_l.value()*h_lv); // because we need a type double for GSL, we can test later if a simple scalar works we can change the values presently double to scalar, just to maintain uniformity
+		//double rMax = 0.5 * sqrt( WallFaceAreas[cI] ); //Maximum SGS drop size
+		struct GSLFunction_params params = { Gamma, h_lv, k_l, rho_l.value(), rho_v.value(), R_g, sigma, T_sat, WallT[cI], C_1, C_2 };		
+		gsl_function F;
+		// F.function = &GSLFunction;
+		F.function = &Foam::thermalPhaseChangeModels::DropwiseSGS::GSLFunction;
+		F.params = &params;	
+		
+		gsl_integration_qags (&F, 0, 5, 0, 1e-7, 1000, w, &result, &error);
+		
+Info << "Test integral " << result << endl;
+		
+		// qFlux_sgs_[WallCells[cI]] -= result * pow(rMax, -1.0/3.0);     // Check with Alex if there should be a negative sign
+	}
+	gsl_integration_workspace_free (w);
 	
 }
 
