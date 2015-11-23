@@ -106,13 +106,13 @@ class DropwiseSGS
 	scalar EvapThresh;
 	scalar RelaxFac; //The relaxation factor (0-1)
 		
-	// Some constants for the GSL integral  (All these should be supplied from a dictionary later)
-	const double C_1 = 1.0;               // the first constant in Rose 1998
-	const double C_2 = 1.0 * 0.627/0.664; // the second constant bundled with the correction factor
-	const double Gamma = 1.337;      // Cp/Cv
-	double k_l; //const double k_l = 0.02508;      // thermal conductivity of liquid phase
-	const double R_g = 461.5;        // specific ideal gas constant
-	double sigma;/                   // surface tension
+	// Some constants for the GSL integral  (All these are supplied from a dictionary)
+	double C_1;                      // the first constant in Rose 1998
+	double C_2;                      // the second constant bundled with the correction factor
+	double Gamma;                    // Cp/Cv
+	double k_l;                      // thermal conductivity of liquid phase
+	double R_g;                      // specific ideal gas constant
+	double sigma;                    // surface tension
 
 public:
 

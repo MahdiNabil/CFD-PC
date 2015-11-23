@@ -117,14 +117,22 @@ Foam::thermalPhaseChangeModels::DropwiseSGS::DropwiseSGS
         scalar(0)
     )
 {
-	//Read in the cond/evap int. thresholds
+	//Read in the cond/evap int. thresholds and other thermal properties
 	thermalPhaseChangeProperties_.lookup("CondThresh") >> CondThresh;
 	thermalPhaseChangeProperties_.lookup("EvapThresh") >> EvapThresh;
-	thermalPhaseChangeProperties_.lookup("RelaxFac") >> RelaxFac;	
+	thermalPhaseChangeProperties_.lookup("RelaxFac") >> RelaxFac;
+	thermalPhaseChangeProperties_.lookup("Gamma") >> Gamma;
+	thermalPhaseChangeProperties_.lookup("C_1") >> C_1;
+	thermalPhaseChangeProperties_.lookup("C_2") >> C_2;
+	thermalPhaseChangeProperties_.lookup("R_g") >> R_g;
 
 	//Set other constant fluid properties
 	const IOdictionary& transportProperties = mesh_.lookupObject<IOdictionary>("transportProperties");
+	const dictionary& phase1Properties(transportProperties.subDict("phase1"));
 	sigma = dimensionedScalar(transportProperties.lookup("sigma")).value();
+	k_l = dimensionedScalar(phase1Properties.lookup("lambda")).value();
+	
+		
 Info<< sigma << endl;
 		
 	correct();
@@ -266,7 +274,6 @@ void Foam::thermalPhaseChangeModels::DropwiseSGS::GSLIntegral()
 			gsl_integration_workspace_free (w);
 		}
 	}
-
 }
 
 
