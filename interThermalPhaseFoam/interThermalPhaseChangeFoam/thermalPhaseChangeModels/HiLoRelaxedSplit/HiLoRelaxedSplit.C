@@ -149,10 +149,6 @@ void Foam::thermalPhaseChangeModels::HiLoRelaxedSplit::calcQ_pc()
 		{   InterfaceField_[(*it).c1] = 1;  InterfaceField_[(*it).c2] = 1;  }
 	}
 
-	//Spit out internal interface cells count
-	//Info<< "Internal interface cells: " << gSum(InterfaceField_) << endl;
-
-
 	//Now add wall cells to the interfaceField:
 	labelList WallCells;
 	forAll( mesh_.boundary(), pI )
@@ -166,9 +162,6 @@ void Foam::thermalPhaseChangeModels::HiLoRelaxedSplit::calcQ_pc()
 		WallField[WallCells[cI]] = 1;
 		InterfaceField_[WallCells[cI]] = 1;
 	}
-
-	//List total int. cells
-	//Info<< "Total interface cells: " << gSum(InterfaceField_) << endl;
 
 	//Reset all Q_pc to 0
 	Q_pc_ = dimensionedScalar( "dummy", dimensionSet(1,-1,-3,0,0,0,0), 0 );
@@ -251,8 +244,6 @@ for (int k = 0; k<4; k++)
 		if ( (mag( LiquidVolGen[cI] ) <= SMALL) && (mag( VaporVolGen[cI] ) <= SMALL) )
 		{  continue;  }
 
-//Check nAlpha
-//Info<< "CurCell: " << mesh_.C()[cI] << ",   nAlpha: " << nAlpha[cI] << endl;
 
 		//Get list of faces on the cell (that point to other cells)
 		const cell& curCell = mesh_.cells()[cI];
@@ -274,22 +265,16 @@ for (int k = 0; k<4; k++)
 			if ( cI < curFaceNeighbour ) //Points away from current cell
 			{
 				curFaceVectors.append( FaceVectors[curCellFaces[fI]] );
-				//Check face vector facing:
-				//Info<< "CurCell: " << mesh_.C()[cI] << ",   CurFaceNeighbour: " << mesh_.C()[curFaceNeighbour] << ",  vector: " << FaceVectors[curCellFaces[fI]] << endl;
 			}
-			//else if ( cI == FaceNeighbours[curCellFaces[fI]] ) //We are the neighbor of this face (flip it)
 			else //Points into current cell
 			{
 				curFaceVectors.append( -1.0*FaceVectors[curCellFaces[fI]] );
-				//Check face vector facing:
-				//Info<< "CurCell: " << mesh_.C()[cI] << ",   CurFaceNeighbour: " << mesh_.C()[curFaceNeighbour] << ",  vector: " << -1.0*FaceVectors[curCellFaces[fI]] << endl;
 			}
 
 
 		}
 
 
-//Info<< cI << ": " << curCellFaces.size() << endl;
 		//Now get relative surface area vectors from each face (i.e. those pointing in each direction sum to 1)
 		scalarList LiquidFaceFractions, VaporFaceFractions;    //Fraction of volume generation to move
 		labelList LiquidFaceTargets, VaporFaceTargets; //Where to move the volume generation to
@@ -326,8 +311,6 @@ for (int k = 0; k<4; k++)
 		//Apply liquid change:
 		forAll( LiquidFaceFractions, fI)
 		{
-			//PCVField[cI]                    -= curLiquidVolGen.value()*LiquidFaceFractions[fI];
-			//PCVField[LiquidFaceTargets[fI]] += curLiquidVolGen.value()*LiquidFaceFractions[fI];
 			LiquidVolGen[cI]                    -= curLiquidVolGen.value()*LiquidFaceFractions[fI];
 			LiquidVolGen[LiquidFaceTargets[fI]] += curLiquidVolGen.value()*LiquidFaceFractions[fI];
 			
@@ -335,8 +318,6 @@ for (int k = 0; k<4; k++)
 
 		forAll( VaporFaceFractions, fI)
 		{
-			//PCVField[cI]                    -= curVaporVolGen.value()*VaporFaceFractions[fI];
-			//PCVField[VaporFaceTargets[fI]]  += curVaporVolGen.value()*VaporFaceFractions[fI];
 			VaporVolGen[cI]                   -= curVaporVolGen.value()*VaporFaceFractions[fI];
 			VaporVolGen[VaporFaceTargets[fI]] += curVaporVolGen.value()*VaporFaceFractions[fI];
 		}
@@ -352,7 +333,6 @@ for (int k = 0; k<4; k++)
 	//Renormalize by cell volume:
 	PCVField.internalField() = PCVField.internalField() / mesh_.V();
 
-    //PCVField = ( (Q_pc_ / h_lv_)*( (scalar(1.0)/twoPhaseProperties_.rho2()) - (scalar(1.0)/twoPhaseProperties_.rho1()) ) );
 }
 
 

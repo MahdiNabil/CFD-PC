@@ -148,10 +148,6 @@ void Foam::thermalPhaseChangeModels::HiLoNoPCV::calcQ_pc()
 		{   InterfaceField_[(*it).c1] = 1;  InterfaceField_[(*it).c2] = 1;  }
 	}
 
-	//Spit out internal interface cells count
-	//Info<< "Internal interface cells: " << gSum(InterfaceField_) << endl;
-
-
 	//Now add wall cells to the interfaceField:
 	labelList WallCells;
 	forAll( mesh_.boundary(), pI )
@@ -165,9 +161,6 @@ void Foam::thermalPhaseChangeModels::HiLoNoPCV::calcQ_pc()
 		WallField[WallCells[cI]] = 1;
 		InterfaceField_[WallCells[cI]] = 1;
 	}
-
-	//List total int. cells
-	//Info<< "Total interface cells: " << gSum(InterfaceField_) << endl;
 
 	//Reset all Q_pc to 0
 	Q_pc_ = dimensionedScalar( "dummy", dimensionSet(1,-1,-3,0,0,0,0), 0 );

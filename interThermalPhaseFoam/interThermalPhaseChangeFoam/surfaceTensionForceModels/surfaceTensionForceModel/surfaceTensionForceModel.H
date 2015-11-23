@@ -69,9 +69,6 @@ protected:
 		//Thermal mixture props
 		const interfaceProperties& interface_;
 		const volScalarField& alpha1_;
-		
-		//Capillary pressure, by default 0
-		//volScalarField pc;
 
     // Private Member Functions
 

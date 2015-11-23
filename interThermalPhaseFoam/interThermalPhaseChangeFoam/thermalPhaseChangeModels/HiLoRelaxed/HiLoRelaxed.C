@@ -183,11 +183,8 @@ void Foam::thermalPhaseChangeModels::HiLoRelaxed::calcQ_pc()
 	volScalarField PCV_fac = dT*(Q_pc_ / h_lv_)*( (scalar(1.0)/twoPhaseProperties_.rho2()) - (scalar(1.0)/twoPhaseProperties_.rho1()) );
 
 	//Volume generation/sink based limited
-	//volScalarField Q_pc_vol = Q_pc_ * mag( min( max(PCV_fac, -1.0), (1.0-WallField) ) );
-	//The above was calculated wrong! too limiting!
 	//Again, allow regular evap on wall	
 	volScalarField Q_pc_vol = Q_pc_ * mag( min( max(1.0/(PCV_fac+SMALL), -1.0), (1.0-WallField) ) );
-	//volScalarField Q_pc_vol = Q_pc_ * mag( min( max(1.0/(PCV_fac+SMALL), -1.0), 1.0 ) );
 
 	//Composite limit
 	Q_pc_ = neg(Q_pc_)*max( max( Q_pc_, Q_pc_fluid ), Q_pc_vol) + pos(Q_pc_)*min( min( Q_pc_, Q_pc_fluid ), Q_pc_vol);

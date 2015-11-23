@@ -1,7 +1,0 @@
-/* dynamicCode:
- * SHA1 = 079db10f6d63460a7d4a2a67a7f4a094914a0876
- */
-functionObjectTemplate.C
-FilterFunctionObjectTemplate.C
-
-LIB = $(PWD)/../platforms/$(WM_OPTIONS)/lib/libGlobalHeatTransfer_079db10f6d63460a7d4a2a67a7f4a094914a0876

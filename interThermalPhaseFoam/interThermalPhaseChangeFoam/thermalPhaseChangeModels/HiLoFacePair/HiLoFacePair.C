@@ -135,9 +135,6 @@ void Foam::thermalPhaseChangeModels::HiLoFacePair::calcQ_pc()
 		{   InterfaceField_[(*it).c1] = 1;  InterfaceField_[(*it).c2] = 1;  }
 	}
 
-	//Spit out internal interface cells count
-	//Info<< "Internal interface cells: " << gSum(InterfaceField_) << endl;
-
 
 	//Now add wall cells to the interfaceField:
 	labelList WallCells;
@@ -152,9 +149,6 @@ void Foam::thermalPhaseChangeModels::HiLoFacePair::calcQ_pc()
 		WallField[WallCells[cI]] = 1;
 		InterfaceField_[WallCells[cI]] = 1;
 	}
-
-	//List total int. cells
-	//Info<< "Total interface cells: " << gSum(InterfaceField_) << endl;
 
 	//Reset all Q_pc to 0
 	Q_pc_ = dimensionedScalar( "dummy", dimensionSet(1,-1,-3,0,0,0,0), 0 );
@@ -182,21 +176,10 @@ void Foam::thermalPhaseChangeModels::HiLoFacePair::calcQ_pc()
 
 
 	//Volume generation/sink based limited
-	//volScalarField Q_pc_vol = Q_pc_ * mag( min( max(PCV_fac, -1.0), (1.0-WallField) ) );
-	//The above was calculated wrong! too limiting!
 	volScalarField Q_pc_vol = Q_pc_ * mag( min( max(1.0/(PCV_fac+SMALL), -1.0), (1.0-WallField) ) );
 
 	//Composite limit
 	Q_pc_ = neg(Q_pc_)*max( max( Q_pc_, Q_pc_fluid ), Q_pc_vol) + pos(Q_pc_)*min( min( Q_pc_, Q_pc_fluid ), Q_pc_vol);
-
-//Test to see what the limiting factor is for evaporation:
-//forAll(InterfaceField_, j)
-//{
-//	if ( InterfaceField_[j] == 1 )
-//	{
-//		Info<< "Cell " << j << ": Q_org = " << Q_pc_[j] << ",   Q_fluid = " << Q_pc_fluid[j] << ",   Q_vol = " << Q_pc_vol[j] << ", Q_act = " << Q_pc_[j] << endl;
-//	}
-//}
 
 }
 
