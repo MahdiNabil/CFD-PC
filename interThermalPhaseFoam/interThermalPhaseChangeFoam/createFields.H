@@ -218,8 +218,6 @@ const scalar CHSP = CombinedHSPressure ? 1.0 : 0;
     volScalarField gh("gh", g & mesh.C());
     surfaceScalarField ghf("ghf", g & mesh.Cf());
 
-
-
     //Total Pressure Field:
 	volScalarField p
     (
@@ -231,7 +229,7 @@ const scalar CHSP = CombinedHSPressure ? 1.0 : 0;
             IOobject::NO_READ,
             IOobject::AUTO_WRITE
         ),
-        p_rgh + (1.0-CHSP)*rho*gh + stfModel->pcap()   //Add in surface tension
+        p_rgh + (1.0-CHSP)*rho*gh + stfModel->pcap()  
     );
 
     label pRefCell = 0;
@@ -254,7 +252,7 @@ const scalar CHSP = CombinedHSPressure ? 1.0 : 0;
 	        p.dimensions(),
 	        pRefValue - getRefCellValue(p, pRefCell)
 	    );
-	    p_rgh = p - (1.0-CHSP)*rho*gh - stfModel->pcap();  //Add in surface tension
+	    p_rgh = p - (1.0-CHSP)*rho*gh - stfModel->pcap(); 
 	}
 
     fv::IOoptionList fvOptions(mesh);

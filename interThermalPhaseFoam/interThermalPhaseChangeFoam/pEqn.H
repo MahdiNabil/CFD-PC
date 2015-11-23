@@ -96,7 +96,6 @@ const scalar CHSP = CombinedHSPressure ? 1.0 : 0;
 
     U.correctBoundaryConditions();
 
-
     #include "continuityErrs.H"
 	p == p_rgh + (1.0-CHSP)*rho*gh + stfModel->pcap();    //Add in surface tension
 

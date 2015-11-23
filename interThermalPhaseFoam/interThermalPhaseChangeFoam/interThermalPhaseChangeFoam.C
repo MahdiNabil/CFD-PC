@@ -2,8 +2,8 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2012, Alex Rattner
-     \\/     M anipulation  |
+    \\  /    A nd           | Copyright (C) 2015, Alex Rattner and Mahdi Nabil
+     \\/     M anipulation  | Multiscale Thermal Fluids and Energy (MTFE) Laboratory, PSU 
 -------------------------------------------------------------------------------
 License
     This file is part of OpenFOAM.
@@ -52,7 +52,6 @@ Description
 #include "turbulenceModel.H"
 #include "interpolationTable.H"
 #include "pimpleControl.H"
-//#include "RiddersRoot.H" - ASR commented out, we shouldn't need this for now
 #include "wallFvPatch.H"
 #include "fvIOoptionList.H"
 #include "MeshGraph.H"
@@ -102,16 +101,11 @@ int main(int argc, char *argv[])
         //Update phase change rates:
 		phaseChangeModel->correct();
 
-		//Check alpha1 content before + after
-		//Info<< "****alpha1 before: " << gSum( alpha1.internalField() * mesh.V() ) << " m^3" << endl;
-
 		//Solve for alpha1
         #include "alphaEqnSubCycle.H"
 
 		//Update the surface tension force model
 		stfModel->correct();
-
-		//Info<< "****alpha1 after: " << gSum( alpha1.internalField() * mesh.V() ) << " m^3" << endl;
 
         // --- Pressure-velocity PIMPLE corrector loop
         while (pimple.loop())
@@ -135,7 +129,6 @@ int main(int argc, char *argv[])
 		Info<< "****Max velocity: " << gMax( mag(U.internalField()) ) << " m/s" << endl;
 		Info<< "****Phase change energy: " << gSum( phaseChangeModel->Q_pc()*mesh.V() ) << " W" << endl;
 		Info<< "****Volume change: " << gSum( phaseChangeModel->PCV() * mesh.V() ) << " m^3/s" << endl;
-		//Info<< "****Volume*alpha1 gen: " << gSum( phaseChangeModel->alpha1Gen() * mesh.V() ) << " m^3/s" << endl;
 
         //For now, the energy equation is only 1-way coupled with the momentum/pressure equations,
         //so it can be solved explicitly, and separately here

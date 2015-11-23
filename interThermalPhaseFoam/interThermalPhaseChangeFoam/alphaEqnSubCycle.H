@@ -21,7 +21,6 @@ surfaceScalarField rhoPhi
 	phic = min(interface.cAlpha()*phic, max(phic));
 
 	//Don't include PCV in the div term here, it is already there from the updated phi from the previous time step:
-	//volScalarField divU(fvc::div(phi) - phaseChangeModel->PCV());
 	volScalarField divU(fvc::div(phi));
 	//This term is needed for an explicit correction to the mass flux (rhoPhi)
 	dimensionedScalar totalDeltaT = runTime.deltaT();

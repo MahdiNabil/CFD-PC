@@ -41,10 +41,6 @@
 	fcf_filter = (deltasf/(mag(deltasf)+deltaN)) * ( filterRelax*fcf_filter + (1.0-filterRelax)*( fvc::interpolate( fvc::grad(pc) - (fvc::grad(pc) & ns)*ns ) & (mesh.Sf()/mesh.magSf()) ) );
 	fcf = fcf - fcf_filter;
 
-
-	//Try corrective weighting by rho?
-	//fcf = fcf * fvc::interpolate(2*rho/(twoPhaseProperties.rho1()+twoPhaseProperties.rho2()));
-
 	//Step 8: produce fc on cell centers
 	fc = fvc::average(fcf*mesh.Sf()/mesh.magSf());
 	//Step 9: solve for capillary pressure field:
@@ -54,6 +50,5 @@
 	);
 	pcEqn.setReference(pRefCell, getRefCellValue(p_rgh, pRefCell));
 
-//Info<< "P ref value: " << getRefCellValue(p, pRefCell) << endl;
 	pcEqn.solve();
 }
