@@ -14,6 +14,7 @@ then
 	svn checkout svn://svn.code.sf.net/p/openfoam-extend/svn/trunk/Breeder_2.0/utilities/mesh/manipulation/MakeAxialMesh
 	cd MakeAxialMesh
 	./Allwmake
+	cd $CURDIR
 fi
 
 makeAxialMesh -overwrite
