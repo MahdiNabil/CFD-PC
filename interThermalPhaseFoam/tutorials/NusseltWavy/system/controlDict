@@ -1,0 +1,174 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  1.7.0                                 |
+|   \\  /    A nd           | Web:      www.OpenFOAM.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "system";
+    object      controlDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+application     interThermalPhaseChangeFoam;
+
+startFrom       latestTime;
+
+startTime       0;
+
+stopAt          endTime;
+
+endTime         1.0005;
+
+deltaT          1E-6;
+
+writeControl    adjustableRunTime;
+writeInterval   0.01;
+
+//writeControl    timeStep;
+//writeInterval   5;
+
+
+purgeWrite      0;
+
+writeFormat     ascii;
+
+writePrecision  6;
+
+writeCompression uncompressed;
+
+timeFormat      general;
+
+timePrecision   6;
+
+runTimeModifiable yes;
+
+adjustTimeStep  on;
+
+maxCo           0.4;
+maxAlphaCo      0.4;
+maxFourier	    0.25;
+
+maxDeltaT       1E-2;
+
+//Combined Hydrostatic Pressure
+CombinedHSPressure yes;
+//Modified Surface Tension Model
+ModifiedST yes;
+
+
+// ******************************************************************** //
+//Global vars for funky/groovy
+functions
+(
+	defineGlobalVars
+	{
+		type addGlobalVariable;
+
+		globalScope globalVars;
+		globalVariables
+		{
+			h_in
+			{  
+	    		valueType scalar; 
+				value 0.0000663; 
+			}
+
+			T_w
+			{
+				valueType scalar;
+				value 293;
+			}
+
+			T_sat
+			{
+				valueType scalar;
+				value 298;
+			}	
+
+			cp_l
+			{
+				valueType scalar;
+				value 2446;
+			}
+
+		}
+	}
+
+       GlobalHeatTransfer //Gives heat transfer rates (W) for storage, wall flux, inlet, and outlet
+        {
+                functionObjectLibs ("libutilityFunctionObjects.so");
+                type coded;
+                redirectType GlobalHeatTransfer;
+                outputControl timeStep;
+                outputInterval 1000;
+                code            
+                #{
+                        //Some constants first:                 
+                        scalar k = 0.0892;
+
+
+                        //***********************************************************************
+                        //Now get wall heat flux
+                        //Get mesh boundary
+                        const fvBoundaryMesh& bMesh = mesh().boundary();
+                        //Next get wall patch:
+                        label WallPatchID  = bMesh.findPatchID("LeftSide");
+                        const fvPatch& WallPatch = bMesh[WallPatchID]; 
+                        //Get temp gradient on the wall
+                        const volScalarField& T = mesh().lookupObject<volScalarField>("T");
+                        const surfaceScalarField SnGradT = fvc::snGrad(T);
+                        const scalarField GradTWall = SnGradT.boundaryField()[WallPatchID];
+
+                        //Sum up heat flux on the wall:
+			const scalar Q_Wall = gSum( WallPatch.magSf() * GradTWall * k ) / gSum( WallPatch.magSf() );
+                        //***********************************************************************
+
+
+
+                        //***********************************************************************
+                        //Finally print out results:
+
+                        //Get t and dt for reference
+                        scalar t = mesh().time().value();
+                        scalar dt = mesh().time().deltaTValue();
+
+                        //Now write out data:
+                        if( Pstream::master() == true )
+                        {
+                                std::ofstream fs;
+                                fs.open ("WallHeatFluxSST_Test3.dat", std::fstream::app);
+                                fs.precision(12);
+                                fs << t << "\t" << dt << "\t" << Q_Wall << "\n";
+                                fs.close();
+                        }
+
+                #}; 
+
+                codeInclude
+                #{
+                        #include <fstream>
+                #};
+        }
+
+
+
+
+);
+
+libs (
+    "libOpenFOAM.so"
+    "libgroovyBC.so"
+    "libsimpleSwakFunctionObjects.so"
+    "libswakFunctionObjects.so"
+    "libtwoPhaseProperties.so"
+    "libinterfaceProperties.so"
+    //"libswakPythonIntegration.so"
+    //"libinterfaceProperties.so"
+    );
+// ************************************************************************* //

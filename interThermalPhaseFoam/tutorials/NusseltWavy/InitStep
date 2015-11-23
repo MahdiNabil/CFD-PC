@@ -1,0 +1,7 @@
+#!/bin/bash
+blockMesh
+checkMesh
+cp -r A/* 0/ 
+setFields
+decomposePar -force
+mpirun -np 4 interThermalPhaseChangeFoam -parallel
