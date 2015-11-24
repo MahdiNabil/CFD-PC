@@ -22,4 +22,7 @@ collapseEdges -overwrite
 cp -r A/* 0/
 mv 0/alpha1.org 0/alpha1
 setFields
+<<<<<<< HEAD
 decomposePar -force
+=======
+>>>>>>> 4e85851f87446bbac5bf1276c1b5635eb3f04955
