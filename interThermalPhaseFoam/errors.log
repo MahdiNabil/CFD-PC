@@ -1,0 +1,26 @@
+Making dependency list for source file conductivityModels/conductivityModel/conductivityModel.C
+Making dependency list for source file conductivityModels/conductivityModel/conductivityModelNew.C
+Making dependency list for source file conductivityModels/Fourier/Fourier.C
+Making dependency list for source file twoPhaseThermalMixture.C
+options:10:53: warning: backslash and newline separated by space [enabled by default]
+  -IthermalPhaseChangeModels/thermalPhaseChangeModel \ 
+ ^
+Making dependency list for source file interThermalPhaseChangeFoam.C
+Making dependency list for source file thermalPhaseChangeModels/MeshGraph/MeshGraph.C
+Making dependency list for source file thermalPhaseChangeModels/thermalPhaseChangeModel/thermalPhaseChangeModel.C
+Making dependency list for source file thermalPhaseChangeModels/thermalPhaseChangeModel/newThermalPhaseChangeModel.C
+Making dependency list for source file thermalPhaseChangeModels/HiLoRelaxed/HiLoRelaxed.C
+Making dependency list for source file thermalPhaseChangeModels/HiLoFacePair/HiLoFacePair.C
+Making dependency list for source file thermalPhaseChangeModels/HiLoRelaxedSplit/HiLoRelaxedSplit.C
+Making dependency list for source file thermalPhaseChangeModels/noPhaseChange/noPhaseChange.C
+Making dependency list for source file thermalPhaseChangeModels/HiLoNoPCVAlpha1/HiLoNoPCVAlpha1.C
+Making dependency list for source file thermalPhaseChangeModels/HiLoNoPCV/HiLoNoPCV.C
+Making dependency list for source file surfaceTensionForceModels/surfaceTensionForceModel/surfaceTensionForceModel.C
+Making dependency list for source file surfaceTensionForceModels/surfaceTensionForceModel/newSurfaceTensionForceModel.C
+Making dependency list for source file surfaceTensionForceModels/Brackbill/Brackbill.C
+Making dependency list for source file surfaceTensionForceModels/SST/SST.C
+In file included from interThermalPhaseChangeFoam.C:74:0:
+/home/mtfe/OpenFOAM/OpenFOAM-2.4.0/src/finiteVolume/lnInclude/readTimeControls.H: In function ‘int main(int, char**)’:
+/home/mtfe/OpenFOAM/OpenFOAM-2.4.0/src/finiteVolume/lnInclude/readTimeControls.H:38:8: warning: unused variable ‘maxDeltaT’ [-Wunused-variable]
+ scalar maxDeltaT =
+        ^
