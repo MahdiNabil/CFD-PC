@@ -47,4 +47,4 @@ else
   echo $MSG >> $SummaryFile
 fi
 
-
+cat $SummaryFile | mail -s "test" nabil.mehdi1@gmail.com
