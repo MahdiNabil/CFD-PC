@@ -28,7 +28,7 @@ endTime         5.0;
 deltaT          1E-6;
 
 writeControl    adjustableRunTime;
-writeInterval   0.1;
+writeInterval   0.001;
 
 purgeWrite      0;
 
@@ -54,6 +54,51 @@ maxDeltaT       1E-2;
 
 //Combined Hydrostatic Pressure
 CombinedHSPressure no;
+
+//Global vars for funky/groovy
+functions
+(
+
+        VolumeLiquid //Gives the volume of the liquid phase
+        {
+                functionObjectLibs ("libutilityFunctionObjects.so");
+                type coded;
+                redirectType VolumeLiquid;
+                outputControl timeStep;
+                outputInterval 1;
+                code           
+                #{     
+			//Sum up liquid volume:
+			const volScalarField& alpha1 = mesh().lookupObject<volScalarField>("alpha1");
+            		const scalar VolLiquid = gSum( mesh().V() * alpha1.internalField() );
+                        //***********************************************************************
+
+                        //Finally print out results:
+
+                        //Get t
+                        scalar t = mesh().time().value();           
+
+                        //Now write out data:
+                        if( Pstream::master() == true )
+                        {
+                                std::ofstream fs;
+                                fs.open ("LiquidAccumulation.dat", std::fstream::app);
+                                fs.precision(12);
+                                fs << t << "\t" << VolLiquid << "\n";
+                                fs.close();
+                        }
+
+                #};
+
+                codeInclude
+                #{
+                        #include <fstream>
+                #};
+        }
+
+);
+
+
 
 libs (
     "libOpenFOAM.so"

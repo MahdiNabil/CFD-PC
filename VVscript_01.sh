@@ -35,7 +35,7 @@ export WM_NCOMPPROCS=12
 
 #Check if successful
 FATAL_ERROR=`grep Error errors.log`
-if [ -n "$FATAL_ERROR" ]
+if [ -n "$FATAL_ERROR" ]softwareXAutomation
 then
   MSG="Build master branch check: FAIL"
   echo $MSG

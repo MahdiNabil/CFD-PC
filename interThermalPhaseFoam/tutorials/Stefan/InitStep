@@ -3,4 +3,6 @@ blockMesh
 checkMesh
 setFields
 decomposePar -force
-mpirun -np 4 interThermalPhaseChangeFoam_Stefan -parallel
+rm -r LiquidAccumulation.dat
+mpirun -np 12 interThermalPhaseChangeFoam -parallel
+
