@@ -1,7 +1,0 @@
-/* dynamicCode:
- * SHA1 = b086d6311dfa1c766248101f3ede485f1b974d88
- */
-functionObjectTemplate.C
-FilterFunctionObjectTemplate.C
-
-LIB = $(PWD)/../platforms/$(WM_OPTIONS)/lib/libVolumeLiquid_b086d6311dfa1c766248101f3ede485f1b974d88
