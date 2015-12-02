@@ -2,6 +2,9 @@
 # Continuous integration + validation code for interThermalPhaseChangeFoam
 
 #Initialize a summary log file for all the operations
+rm -rf CFD-PC
+rm Summary.log
+rm errors.log
 touch Summary.log
 SummaryFile=`readlink -f Summary.log`
 
