@@ -1,6 +1,6 @@
-Making dependency list for source file conductivityModels/conductivityModel/conductivityModel.C
-Making dependency list for source file conductivityModels/conductivityModel/conductivityModelNew.C
 Making dependency list for source file conductivityModels/Fourier/Fourier.C
+Making dependency list for source file conductivityModels/conductivityModel/conductivityModelNew.C
+Making dependency list for source file conductivityModels/conductivityModel/conductivityModel.C
 Making dependency list for source file twoPhaseThermalMixture.C
 options:10:53: warning: backslash and newline separated by space [enabled by default]
   -IthermalPhaseChangeModels/thermalPhaseChangeModel \ 
@@ -8,8 +8,8 @@ options:10:53: warning: backslash and newline separated by space [enabled by def
 Making dependency list for source file interThermalPhaseChangeFoam.C
 Making dependency list for source file thermalPhaseChangeModels/MeshGraph/MeshGraph.C
 Making dependency list for source file thermalPhaseChangeModels/thermalPhaseChangeModel/thermalPhaseChangeModel.C
-Making dependency list for source file thermalPhaseChangeModels/thermalPhaseChangeModel/newThermalPhaseChangeModel.C
 Making dependency list for source file thermalPhaseChangeModels/HiLoFacePair/HiLoFacePair.C
+Making dependency list for source file thermalPhaseChangeModels/thermalPhaseChangeModel/newThermalPhaseChangeModel.C
 Making dependency list for source file thermalPhaseChangeModels/HiLoRelaxed/HiLoRelaxed.C
 Making dependency list for source file thermalPhaseChangeModels/HiLoRelaxedSplit/HiLoRelaxedSplit.C
 Making dependency list for source file thermalPhaseChangeModels/noPhaseChange/noPhaseChange.C
