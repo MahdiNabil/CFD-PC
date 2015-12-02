@@ -56,8 +56,13 @@ mkdir validationFiles
 cp $stefan/LiquidAccumulation.dat validationFiles/./
 cd $stefan
 ./Allclean
-./InitStep
-sleep 1m
+blockMesh
+checkMesh
+setFields
+decomposePar -force
+rm -r LiquidAccumulation.dat
+mpirun -np 12 interThermalPhaseChangeFoam -parallel
+sleep 2m
 killall interThermalPhaseChangeFoam
 
 
