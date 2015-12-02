@@ -56,6 +56,7 @@ mkdir validationFiles
 cp $stefan/LiquidAccumulation.dat validationFiles/./
 cd $stefan
 ./Allclean
+./InitStep
 sleep 2m
 killall interThermalPhaseChangeFoam
 
