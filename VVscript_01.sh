@@ -50,7 +50,6 @@ fi
 cat $SummaryFile | mail -s "test" nabil.mehdi1@gmail.com
 
 # To validate with the stefan case
-SOLVER=interThermalPhaseChangeFoam
 stefan=CFD-PC/interThermalPhaseFoam/tutorials/Stefan
 cd ../..
 mkdir validationFiles
@@ -59,6 +58,6 @@ cd $stefan
 ./Allclean
 ./InitStep
 sleep 1m
-killall $SOLVER
+killall interThermalPhaseChangeFoam
 
 
