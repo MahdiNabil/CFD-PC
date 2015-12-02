@@ -1,0 +1,45 @@
+/*---------------------------------------------------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  1.0                                   |
+|   \\  /    A nd           | Web:      http://www.openfoam.org               |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+
+FoamFile
+{
+    version         2.0;
+    format          ascii;
+
+    root	    ".";
+    case 	    "test";
+    instance        "system";
+    local           "";
+
+    class           dictionary;
+    object          radialBCDict;
+}
+
+
+// Use the same parameters as from the command line
+// makeAxialOldMode 1;
+
+// used in old and in new mode
+makeAxialAxisPatch Axis;
+makeAxialWedgePatch FrontNBack;
+
+// used only in old mode
+//makeAxialOffset 0.05;
+
+// used only in new mode
+rotationVector (0 1 0);
+originVector (0 0 0); // origin
+
+wedgeAngle 5;
+
+// revolve option
+// 0 = old and default mode, points are projected on wedges
+// 1 = points are revolved
+revolve 1;
+
+// ************************************************************************* //

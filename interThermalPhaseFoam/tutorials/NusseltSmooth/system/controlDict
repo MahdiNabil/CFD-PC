@@ -1,0 +1,119 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  1.7.0                                 |
+|   \\  /    A nd           | Web:      www.OpenFOAM.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "system";
+    object      controlDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+application     ASRInterThermalPhaseFoam;
+
+startFrom       latestTime;
+
+startTime       0;
+
+stopAt          endTime;
+
+endTime         1.0;
+
+deltaT          5E-6;
+
+writeControl    adjustableRunTime;
+writeInterval   0.025;
+
+//writeControl    timeStep;
+//writeInterval   15;
+
+
+purgeWrite      0;
+
+writeFormat     ascii;
+
+writePrecision  6;
+
+writeCompression uncompressed;
+
+timeFormat      general;
+
+timePrecision   6;
+
+runTimeModifiable yes;
+
+adjustTimeStep  on;
+
+maxCo           0.4;
+maxAlphaCo      0.4;
+maxFourier	0.25;
+
+maxDeltaT       1E-2;
+
+
+//Global vars for funky/groovy
+functions
+(
+	defineGlobalVars
+	{
+		type addGlobalVariable;
+		//outputControl timeStep;
+		//outputInterval 1;
+		globalScope globalVars;
+		globalVariables 
+		{
+			T_w
+			{
+				valueType scalar;
+				value 293;
+			}
+
+			T_sat
+			{
+				valueType scalar;
+				value 298;
+			}
+
+			d_f
+			{
+				valueType scalar;
+				value 16.72E-5;
+			}
+			
+			rho_l
+			{
+				valueType scalar;
+				value 550.6;
+			}
+
+			Gamma
+			{
+				valueType scalar;
+				value 30.2E-3;
+			}
+
+			cp_l
+			{
+				valueType scalar;
+				value 2446;
+			}
+        }
+    }
+);
+
+
+libs ( "libtwoPhaseProperties.so"
+ 	   "libinterfaceProperties.so"    
+       "libgroovyBC.so"
+       "libsimpleSwakFunctionObjects.so"
+       "libswakFunctionObjects.so"
+       "libOpenFOAM.so" );
+
+
+// ************************************************************************* //

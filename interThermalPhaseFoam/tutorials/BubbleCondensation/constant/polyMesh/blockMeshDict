@@ -1,0 +1,100 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  1.7.0                                 |
+|   \\  /    A nd           | Web:      www.OpenFOAM.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.1;
+    format      ascii;
+    class       dictionary;
+    object      blockMeshDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+
+//Some dimensions here
+;       //Cavity radius
+;      //Cavity Height
+;      //Main domain radius (width/2)
+;      //Main domain height
+//Discretization params
+;        //Cavity x-direction
+;        //Cavity y-direction
+;       //Main-zone x-direction
+;       //Main-zone y-direction
+
+convertToMeters 1;
+
+vertices        
+(
+	//Bot Face
+	(0                    0                 -1E-6)       //00
+	(0                    0                  1E-6)       //01
+	(150E-6               0                  1E-6)       //02
+	(150E-6               0                 -1E-6)       //03
+	//Top Face
+	(0                    0.000275      -1E-6)       	//04
+	(0                    0.000275      1E-6)     	    //05
+	(150E-6               0.000275      1E-6)      	    //06
+	(150E-6               0.000275      -1E-6)          //07
+);
+
+blocks          
+(
+hex ( 0  3  7  4  1  2  6  5) (90 200 1) simpleGrading (0.25 1 1)      //00
+/*
+	hex ( 0  3  7  4  1  2  6  5) (90 200 1) simpleGrading //(1 1 1)      //00
+    (
+        5                  // x-direction expansion ratio
+        (
+            (0.35 0.2 0.25)    // 35% y-dir, 20% cells, expansion = 0.25
+            (0.3 0.6 1)    // 30% y-dir, 60% cells, expansion = 1
+            (0.35 0.2 4) // 35% y-dir, 20% cells, expansion = 0.25 (1/4)
+        )
+        1                  // z-direction expansion ratio
+    )
+
+*/
+);
+
+edges           
+(
+);
+
+patches         
+(
+	wall Bottom
+	(
+		( 0 3 2 1 )
+	)
+
+	patch FarStream
+	(
+		( 3 7 6 2 )
+	)
+
+	patch Top
+	(
+		( 4 5 6 7 )
+	)
+
+	patch Axis
+	(
+		( 0 1 5 4 )
+	)
+
+	empty FrontNBack
+	(
+		( 1  5  6  2 )
+		( 0  4  7  3 )
+	)
+
+);
+
+mergePatchPairs 
+();
+
+// ************************************************************************* //
