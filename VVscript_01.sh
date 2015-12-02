@@ -2,9 +2,6 @@
 # Continuous integration + validation code for interThermalPhaseChangeFoam
 
 #Initialize a summary log file for all the operations
-rm -rf CFD-PC
-rm Summary.log
-rm errors.log
 touch Summary.log
 SummaryFile=`readlink -f Summary.log`
 
@@ -35,7 +32,7 @@ export WM_NCOMPPROCS=12
 
 #Check if successful
 FATAL_ERROR=`grep Error errors.log`
-if [ -n "$FATAL_ERROR" ]softwareXAutomation
+if [ -n "$FATAL_ERROR" ]
 then
   MSG="Build master branch check: FAIL"
   echo $MSG
@@ -51,6 +48,7 @@ cat $SummaryFile | mail -s "test" nabil.mehdi1@gmail.com
 
 # To validate with the stefan case
 stefan=CFD-PC/interThermalPhaseFoam/tutorials/Stefan
+cd ../..
 mkdir validationFiles
 cp $stefan/LiquidAccumulation.dat validationFiles/ ./
 cd $stefan

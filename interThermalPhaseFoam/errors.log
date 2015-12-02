@@ -11,8 +11,8 @@ Making dependency list for source file thermalPhaseChangeModels/thermalPhaseChan
 Making dependency list for source file thermalPhaseChangeModels/thermalPhaseChangeModel/newThermalPhaseChangeModel.C
 Making dependency list for source file thermalPhaseChangeModels/HiLoFacePair/HiLoFacePair.C
 Making dependency list for source file thermalPhaseChangeModels/HiLoRelaxed/HiLoRelaxed.C
-Making dependency list for source file thermalPhaseChangeModels/noPhaseChange/noPhaseChange.C
 Making dependency list for source file thermalPhaseChangeModels/HiLoRelaxedSplit/HiLoRelaxedSplit.C
+Making dependency list for source file thermalPhaseChangeModels/noPhaseChange/noPhaseChange.C
 Making dependency list for source file thermalPhaseChangeModels/HiLoNoPCV/HiLoNoPCV.C
 Making dependency list for source file thermalPhaseChangeModels/HiLoNoPCVAlpha1/HiLoNoPCVAlpha1.C
 Making dependency list for source file surfaceTensionForceModels/surfaceTensionForceModel/surfaceTensionForceModel.C
