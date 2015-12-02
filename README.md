@@ -1,7 +1,7 @@
 # interThermalPhaseChangeFoam
 CFD simulation platform for liquid-vapor thermal phase change flows 
 
-Copyright 2015: Alexander S Rattner, Mahdi M. Nabil, Sanjay Q. Adhikari
+Copyright 2015: Alexander S Rattner, Mahdi Nabil, Sanjay S. Adhikari
 
 [Multiscale Thermal Fluids and Energy (MTFE) Laboratory](http://sites.psu.edu/mtfe/)
 
