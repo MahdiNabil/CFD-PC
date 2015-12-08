@@ -27,5 +27,6 @@ EXE_LIBS = \
     -lsampling  \
     -L$(FOAM_USER_LIBBIN) \
     -lincompressibleTwoPhaseThermalMixture \
+    -L/opt/aci/sw/gsl/1.16_gcc-4.9.2-1/lib \
     -lgsl \
     -lgslcblas  
