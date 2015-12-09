@@ -270,7 +270,7 @@ void Foam::thermalPhaseChangeModels::DropwiseSGS::GSLIntegral()
 				F.function = &Foam::thermalPhaseChangeModels::DropwiseSGS::GSLFunction;
 				F.params = &params;	
 				gsl_integration_qags (&F, rMin[fI], rMax[fI], 0, 1e-7, 1000, w, &result, &error);
-				qFlux_sgs_.boundaryField()[pI][fI] = -result * pow(rMax[fI], -1.0/3.0);
+				qFlux_sgs_.boundaryField()[pI][fI] = -result * pow(rMax[fI], -1.0/3.0) / 3;
 			}
 			gsl_integration_workspace_free (w);
 		}
