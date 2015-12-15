@@ -25,13 +25,9 @@ Class
 	Foam::thermalPhaseChangeModel::Yang
 
 Description
-    This model forces wall and interface cells to the equilibrium state,
-    causing evaporation or condensation as appropriate. The phase change
-    heat term is limited to not produce/sink more than the volume of a 
-	cell in a single time step(like the courantAlpha limit).
-
-    This model uses different interface thresholds for identifying
-	evaporating and condensing cell pairs.
+    This model implements the empirical rate parameter phase change
+    formulation of Yang et al., 2008, Numerical and experimental
+    investigation of two phase flow during boiling in a coiled tube.
 
 
 SourceFiles
