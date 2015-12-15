@@ -76,10 +76,10 @@ Foam::thermalPhaseChangeModels::Yang::Yang
 
 void Foam::thermalPhaseChangeModels::Yang::calcQ_pc()
 {
-    const dimensionedScalar& rho1 = twoPhaseProperties_.rho1();
-	const dimensionedScalar& rho2 = twoPhaseProperties_.rho2();
+    const dimensionedScalar& rhol = twoPhaseProperties_.rho1();
+	const dimensionedScalar& rhov = twoPhaseProperties_.rho2();
 
-	Q_pc_ = pos(T_-T_sat_)*h_lv_*rl*alpha1_*rho1*((T_-T_sat_)/T_sat_) + neg(T_-T_sat_)*h_lv_*rv*(1.0-alpha1_)*rho2*((T_-T_sat_)/T_sat_);
+	Q_pc_ = pos(T_-T_sat_)*h_lv_*rl*alpha1_*rhol*((T_-T_sat_)/T_sat_) + neg(T_-T_sat_)*h_lv_*rv*(1.0-alpha1_)*rhov*((T_-T_sat_)/T_sat_);
 }
 
 
