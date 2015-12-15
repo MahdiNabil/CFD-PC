@@ -48,3 +48,16 @@ else
 fi
 
 cat $SummaryFile | mail -s "test" nabil.mehdi1@gmail.com
+
+# To validate with the stefan case
+stefan=CFD-PC/interThermalPhaseFoam/tutorials/Stefan
+cd ../..
+mkdir validationFiles
+cp $stefan/LiquidAccumulation.dat validationFiles/./
+cd $stefan
+./Allclean
+./InitStep
+sleep 2m
+killall interThermalPhaseChangeFoam
+
+
