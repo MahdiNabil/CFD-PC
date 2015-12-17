@@ -126,7 +126,7 @@ functions
                         const scalarField GradTWall = SnGradT.boundaryField()[WallPatchID];
 
                         //Sum up heat flux on the wall:
-			const scalar Q_Wall = gSum( WallPatch.magSf() * GradTWall * k ) / gSum( WallPatch.magSf() );
+						const scalar Q_Wall = gSum( WallPatch.magSf() * GradTWall * k ) / gSum( WallPatch.magSf() );
                         //***********************************************************************
 
 

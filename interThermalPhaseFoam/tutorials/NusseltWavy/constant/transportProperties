@@ -54,6 +54,7 @@ thermalPhaseChange
 	T_sat		T_sat [0 0 0 1 0 0 0] 298;
 	CondThresh  0.5; //Interface threshold for condensing cell pairs
 	EvapThresh  0.01; //Interface threshold for evaporating cell pairs
+	RelaxFac    1.0;  //Under-relaxation parameter
 }
 
 surfaceTensionForce

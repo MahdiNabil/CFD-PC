@@ -53,7 +53,7 @@ cat $SummaryFile | mail -s "test" nabil.mehdi1@gmail.com
 stefan=CFD-PC/interThermalPhaseFoam/tutorials/Stefan
 cd ../..
 mkdir validationFiles
-cp $stefan/LiquidAccumulation.dat validationFiles/./
+mv $stefan/LiquidAccumulation.dat validationFiles/./
 cd $stefan
 ./Allclean
 ./InitStep
