@@ -5,4 +5,4 @@ checkMesh
 cp -r A/* 0/ 
 funkySetFields -time 0 -allowFunctionObjects
 decomposePar -force
-mpirun -np 4 interThermalPhaseChangeFoam -parallel
+mpirun -np 12 interThermalPhaseChangeFoam -parallel >NusseltSmooth.log&

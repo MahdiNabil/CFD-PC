@@ -1,0 +1,483 @@
+/*---------------------------------------------------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  2.4.0                                 |
+|   \\  /    A nd           | Web:      www.OpenFOAM.org                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+Build  : 2.4.0-dcea1e13ff76
+Exec   : blockMesh
+Date   : Dec 02 2015
+Time   : 16:54:51
+Host   : "MTFE-Workstation-01"
+PID    : 25271
+Case   : /home/mtfe/softwareXAutomation/CFD-PC/interThermalPhaseFoam/tutorials/Stefan
+nProcs : 1
+sigFpe : Enabling floating point exception trapping (FOAM_SIGFPE).
+fileModificationChecking : Monitoring run-time modified files using timeStampMaster
+allowSystemOperations : Allowing user-supplied system call operations
+
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+Create time
+
+Creating block mesh from
+    "/home/mtfe/softwareXAutomation/CFD-PC/interThermalPhaseFoam/tutorials/Stefan/constant/polyMesh/blockMeshDict"
+Creating curved edges
+Creating topology blocks
+Creating topology patches
+
+Creating block mesh topology
+
+Check topology
+
+	Basic statistics
+		Number of internal faces : 0
+		Number of boundary faces : 6
+		Number of defined boundary faces : 6
+		Number of undefined boundary faces : 0
+	Checking patch -> block consistency
+
+Creating block offsets
+Creating merge list .
+
+Creating polyMesh from blockMesh
+Creating patches
+Creating cells
+Creating points with scale 1
+    Block 0 cell size :
+        i : 0.0004 .. 0.0004
+        j : 1.83042e-06 .. 5.49125e-06
+        k : 0.0005 .. 0.0005
+
+
+Writing polyMesh
+----------------
+Mesh Information
+----------------
+  boundingBox: (0 0 0) (0.002 0.001 0.0005)
+  nPoints: 3612
+  nCells: 1500
+  nFaces: 6305
+  nInternalFaces: 2695
+----------------
+Patches
+----------------
+  patch 0 (start: 2695 size: 5) name: BotWall
+  patch 1 (start: 2700 size: 5) name: FreeStream
+  patch 2 (start: 2705 size: 3000) name: FrontNBack
+  patch 3 (start: 5705 size: 300) name: LeftSide
+  patch 4 (start: 6005 size: 300) name: RightSide
+
+End
+
+/*---------------------------------------------------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  2.4.0                                 |
+|   \\  /    A nd           | Web:      www.OpenFOAM.org                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+Build  : 2.4.0-dcea1e13ff76
+Exec   : checkMesh
+Date   : Dec 02 2015
+Time   : 16:54:51
+Host   : "MTFE-Workstation-01"
+PID    : 25272
+Case   : /home/mtfe/softwareXAutomation/CFD-PC/interThermalPhaseFoam/tutorials/Stefan
+nProcs : 1
+sigFpe : Enabling floating point exception trapping (FOAM_SIGFPE).
+fileModificationChecking : Monitoring run-time modified files using timeStampMaster
+allowSystemOperations : Allowing user-supplied system call operations
+
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+Create time
+
+Create polyMesh for time = 0
+
+Time = 0
+
+Mesh stats
+    points:           3612
+    internal points:  0
+    faces:            6305
+    internal faces:   2695
+    cells:            1500
+    faces per cell:   6
+    boundary patches: 5
+    point zones:      0
+    face zones:       0
+    cell zones:       0
+
+Overall number of cells of each type:
+    hexahedra:     1500
+    prisms:        0
+    wedges:        0
+    pyramids:      0
+    tet wedges:    0
+    tetrahedra:    0
+    polyhedra:     0
+
+Checking topology...
+    Boundary definition OK.
+    Cell to face addressing OK.
+    Point usage OK.
+    Upper triangular ordering OK.
+    Face vertices OK.
+    Number of regions: 1 (OK).
+
+Checking patch topology for multiply connected surfaces...
+    Patch               Faces    Points   Surface topology                  
+    BotWall             5        12       ok (non-closed singly connected)  
+    FreeStream          5        12       ok (non-closed singly connected)  
+    FrontNBack          3000     3612     ok (non-closed singly connected)  
+    LeftSide            300      602      ok (non-closed singly connected)  
+    RightSide           300      602      ok (non-closed singly connected)  
+
+Checking geometry...
+    Overall domain bounding box (0 0 0) (0.002 0.001 0.0005)
+    Mesh (non-empty, non-wedge) directions (1 1 0)
+    Mesh (non-empty) directions (1 1 0)
+    All edges aligned with or perpendicular to non-empty directions.
+    Boundary openness (2.42837e-17 -2.26884e-17 -3.02512e-17) OK.
+    Max cell openness = 1.63368e-16 OK.
+    Max aspect ratio = 218.529 OK.
+    Minimum face area = 7.32167e-10. Maximum face area = 2e-07.  Face area magnitudes OK.
+    Min volume = 3.66083e-13. Max volume = 1.09825e-12.  Total volume = 1e-09.  Cell volumes OK.
+    Mesh non-orthogonality Max: 0 average: 0
+    Non-orthogonality check OK.
+    Face pyramids OK.
+    Max skewness = 4.59856e-15 OK.
+    Coupled point location match (average 0) OK.
+
+Mesh OK.
+
+End
+
+/*---------------------------------------------------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  2.4.0                                 |
+|   \\  /    A nd           | Web:      www.OpenFOAM.org                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+Build  : 2.4.0-dcea1e13ff76
+Exec   : setFields
+Date   : Dec 02 2015
+Time   : 16:54:51
+Host   : "MTFE-Workstation-01"
+PID    : 25273
+Case   : /home/mtfe/softwareXAutomation/CFD-PC/interThermalPhaseFoam/tutorials/Stefan
+nProcs : 1
+sigFpe : Enabling floating point exception trapping (FOAM_SIGFPE).
+fileModificationChecking : Monitoring run-time modified files using timeStampMaster
+allowSystemOperations : Allowing user-supplied system call operations
+
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+Create time
+
+Create mesh for time = 0
+
+Reading setFieldsDict
+
+Setting field default values
+    Setting internal values of volScalarField alpha1
+    Setting internal values of volScalarField T
+
+Setting field region values
+    Adding cells with center within boxes 1((0.002 0.045 -1) (0.003 0.0451 1))
+    Setting internal values of volScalarField alpha1
+    Setting internal values of volScalarField T
+
+End
+
+/*---------------------------------------------------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  2.4.0                                 |
+|   \\  /    A nd           | Web:      www.OpenFOAM.org                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+Build  : 2.4.0-dcea1e13ff76
+Exec   : decomposePar -force
+Date   : Dec 02 2015
+Time   : 16:54:51
+Host   : "MTFE-Workstation-01"
+PID    : 25274
+Case   : /home/mtfe/softwareXAutomation/CFD-PC/interThermalPhaseFoam/tutorials/Stefan
+nProcs : 1
+sigFpe : Enabling floating point exception trapping (FOAM_SIGFPE).
+fileModificationChecking : Monitoring run-time modified files using timeStampMaster
+allowSystemOperations : Allowing user-supplied system call operations
+
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+Create time
+
+
+
+Decomposing mesh region0
+
+Create mesh
+
+Calculating distribution of cells
+Selecting decompositionMethod simple
+
+Finished decomposition in 0 s
+
+Calculating original mesh data
+
+Distributing cells to processors
+
+Distributing faces to processors
+
+Distributing points to processors
+
+Constructing processor meshes
+
+Processor 0
+    Number of cells = 125
+    Number of faces shared with processor 1 = 1
+    Number of faces shared with processor 2 = 75
+    Number of faces shared with processor 3 = 50
+    Number of processor patches = 3
+    Number of processor faces = 126
+    Number of boundary faces = 376
+
+Processor 1
+    Number of cells = 125
+    Number of faces shared with processor 0 = 1
+    Number of faces shared with processor 2 = 1
+    Number of faces shared with processor 3 = 75
+    Number of faces shared with processor 4 = 50
+    Number of processor patches = 4
+    Number of processor faces = 127
+    Number of boundary faces = 375
+
+Processor 2
+    Number of cells = 125
+    Number of faces shared with processor 0 = 75
+    Number of faces shared with processor 1 = 1
+    Number of faces shared with processor 3 = 1
+    Number of faces shared with processor 4 = 75
+    Number of faces shared with processor 5 = 50
+    Number of processor patches = 5
+    Number of processor faces = 202
+    Number of boundary faces = 302
+
+Processor 3
+    Number of cells = 125
+    Number of faces shared with processor 0 = 50
+    Number of faces shared with processor 1 = 75
+    Number of faces shared with processor 2 = 1
+    Number of faces shared with processor 4 = 1
+    Number of faces shared with processor 5 = 75
+    Number of faces shared with processor 6 = 50
+    Number of processor patches = 6
+    Number of processor faces = 252
+    Number of boundary faces = 250
+
+Processor 4
+    Number of cells = 125
+    Number of faces shared with processor 1 = 50
+    Number of faces shared with processor 2 = 75
+    Number of faces shared with processor 3 = 1
+    Number of faces shared with processor 5 = 1
+    Number of faces shared with processor 6 = 75
+    Number of faces shared with processor 7 = 50
+    Number of processor patches = 6
+    Number of processor faces = 252
+    Number of boundary faces = 252
+
+Processor 5
+    Number of cells = 125
+    Number of faces shared with processor 2 = 50
+    Number of faces shared with processor 3 = 75
+    Number of faces shared with processor 4 = 1
+    Number of faces shared with processor 6 = 1
+    Number of faces shared with processor 7 = 75
+    Number of faces shared with processor 8 = 50
+    Number of processor patches = 6
+    Number of processor faces = 252
+    Number of boundary faces = 250
+
+Processor 6
+    Number of cells = 125
+    Number of faces shared with processor 3 = 50
+    Number of faces shared with processor 4 = 75
+    Number of faces shared with processor 5 = 1
+    Number of faces shared with processor 7 = 1
+    Number of faces shared with processor 8 = 75
+    Number of faces shared with processor 9 = 50
+    Number of processor patches = 6
+    Number of processor faces = 252
+    Number of boundary faces = 250
+
+Processor 7
+    Number of cells = 125
+    Number of faces shared with processor 4 = 50
+    Number of faces shared with processor 5 = 75
+    Number of faces shared with processor 6 = 1
+    Number of faces shared with processor 8 = 1
+    Number of faces shared with processor 9 = 75
+    Number of faces shared with processor 10 = 50
+    Number of processor patches = 6
+    Number of processor faces = 252
+    Number of boundary faces = 252
+
+Processor 8
+    Number of cells = 125
+    Number of faces shared with processor 5 = 50
+    Number of faces shared with processor 6 = 75
+    Number of faces shared with processor 7 = 1
+    Number of faces shared with processor 9 = 1
+    Number of faces shared with processor 10 = 75
+    Number of faces shared with processor 11 = 50
+    Number of processor patches = 6
+    Number of processor faces = 252
+    Number of boundary faces = 250
+
+Processor 9
+    Number of cells = 125
+    Number of faces shared with processor 6 = 50
+    Number of faces shared with processor 7 = 75
+    Number of faces shared with processor 8 = 1
+    Number of faces shared with processor 10 = 1
+    Number of faces shared with processor 11 = 75
+    Number of processor patches = 5
+    Number of processor faces = 202
+    Number of boundary faces = 302
+
+Processor 10
+    Number of cells = 125
+    Number of faces shared with processor 7 = 50
+    Number of faces shared with processor 8 = 75
+    Number of faces shared with processor 9 = 1
+    Number of faces shared with processor 11 = 1
+    Number of processor patches = 4
+    Number of processor faces = 127
+    Number of boundary faces = 375
+
+Processor 11
+    Number of cells = 125
+    Number of faces shared with processor 8 = 50
+    Number of faces shared with processor 9 = 75
+    Number of faces shared with processor 10 = 1
+    Number of processor patches = 3
+    Number of processor faces = 126
+    Number of boundary faces = 376
+
+Number of processor faces = 1211
+Max number of cells = 125 (0% above average 125)
+Max number of processor patches = 6 (20% above average 5)
+Max number of faces between processors = 252 (24.8555% above average 201.833)
+
+Time = 0
+
+Processor 0: field transfer
+Processor 1: field transfer
+Processor 2: field transfer
+Processor 3: field transfer
+Processor 4: field transfer
+Processor 5: field transfer
+Processor 6: field transfer
+Processor 7: field transfer
+Processor 8: field transfer
+Processor 9: field transfer
+Processor 10: field transfer
+Processor 11: field transfer
+
+End.
+
+rm: cannot remove ‘LiquidAccumulation.dat’: No such file or directory
+/*---------------------------------------------------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  2.4.0                                 |
+|   \\  /    A nd           | Web:      www.OpenFOAM.org                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+Build  : 2.4.0-dcea1e13ff76
+Exec   : interThermalPhaseChangeFoam -parallel
+Date   : Dec 02 2015
+Time   : 16:54:53
+Host   : "MTFE-Workstation-01"
+PID    : 25277
+Case   : /home/mtfe/softwareXAutomation/CFD-PC/interThermalPhaseFoam/tutorials/Stefan
+nProcs : 12
+Slaves : 
+11
+(
+"MTFE-Workstation-01.25278"
+"MTFE-Workstation-01.25279"
+"MTFE-Workstation-01.25280"
+"MTFE-Workstation-01.25281"
+"MTFE-Workstation-01.25282"
+"MTFE-Workstation-01.25283"
+"MTFE-Workstation-01.25284"
+"MTFE-Workstation-01.25285"
+"MTFE-Workstation-01.25286"
+"MTFE-Workstation-01.25287"
+"MTFE-Workstation-01.25288"
+)
+
+Pstream initialized with:
+    floatTransfer      : 0
+    nProcsSimpleSum    : 0
+    commsType          : nonBlocking
+    polling iterations : 0
+sigFpe : Enabling floating point exception trapping (FOAM_SIGFPE).
+fileModificationChecking : Monitoring run-time modified files using timeStampMaster
+allowSystemOperations : Allowing user-supplied system call operations
+
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+Create time
+
+Create mesh for time = 0
+
+
+PIMPLE: Operating solver in PISO mode
+
+Reading field p_rgh
+
+Reading field alpha1
+
+Reading field U
+
+Reading/calculating face flux field phi
+
+Reading field T
+
+Reading transportProperties
+
+Selecting incompressible transport model Newtonian
+Selecting incompressible transport model Newtonian
+Selecting incompressible thermal transport model Fourier
+Selecting incompressible thermal transport model Fourier
+Selecting turbulence model type laminar
+Selecting phase change model: HiLoFacePair
+Selecting surface tension force model: Brackbill
+
+Reading g
+Calculating field g.h
+
+No finite volume options present
+
+time step continuity errors : sum local = 0, global = 0, cumulative = 0
+GAMGPCG:  Solving for pcorr, Initial residual = 0, Final residual = 0, No Iterations 0
+GAMGPCG:  Solving for pcorr, Initial residual = 0, Final residual = 0, No Iterations 0
+time step continuity errors : sum local = 0, global = 0, cumulative = 0
+Courant Number mean: 0 max: 0
+Minimum cell dimension: 1.83042e-06
+
+Starting time loop
+
+Using dynamicCode for functionObject VolumeLiquid at line 64 in ".VolumeLiquid"
+Creating new library in "dynamicCode/VolumeLiquid/platforms/linux64GccDPOpt/lib/libVolumeLiquid_b086d6311dfa1c766248101f3ede485f1b974d88.so"
+Invoking "wmake -s libso /home/mtfe/softwareXAutomation/CFD-PC/interThermalPhaseFoam/tutorials/Stefan/dynamicCode/VolumeLiquid"
+wmakeLnInclude: linking include files to ./lnInclude
+Making dependency list for source file functionObjectTemplate.C
+Making dependency list for source file FilterFunctionObjectTemplate.C
+'/home/mtfe/softwareXAutomation/CFD-PC/interThermalPhaseFoam/tutorials/Stefan/dynamicCode/VolumeLiquid/../platforms/linux64GccDPOpt/lib/libVolumeLiquid_b086d6311dfa1c766248101f3ede485f1b974d88.so' is up to date.
+--------------------------------------------------------------------------
+mpirun noticed that process rank 0 with PID 25277 on node MTFE-Workstation-01 exited on signal 15 (Terminated).
+--------------------------------------------------------------------------
+6 total processes killed (some possibly by mpirun during cleanup)
