@@ -23,15 +23,12 @@ startTime       0;
 
 stopAt          endTime;
 
-endTime         1.0;
+endTime         0.05;
 
 deltaT          5E-6;
 
 writeControl    adjustableRunTime;
-writeInterval   0.025;
-
-//writeControl    timeStep;
-//writeInterval   15;
+writeInterval   0.01;
 
 
 purgeWrite      0;
@@ -52,7 +49,7 @@ adjustTimeStep  on;
 
 maxCo           0.4;
 maxAlphaCo      0.4;
-maxFourier	0.25;
+maxFourier	    0.25;
 
 maxDeltaT       1E-2;
 
@@ -63,8 +60,6 @@ functions
 	defineGlobalVars
 	{
 		type addGlobalVariable;
-		//outputControl timeStep;
-		//outputInterval 1;
 		globalScope globalVars;
 		globalVariables 
 		{
@@ -105,6 +100,88 @@ functions
 			}
         }
     }
+    
+    
+	GlobalHeatTransfer //Gives heat transfer rates (W) for storage, wall flux, inlet, and outlet
+	{
+		functionObjectLibs ("libutilityFunctionObjects.so");
+		type coded;
+		redirectType GlobalHeatTransfer;
+		outputControl timeStep;
+		outputInterval 50;
+		
+		code
+		#{
+			//Some constants first:                 
+			scalar k = 0.0892;        //Fluid conductivity
+			scalar rho = 550.6;       //Liquid Density
+			scalar mu = 2.74E-7*rho;  //Liquid viscosity
+			scalar Ymax = 0.004;      //Lower height to simulate
+
+
+			//***********************************************************************
+			//Now get wall heat flux
+			//Get mesh boundary
+			const fvBoundaryMesh& bMesh = mesh().boundary();
+			//Next get wall patch:
+			label WallPatchID  = bMesh.findPatchID("VertWall");
+			const fvPatch& WallPatch = bMesh[WallPatchID];
+			//Get temp gradient on the wall
+			const volScalarField& T = mesh().lookupObject<volScalarField>("T");
+			const surfaceScalarField SnGradT = fvc::snGrad(T);
+			const scalarField GradTWall = SnGradT.boundaryField()[WallPatchID];
+			const vectorField& Cfs = WallPatch.Cf();    //Cell face centers
+			const scalarField& Afs = WallPatch.magSf(); //Cell face areas
+			
+			
+
+			//Average heat flux on lower half of wall:
+			const scalar Q_Wall = -gSum( WallPatch.magSf() * GradTWall * k * pos(Ymax - Cfs.component(1)) )
+			                    / gSum( Afs * pos(Ymax - Cfs.component(1)) );
+			//***********************************************************************
+
+
+			//***********************************************************************
+			//Now get Film-Re
+			//Get mesh boundary
+			const volVectorField& U = mesh().lookupObject<volVectorField>("U");
+			const volScalarField& alpha1 = mesh().lookupObject<volScalarField>("alpha1");
+						const volScalarField Ualpha1 = -U.component(1) * alpha1;
+			const volScalarField& Ccs = mesh().C().component(1);
+			const scalar Gamma = rho * gSum( Ualpha1 * mesh().V() * pos(Ymax - Ccs.field() ) )
+			                   / gSum( Afs * pos(Ymax - Cfs.component(1)) );
+
+			//Average heat flux on lower half of wall:
+			Info<< "Gamma " << Gamma << endl;
+			const scalar Re = 4*Gamma/mu;
+			//***********************************************************************
+
+
+			//***********************************************************************
+			//Finally print out results:
+
+			//Get t and dt for reference
+			scalar t = mesh().time().value();
+			scalar dt = mesh().time().deltaTValue();
+
+			//Now write out data:
+			if( Pstream::master() == true )
+			{
+				std::ofstream fs;
+				fs.open ("WallHeatFlux.dat", std::fstream::app);
+				fs.precision(12);
+				fs << t << "\t" << dt << "\t" << Q_Wall << "\t" << Re << "\n";
+				fs.close();
+			}
+			//***********************************************************************
+
+		#}; 
+
+		codeInclude
+		#{
+			#include <fstream>
+		#};
+	}
 );
 
 

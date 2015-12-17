@@ -1,5 +1,5 @@
 #!/bin/bash
-#m4 constant/polyMesh/blockMeshDict.m4 > constant/polyMesh/blockMeshDict
+m4 constant/polyMesh/blockMeshDict.m4 > constant/polyMesh/blockMeshDict
 blockMesh
 checkMesh
 cp -r A/* 0/ 

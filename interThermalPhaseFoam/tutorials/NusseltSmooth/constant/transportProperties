@@ -49,9 +49,12 @@ T_0			T_0 [0 0 0 1 0 0 0] 298;
 
 thermalPhaseChange
 {
-	model       LimitedInterfaceEquilibrium;
+	model       HiLoRelaxed;
 	h_lv		h_lv  [0 2 -2 0 0 0 0 ] 329365;
 	T_sat		T_sat [0 0 0 1 0 0 0] 298;
+	CondThresh  0.8; //Interface threshold for condensing cell pairs
+	EvapThresh  0.1; //Interface threshold for evaporating cell pairs
+	RelaxFac    1.0; //Under-relaxation factor
 }
 
 surfaceTensionForce
