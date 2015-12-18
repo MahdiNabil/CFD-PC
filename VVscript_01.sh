@@ -70,6 +70,7 @@ cd $NusseltSmooth
 ./InitScript.sh
 sleep 2m
 killall interThermalPhaseChangeFoam
+mv WallHeatFlux.dat validationFiles/./
 octave
 run "CheckNusselt.m" 
 
