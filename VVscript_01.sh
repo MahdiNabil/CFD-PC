@@ -47,17 +47,33 @@ else
   echo $MSG >> $SummaryFile
 fi
 
-cat $SummaryFile | mail -s "test" nabil.mehdi1@gmail.com
+cat $SummaryFile | mail -s "test" mtfelab@gmail.com
 
 # To validate with the stefan case
-stefan=CFD-PC/interThermalPhaseFoam/tutorials/Stefan
+#stefan=CFD-PC/interThermalPhaseFoam/tutorials/Stefan
+#cd ../..
+#mkdir validationFiles
+#mv $stefan/LiquidAccumulation.dat validationFiles/./
+#cd $stefan
+#./Allclean
+#./InitStep
+#sleep 2m
+#killall interThermalPhaseChangeFoam
+
+# To validate with the NusseltSmooth case
+# Check the datafile generated with the analytical solution
+NusseltSmooth=CFD-PC/interThermalPhaseChangeFoam/tutorials/NusseltSmooth
 cd ../..
 mkdir validationFiles
-mv $stefan/LiquidAccumulation.dat validationFiles/./
-cd $stefan
-./Allclean
+cd $NusseltSmooth
+./cleanup.sh
 ./InitStep
 sleep 2m
 killall interThermalPhaseChangeFoam
+octave
+run "CheckNusselt.m" 
+
+
+ 
 
 
