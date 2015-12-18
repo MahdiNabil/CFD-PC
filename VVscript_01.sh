@@ -62,7 +62,7 @@ cat $SummaryFile | mail -s "test" mtfelab@gmail.com
 
 # To validate with the NusseltSmooth case
 # Check the datafile generated with the analytical solution
-NusseltSmooth=CFD-PC/interThermalPhaseChangeFoam/tutorials/NusseltSmooth
+NusseltSmooth=CFD-PC/interThermalPhaseFoam/tutorials/NusseltSmooth
 cd ../..
 mkdir validationFiles
 cd $NusseltSmooth
