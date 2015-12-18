@@ -67,7 +67,7 @@ cd ../..
 mkdir validationFiles
 cd $NusseltSmooth
 ./cleanup.sh
-./InitStep
+./InitScript
 sleep 2m
 killall interThermalPhaseChangeFoam
 octave
