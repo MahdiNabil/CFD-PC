@@ -30,35 +30,35 @@ If you use this solver in a project or scholarly work, we ask that you include a
 * Bubble Condensation
 
 ## Algorithm
-Flow Simulation Algorithm Summary:
-  Initialize simulation data and phase change model 
-  WHILE t<t_end DO
-    1. Update delta_t for stability
-    2. Update fluid and turbulence properties
-    3. Update phase change model 
-    4. Phase equation sub-cycle
-    5. DO PIMPLE
-      1. Form u equation
-      2. PISO
-          1. Obtain and correct face fluxes
-          2. Solve p-Poisson equation
-          3. Correct u
-    6. LOOP
-    7. Update h(T)
-    8. DO Energy Loop
-      1. Solve h equation
-      2. Update T(h)
-    9. LOOP
-  LOOP
+* Flow Simulation Algorithm Summary:
+  * Initialize simulation data and phase change model 
+  * WHILE t<t_end DO
+  * 1. Update delta_t for stability
+  * 2. Update fluid and turbulence properties
+  * 3. Update phase change model 
+  * 4. Phase equation sub-cycle
+  * 5. DO PIMPLE
+    * 1. Form u equation
+    * 2. PISO
+        * 1. Obtain and correct face fluxes
+        * 2. Solve p-Poisson equation
+        * 3. Correct u
+  * 6. LOOP
+  * 7. Update h(T)
+  * 8. DO Energy Loop
+    * 1. Solve h equation
+    * 2. Update T(h)
+  * 9. LOOP
+  * LOOP
   
 Two sample tutorial cases, i.e. Horizontal film condensation and Smooth Nusselt falling film condensation are validated versus the available analytical solutions in the literature with less than 2% error. The corresponding MATLAB scripts included in the aforementioned tutorial cases folders are CheckStefan.m and CheckNusselt.m, respectively. 
 
 ## Phase Change Models
 A number of  phase change models are included with the solver, and are described below:
-o	HiLoRelaxed – An improved version of the model of Rattner and Garimella (2014) that determines the phase change heat sources so that interface cells recover the saturation temperature at each time step. This model performs a graph scan over mesh cells, and applies phase change on the two-cell thick interface layer about user-specified threshold values of α1. Different high and low threshold values for condensation and evaporation, respectively, can be specified, which has been found to reduce numerical smearing of the interface. Numerical under-relaxation of the phase change rate is supported, which can improve numerical stability.
-o	HiLoRelaxedSplit – A modified version of the above model, which splits the liquid and vapor portions of  , and applies them on the respective sides of the interface (Rattner, 2015). This approach yields better conservation of the two phases, and reduces smearing of the interface during evaporation.
-o	HiLoNoPCV – A modified version of HiLoRelaxed that sets   to 0. This model can yield accurate results with reduced CFL time step constraints for cases without significant vapor-phase effects on phase change (e.g., falling film condensation in a quiescent vapor medium).
-o	Yang – An implementation of the empirical rate parameter model of Yang et al. (2008).
+* HiLoRelaxed – An improved version of the model of Rattner and Garimella (2014) that determines the phase change heat sources so that interface cells recover the saturation temperature at each time step. This model performs a graph scan over mesh cells, and applies phase change on the two-cell thick interface layer about user-specified threshold values of α1. Different high and low threshold values for condensation and evaporation, respectively, can be specified, which has been found to reduce numerical smearing of the interface. Numerical under-relaxation of the phase change rate is supported, which can improve numerical stability.
+* HiLoRelaxedSplit – A modified version of the above model, which splits the liquid and vapor portions of  , and applies them on the respective sides of the interface (Rattner, 2015). This approach yields better conservation of the two phases, and reduces smearing of the interface during evaporation.
+* HiLoNoPCV – A modified version of HiLoRelaxed that sets   to 0. This model can yield accurate results with reduced CFL time step constraints for cases without significant vapor-phase effects on phase change (e.g., falling film condensation in a quiescent vapor medium).
+* Yang – An implementation of the empirical rate parameter model of Yang et al. (2008).
 
 ## Example applications
 * Film Boiling over Heat Generating Rod:        https://www.youtube.com/watch?v=HrVNSpSxnY4
