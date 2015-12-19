@@ -17,20 +17,20 @@ FoamFile
 
 dimensions      [0 0 0 1 0 0 0];
 
-internalField   uniform 298; //Initialize to the saturation temperature, but the wall is subcooled
+internalField   uniform 0; //Initialize to the saturation temperature, but the wall is subcooled
 
 boundaryField
 {
     VertWall		//Subcooled wall
     {
         type        fixedValue;
-        value       uniform 293;
+        value       uniform -5;
     }
 
     FreeStream		//saturation at freestream
     {
         type		fixedValue;
-		value		uniform 298;
+		value		uniform 0;
     }
 
 	Vane
@@ -49,7 +49,7 @@ boundaryField
     Top				//saturated inlet
     {
         type		fixedValue;
-		value		uniform 298;
+		value		uniform 0;
     }
 
     Bottom

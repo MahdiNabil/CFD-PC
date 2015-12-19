@@ -43,12 +43,14 @@ boundaryField
 
     FreeStream
     {
-        type            zeroGradient;
+        type            fixedValue;
+       	value           uniform 0;
     }
 
     Top
     {
-        type            zeroGradient;
+        type            fixedValue;
+       	value           uniform 0;
     }
 
     Bottom

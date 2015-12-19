@@ -20,7 +20,7 @@ define(calc, [esyscmd(perl -e 'printf ($1)')])
 define(roundcalc, [esyscmd(perl -e 'printf ( int( ($1) + 0.5 ) )')])
 
 //Some dimensions here
-define(dF, 16.72E-5);       //Film region thickness
+define(dF, 15E-5);       //Film region thickness
 define(thV, 5E-5);        //Thickness of the inlet vane
 define(hV, 2.5E-4);        //Height of the inlet vane
 define(hB, 0.8E-2);         //Bulk section height

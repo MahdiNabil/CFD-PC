@@ -6,14 +6,18 @@ g         = 9.81;        %m/s^2
 DeltaT    = 5;           %K
 
 %Fluid material properties (iso-butane 25 C)
-rho_L     = 550.6;                     %kg/m^3
-rho_V     = 9.12;                      %kg/m^3
-k_L       = 0.0892;                    %W/m-K
-mu_L      = 2.74E-7 * rho_L;           %kg/m-s
+rho_L     = 500;                     %kg/m^3
+rho_V     = 20;                      %kg/m^3
+k_L       = 0.5;                     %W/m-K
+mu_L      = 1.0E-6 * rho_L;          %kg/m-s
 
 
 %Read in data from file:
 D         = load('WallHeatFlux.dat');
+%Trim the first 0.025 s for stability
+ind       = find(D(:,1) < 0.025, 1, 'last');
+D         = D(ind:end,:);
+%Get out data entries
 t         = D(:,1);                    %s
 dt        = D(:,2);                    %s
 q_w_sim   = D(:,3);                    %W/m^2

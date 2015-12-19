@@ -53,7 +53,7 @@ solvers
         preconditioner   DILU;
         tolerance        1e-12;
         relTol           0.1;
-        cAlpha          1;
+        cAlpha           1;
     };
 
     pcorr

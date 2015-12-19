@@ -28,7 +28,7 @@ endTime         0.05;
 deltaT          5E-6;
 
 writeControl    adjustableRunTime;
-writeInterval   0.01;
+writeInterval   0.005;
 
 
 purgeWrite      0;
@@ -66,37 +66,37 @@ functions
 			T_w
 			{
 				valueType scalar;
-				value 293;
+				value -5;
 			}
 
 			T_sat
 			{
 				valueType scalar;
-				value 298;
+				value 0;
 			}
 
 			d_f
 			{
 				valueType scalar;
-				value 16.72E-5;
+				value 15E-5;
 			}
 			
 			rho_l
 			{
 				valueType scalar;
-				value 550.6;
+				value 500;
 			}
 
 			Gamma
 			{
 				valueType scalar;
-				value 30.2E-3;
+				value 5E-3;
 			}
 
 			cp_l
 			{
 				valueType scalar;
-				value 2446;
+				value 2000;
 			}
         }
     }
@@ -113,9 +113,9 @@ functions
 		code
 		#{
 			//Some constants first:                 
-			scalar k = 0.0892;        //Fluid conductivity
-			scalar rho = 550.6;       //Liquid Density
-			scalar mu = 2.74E-7*rho;  //Liquid viscosity
+			scalar k = 0.5;        //Fluid conductivity
+			scalar rho = 500;       //Liquid Density
+			scalar mu = 1.0E-6*rho;  //Liquid viscosity
 			scalar Ymax = 0.004;      //Lower height to simulate
 
 
