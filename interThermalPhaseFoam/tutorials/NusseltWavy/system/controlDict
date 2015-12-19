@@ -58,9 +58,6 @@ maxDeltaT       1E-2;
 
 //Combined Hydrostatic Pressure
 CombinedHSPressure yes;
-//Modified Surface Tension Model
-ModifiedST yes;
-
 
 // ******************************************************************** //
 //Global vars for funky/groovy
@@ -142,7 +139,7 @@ functions
                         if( Pstream::master() == true )
                         {
                                 std::ofstream fs;
-                                fs.open ("WallHeatFluxSST_Test3.dat", std::fstream::app);
+                                fs.open ("WallHeatFluxSST.dat", std::fstream::app);
                                 fs.precision(12);
                                 fs << t << "\t" << dt << "\t" << Q_Wall << "\n";
                                 fs.close();

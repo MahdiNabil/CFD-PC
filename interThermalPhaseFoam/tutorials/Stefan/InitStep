@@ -1,9 +1,0 @@
-#!/bin/bash
-rm stefan.log
-blockMesh
-checkMesh
-setFields
-decomposePar -force
-rm -r LiquidAccumulation.dat
-mpirun -np 12 interThermalPhaseChangeFoam -parallel >stefan.log&
-

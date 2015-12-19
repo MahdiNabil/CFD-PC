@@ -4,6 +4,6 @@ blockMesh
 checkMesh
 mkdir 0
 cp -r A/* 0/ 
-funkySetFields -time 0 -allowFunctionObjects
+setFields
 decomposePar -force
-mpirun -np 12 interThermalPhaseChangeFoam -parallel >NusseltSmooth.log&
+mpirun -np 12 interThermalPhaseChangeFoam -parallel >Stefan.log&
