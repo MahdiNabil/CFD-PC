@@ -23,5 +23,5 @@ mv 0/alpha1.org 0/alpha1
 setFields
 decomposePar -force
 rm -r Bubble_Condensation.dat
-mpirun -np 12 interThermalPhaseChangeFoam -parallel >BubbleCondensation.log&
+mpirun -np 6 interThermalPhaseChangeFoam -parallel >BubbleCondensation.log&
 

@@ -14,18 +14,6 @@ FoamFile
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-
-//Some dimensions here
-;       //Cavity radius
-;      //Cavity Height
-;      //Main domain radius (width/2)
-;      //Main domain height
-//Discretization params
-;        //Cavity x-direction
-;        //Cavity y-direction
-;       //Main-zone x-direction
-;       //Main-zone y-direction
-
 convertToMeters 1;
 
 vertices        
@@ -45,19 +33,6 @@ vertices
 blocks          
 (
 hex ( 0  3  7  4  1  2  6  5) (90 200 1) simpleGrading (0.25 1 1)      //00
-/*
-	hex ( 0  3  7  4  1  2  6  5) (90 200 1) simpleGrading //(1 1 1)      //00
-    (
-        5                  // x-direction expansion ratio
-        (
-            (0.35 0.2 0.25)    // 35% y-dir, 20% cells, expansion = 0.25
-            (0.3 0.6 1)    // 30% y-dir, 60% cells, expansion = 1
-            (0.35 0.2 4) // 35% y-dir, 20% cells, expansion = 0.25 (1/4)
-        )
-        1                  // z-direction expansion ratio
-    )
-
-*/
 );
 
 edges           
