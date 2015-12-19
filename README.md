@@ -23,11 +23,11 @@ If you use this solver in a project or scholarly work, we ask that you include a
 ...
 
 ## Tutorial cases
-Horizontal Film Condensation (Stefan Problem)
-Smooth Nusselt Falling Film Condensation
-Wavy Nusselt Falling Film Condensation
-Two-dimensional Nucleate Boiling in a Cavity
-Bubble Condensation
+* Horizontal Film Condensation (Stefan Problem)
+* Smooth Nusselt Falling Film Condensation
+* Wavy Nusselt Falling Film Condensation
+* Two-dimensional Nucleate Boiling in a Cavity
+* Bubble Condensation
 
 ## Algorithm
 Flow Simulation Algorithm Summary:
@@ -61,10 +61,10 @@ o	HiLoNoPCV – A modified version of HiLoRelaxed that sets   to 0. This model c
 o	Yang – An implementation of the empirical rate parameter model of Yang et al. (2008).
 
 ## Example applications
-Film Boiling over Heat Generating Rod:        https://www.youtube.com/watch?v=HrVNSpSxnY4
-Two-Phase Flow Jet with Heat Transfer:        https://www.youtube.com/watch?v=aR9arq0Sc-0
-Two-Phase Flow between Two Concentric Pipes:  https://www.youtube.com/watch?v=SAP9-ohW3TY
-Water Discharge in a Liquid Container:        https://www.youtube.com/watch?v=jRguJd2EDgg
+* Film Boiling over Heat Generating Rod:        https://www.youtube.com/watch?v=HrVNSpSxnY4
+* Two-Phase Flow Jet with Heat Transfer:        https://www.youtube.com/watch?v=aR9arq0Sc-0
+* Two-Phase Flow between Two Concentric Pipes:  https://www.youtube.com/watch?v=SAP9-ohW3TY
+* Water Discharge in a Liquid Container:        https://www.youtube.com/watch?v=jRguJd2EDgg
 
 ## Contribute
 MTFE welcomes collaboration with other investigators studying phase-change flows. Please [contact us](mailto:Alex.Rattner@psu.edu) if you are interested in expanding the solver or find bugs to correct. We can also provide limited support (on a case-by-case basis) or consulting servies.
