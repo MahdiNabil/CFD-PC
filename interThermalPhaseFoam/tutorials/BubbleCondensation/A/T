@@ -17,15 +17,15 @@ FoamFile
 
 dimensions      [0 0 0 1 0 0 0];
 
-internalField uniform 96;
+internalField uniform 99;
 
 boundaryField
 {
     Bottom
     {
         type            inletOutlet;
-        inletValue      uniform 96;
-        value           uniform 96;
+        inletValue      uniform 95;
+        value           uniform 95;
 	}
 
     FarStream
@@ -36,7 +36,7 @@ boundaryField
     Top
     {
 		type            fixedValue;
-		value           uniform 96;
+		value           uniform 95;
     }
 
     Axis
