@@ -17,30 +17,6 @@ FoamFile
 
 solvers
 {
-    //pcorr
-    //{
-    //    solver          PCG;
-    //    preconditioner  DIC;
-    //    tolerance       1e-10;
-    //    relTol          0;
-    //}
-
-    //p_rgh
-    //{
-    //    solver          PCG;
-    //    preconditioner  DIC;
-    //    tolerance       1e-07;
-    //    relTol          0.05;
-    //}
-
-    //p_rghFinal
-    //{
-    //    solver          PCG;
-    //    preconditioner  DIC;
-    //    tolerance       1e-07;
-    //    relTol          0;
-    //}
-
 	//Needed for implicit solve of alpha1 in phase change code
     alpha1
     {
@@ -115,33 +91,6 @@ solvers
         relTol          0;
         maxIter         25;
     }
-
-
-
-
-//    U
-//    {
-//        solver          PBiCG;
-//        preconditioner  DILU;
-//        tolerance       1e-06;
-//        relTol          0;
-//    }
-
-//    k
-//    {
-//        solver          PBiCG;
-//        preconditioner  DILU;
-//        tolerance       1e-08;
-//        relTol          0;
-//    }
-
-//    epsilon
-//    {
-//        solver          PBiCG;
-//        preconditioner  DILU;
-//        tolerance       1e-08;
-//        relTol          0;
-//    }
 
     "(U|k|epsilon)"
     {

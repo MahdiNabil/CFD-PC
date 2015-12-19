@@ -50,3 +50,5 @@ Temporary Items
 linux64GccDPOpt
 linux64IccDPOpt
 *.log
+dynamicCode
+processor[0-9]*
