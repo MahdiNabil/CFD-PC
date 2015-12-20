@@ -22,7 +22,7 @@ If you use this solver in a project or scholarly work, we ask that you include a
 ## Installation
 The installation process is straightforward. The bash script "Allwmake.sh" (https://github.com/MahdiNabil/CFD-PC/blob/master/interThermalPhaseFoam/Allwmake.sh), i.e. the only file that needs to be executed, is included in the main folder "interThermalPhaseFoam". Line 4 of this script builds "incompressibleTwoPhaseThermalMixture" library which will be dynamically linked to OpenFOAM. The next line will build the solver "interThermalPhaseChangeFoam".
 The interested users only need to go through the below steps to be able to use this solver:
-* Pull the "CFD-PC" folder from the Github repository is a directory of their choice: 
+* Pull the "CFD-PC" folder from the Github repository in a directory of their choice: 
        * $ git pull https://github.com/MahdiNabil/CFD-PC.git
 * Go into the directory of the main folder: 
        * $ cd ../CFD-PC/interThermalPhaseFoam
