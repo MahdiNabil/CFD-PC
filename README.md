@@ -20,13 +20,21 @@ interThermalPhaseChangeFoam is an extensible open source volume-of-fluid (VOF) b
 If you use this solver in a project or scholarly work, we ask that you include a citation for [Rattner and Garimella (2014)](http://heattransfer.asmedigitalcollection.asme.org/article.aspx?articleid=1829850). 
 
 ## Installation
-...
+The installation process is straightforward. The bash script "Allwmake.sh" (https://github.com/MahdiNabil/CFD-PC/blob/master/interThermalPhaseFoam/Allwmake.sh), which is the only file that needs to be executed, is included in the folder "interThermalPhaseFoam". Line 4 of this script builds "incompressibleTwoPhaseThermalMixture" library which will be dynamically linked to OpenFOAM. Then, line 5 will build the solver "interThermalPhaseChangeFoam".
+The interested user should just go through the below steps to be able to use this solver:
+1. Pull the "CFD-PC" folder from the Github repository is a directory of their choice:  
+* $ git pull https://github.com/MahdiNabil/CFD-PC.git
+2. Go into the directory of the main folder:
+* $ cd ../CFD-PC/interThermalPhaseFoam
+3. Executing the bash script to build both the dynamic library and solver:
+* $ chmod +x Allwmake.sh
+* $ ./Allwmake.sh
 
 ## Tutorial cases
 * Horizontal Film Condensation (Stefan Problem): In this test case, the dynamic effects are relatively negligible. Vapor condenses to form a liquid film on the top surface of an isothermal plate (at Tw) in a pure atmosphere. The analytical solution is readily available for this well known Stefan problem.
-* Smooth Laminar Nusselt Falling Film Condensation: Smooth laminar falling film condensation on a vertical isothermal wall (at Tw) represents a phase-change configuration with more complex dynamics, but for which analytical solutions can still be obtained based on Nusselt analysis.
+* Smooth Laminar Nusselt Falling Film Condensation: Condensation of smooth laminar falling film on a vertical isothermal wall (at Tw) represents a phase-change configuration with more complex dynamics, but for which analytical solutions can still be obtained based on Nusselt analysis.
 * Wavy Laminar Nusselt Falling Film Condensation: Smooth falling films on vertical plates are inherently unstable, and wavy behavior is initiated at finite Reynolds numbers. Waves tend to generate thin film regions with reduced heat-transfer resistance, yielding increased condensation rates. 
-* Two-dimensional Nucleate Boiling in a Cavity: This test case shows the process of nucleate boiling in a single cavity due to vapor bubble growth and detachment of the heated bottom surface. 
+* Two-dimensional Nucleate Boiling in a Cavity: This test case shows the process of nucleate boiling in a single cavity due to vapor bubble growth and detachment from the heated bottom surface. 
 * Bubble Condensation: This test case represents the phase change (shrinkage) of a vapor bubble condensing as it rises in a column of liquid water (due to Buoyancy force).
 
 ## Algorithm
