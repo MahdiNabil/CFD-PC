@@ -22,11 +22,13 @@ If you use this solver in a project or scholarly work, we ask that you include a
 ## Installation
 The installation process is straightforward. The bash script "Allwmake.sh" (https://github.com/MahdiNabil/CFD-PC/blob/master/interThermalPhaseFoam/Allwmake.sh), which is the only file that needs to be executed, is included in the folder "interThermalPhaseFoam". Line 4 of this script builds "incompressibleTwoPhaseThermalMixture" library which will be dynamically linked to OpenFOAM. Then, line 5 will build the solver "interThermalPhaseChangeFoam".
 The interested users should just go through the below steps to be able to use this solver:
-* Pull the "CFD-PC" folder from the Github repository is a directory of their choice: $ git pull https://github.com/MahdiNabil/CFD-PC.git
-* Go into the directory of the main folder: $ cd ../CFD-PC/interThermalPhaseFoam
+* Pull the "CFD-PC" folder from the Github repository is a directory of their choice: 
+       * $ git pull https://github.com/MahdiNabil/CFD-PC.git
+* Go into the directory of the main folder: 
+       * $ cd ../CFD-PC/interThermalPhaseFoam
 * Executing the bash script to build both the dynamic library and solver:
-$ chmod +x Allwmake.sh
-$ ./Allwmake.sh
+       *$ chmod +x Allwmake.sh
+       *$ ./Allwmake.sh
 
 ## Tutorial cases
 * Horizontal Film Condensation (Stefan Problem): In this test case, the dynamic effects are relatively negligible. Vapor condenses to form a liquid film on the top surface of an isothermal plate (at Tw) in a pure atmosphere. The analytical solution is readily available for this well known Stefan problem.
