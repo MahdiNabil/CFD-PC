@@ -70,7 +70,8 @@ A number of  phase change models are included with the solver, and are described
 MTFE welcomes collaboration with other investigators studying phase-change flows. Please [contact us](mailto:Alex.Rattner@psu.edu) if you are interested in expanding the solver or find bugs to correct. We can also provide limited support (on a case-by-case basis) or consulting servies.
 
 ## License
-Information about the GPL V3.0 license is included in the "GNU License" file in the main CFD-PC directory.
+Information about the GPL V3.0 license is included in the "GNU License" file in the main CFD-PC directory:
+https://github.com/MahdiNabil/CFD-PC/blob/master/GNU%20Licence
 
 ## References
 1. Rattner, A.S., 2015. Single-pressure absorption refrigeration systems for low-source-temperature applications. Ph.D. Thesis, Georgia Institute of Technology, Atlanta, GA. [Link](https://smartech.gatech.edu/handle/1853/53912).
