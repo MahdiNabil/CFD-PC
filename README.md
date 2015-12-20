@@ -27,8 +27,8 @@ The interested users should just go through the below steps to be able to use th
 * Go into the directory of the main folder: 
        * $ cd ../CFD-PC/interThermalPhaseFoam
 * Executing the bash script to build both the dynamic library and solver:
-       *$ chmod +x Allwmake.sh
-       *$ ./Allwmake.sh
+       * $ chmod +x Allwmake.sh
+       * $ ./Allwmake.sh
 
 ## Tutorial cases
 * Horizontal Film Condensation (Stefan Problem): In this test case, the dynamic effects are relatively negligible. Vapor condenses to form a liquid film on the top surface of an isothermal plate (at Tw) in a pure atmosphere. The analytical solution is readily available for this well known Stefan problem.
