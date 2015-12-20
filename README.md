@@ -23,11 +23,11 @@ If you use this solver in a project or scholarly work, we ask that you include a
 ...
 
 ## Tutorial cases
-* Horizontal Film Condensation (Stefan Problem)
-* Smooth Nusselt Falling Film Condensation
-* Wavy Nusselt Falling Film Condensation
-* Two-dimensional Nucleate Boiling in a Cavity
-* Bubble Condensation
+* Horizontal Film Condensation (Stefan Problem): In this test case, the dynamic effects are relatively negligible. Vapor condenses to form a liquid film on the top surface of an isothermal plate (at Tw) in a pure atmosphere. The analytical solution is readily available for this well known Stefan problem.
+* Smooth Laminar Nusselt Falling Film Condensation: Smooth laminar falling film condensation on a vertical isothermal wall (at Tw) represents a phase-change configuration with more complex dynamics, but for which analytical solutions can still be obtained based on Nusselt analysis.
+* Wavy Laminar Nusselt Falling Film Condensation: Smooth falling films on vertical plates are inherently unstable, and wavy behavior is initiated at finite Reynolds numbers. Waves tend to generate thin film regions with reduced heat-transfer resistance, yielding increased condensation rates. 
+* Two-dimensional Nucleate Boiling in a Cavity: This test case shows the process of nucleate boiling in a single cavity due to vapor bubble growth and detachment of the heated bottom surface. 
+* Bubble Condensation: This test case represents the phase change (shrinkage) of a vapor bubble condensing as it rises in a column of liquid water (due to Buoyancy force).
 
 ## Algorithm
 At the beginning, the solver loads the mesh, reads in fields and boundary conditions, and initializes submodels for two-phase fluid properties, turbulence (if selected), and the phase-change model. During this initialization stage, the phase-change model constructs the graph of mesh-cell connectivity used to identify interface cells. The main solver loop is then initiated. First, the time step is
