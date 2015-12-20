@@ -20,7 +20,7 @@ interThermalPhaseChangeFoam is an extensible open source volume-of-fluid (VOF) b
 If you use this solver in a project or scholarly work, we ask that you include a citation for [Rattner and Garimella (2014)](http://heattransfer.asmedigitalcollection.asme.org/article.aspx?articleid=1829850). 
 
 ## Installation
-The installation process is straightforward. The bash script "Allwmake.sh" (https://github.com/MahdiNabil/CFD-PC/blob/master/interThermalPhaseFoam/Allwmake.sh), i.e. the only file that needs to be executed, is included in the folder "interThermalPhaseFoam". Line 4 of this script builds "incompressibleTwoPhaseThermalMixture" library which will be dynamically linked to OpenFOAM. The next line will build the solver "interThermalPhaseChangeFoam".
+The installation process is straightforward. The bash script "Allwmake.sh" (https://github.com/MahdiNabil/CFD-PC/blob/master/interThermalPhaseFoam/Allwmake.sh), i.e. the only file that needs to be executed, is included in the main folder "interThermalPhaseFoam". Line 4 of this script builds "incompressibleTwoPhaseThermalMixture" library which will be dynamically linked to OpenFOAM. The next line will build the solver "interThermalPhaseChangeFoam".
 The interested users only need to go through the below steps to be able to use this solver:
 * Pull the "CFD-PC" folder from the Github repository is a directory of their choice: 
        * $ git pull https://github.com/MahdiNabil/CFD-PC.git
