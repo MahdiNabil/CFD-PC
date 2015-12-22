@@ -31,7 +31,7 @@ vertices
 
 blocks          
 (
-	hex ( 0  1  2  3  4  5  6  7) (5 300 1) simpleGrading (1 3 1)	//00
+	hex ( 0  1  2  3  4  5  6  7) (5 100 1) simpleGrading (1 3 1)	//00
 );
 
 edges           
@@ -75,7 +75,6 @@ boundary
 		(
 			( 0  4  7  3)
 		);
-		neighbourPatch   RightSide;
 	}
 	
 	RightSide
@@ -85,7 +84,6 @@ boundary
 		(
 			( 1  2  6  5)
 		);
-		neighbourPatch   LeftSide;
 	}
 );
 

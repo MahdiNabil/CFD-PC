@@ -43,17 +43,18 @@ phase2
     cp				cp [ 0 2 -2 -1 0 0 0] 1819;
 }
 
-sigma           sigma [ 1 0 -2 0 0 0 0 ] 0.00987;
+sigma           sigma [ 1 0 -2 0 0 0 0 ] 0.01;
 T_0			T_0 [0 0 0 1 0 0 0] 298;
 
 
 thermalPhaseChange
 {
-	model       HiLoFacePair;
+	model       HiLoRelaxed;
 	h_lv		h_lv  [0 2 -2 0 0 0 0 ] 329365;
 	T_sat		T_sat [0 0 0 1 0 0 0] 298;
-	CondThresh  0.99; //Interface threshold for condensing cell pairs
+	CondThresh  0.75; //Interface threshold for condensing cell pairs
 	EvapThresh  0.01; //Interface threshold for evaporating cell pairs
+	RelaxFac    1.0; //No under-relaxation for now
 }
 
 surfaceTensionForce

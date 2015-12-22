@@ -1,10 +1,13 @@
 #!/bin/bash
+cd ${0%/*} || exit 1    # run from this directory
+
+# Source tutorial clean functions
+. $WM_PROJECT_DIR/bin/tools/CleanFunctions
 
 #Cleanup script
-rm -r processor*
 rm -r dynamicCode
 rm -r 0/*
-rm constant/polyMesh/blockMeshDict
+cleanTimeDirectories
 rm constant/polyMesh/faces
 rm constant/polyMesh/neighbour
 rm constant/polyMesh/owner

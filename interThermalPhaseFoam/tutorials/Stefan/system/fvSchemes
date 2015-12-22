@@ -23,23 +23,17 @@ ddtSchemes
 interpolationSchemes
 {
     default         linear;
-	//default           midPoint;
 }
 
 divSchemes
 {
-    div(rhoPhi,U)        Gauss linearUpwind grad(U);
-    div(phi,alpha)  Gauss vanLeer;
+    div(rhoPhi,U)    Gauss limitedLinearV 1;
+    div(phi,alpha)   Gauss vanLeer;
     div(phirb,alpha) Gauss interfaceCompression;
-    div(phi,k)           Gauss linearUpwind grad(k);
-    div(phi,epsilon) Gauss upwind;
-    div(phi,R)      Gauss upwind;
-    div(R)          Gauss linear;
-    div(phi,nuTilda) Gauss upwind;
-    div(phi,H)       Gauss upwind;
+    div(R)           Gauss linear;
     // Added by MN
     div((muEff*dev(T(grad(U))))) Gauss linear;
-    div(rhoPhi,H)        Gauss upwind;
+    div(rhoPhi,H)        Gauss limitedLinear 1;
     default		Gauss linear;
 }
 
@@ -60,7 +54,6 @@ snGradSchemes
     snGrad(rho)          limited 0.5;
     snGrad(alpha1)       limited 0.5;
     snGrad(T)            limited 0.5;
-	snGrad(pc)           limited 0.5;
 }
 
 fluxRequired

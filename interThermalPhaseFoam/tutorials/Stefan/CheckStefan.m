@@ -20,18 +20,17 @@ Tw		  =	293;                       % Wall temperature [K]
 %Read in data from file:
 D       		  = load('LiquidAccumulation.dat');
 t        		  = D(:,1);                    %s
-Vol_Liquid        = D(:,2);                    %m^3
-Vol_Total         = D(:,3);                    %m^3
+dt                = D(:,2);                    %s
+delta_sim         = D(:,3);                    %m
 
 %Compare with analytical predictions
-IP_an 	  = sqrt((2.*t).*(a_L).*((0.5+(L./(c_L.*(Tsat-Tw)))).^-1));   %Analytical solution for interface position
+delta_an = sqrt((2.*t).*(a_L).*((0.5+(L./(c_L.*(Tsat-Tw)))).^-1));   %Analytical solution for interface position
+
+%Compute relative integrated errror
+delta_t_int_sim = sum(dt.*delta_sim);
+delta_t_int_an  = sum(dt.*delta_an);
 
 %Compare result:
-dx		  		      = 0.002; 						%m
-dz		 			  = 0.0005;						%m
-Area    			  = dx*dz;						%m^2
-IP_sim			      = Vol_Liquid/Area;		    %m
-
-disp(sprintf('Intergface position simulation: %g m', IP_sim));
-disp(sprintf('Intergface position analytical: %g m', IP_an));
-disp(sprintf('Relative error: %g', abs(IP_sim-IP_an)/abs(IP_an) ));
+disp(sprintf('Final Interface position simulation: %g m', delta_sim(end)));
+disp(sprintf('Final Interface position analytical: %g m', delta_an(end)));
+disp(sprintf('Relative integrated error: %g', abs(delta_t_int_sim - delta_t_int_an)/delta_t_int_an ));
