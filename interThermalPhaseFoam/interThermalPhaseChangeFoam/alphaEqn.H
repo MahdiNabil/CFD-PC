@@ -32,7 +32,8 @@
                 runTime.timeName(),
                 mesh
             ),
-			0*divU
+			//0*divU
+			divU
         );
 
 		//alpha1 source term due to condensation and divergence of velocity
