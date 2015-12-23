@@ -111,9 +111,6 @@ functions
 
 libs (
     "libOpenFOAM.so"
-    "libgroovyBC.so"
-    "libsimpleSwakFunctionObjects.so"
-    "libswakFunctionObjects.so"
     "libtwoPhaseProperties.so"
     "libinterfaceProperties.so"
     );
