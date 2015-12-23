@@ -20,7 +20,7 @@ interThermalPhaseChangeFoam is an extensible open source volume-of-fluid (VOF) b
 If you use this solver in a project or scholarly work, we ask that you include a citation for [Rattner and Garimella (2014)](http://heattransfer.asmedigitalcollection.asme.org/article.aspx?articleid=1829850). 
 
 ## Installation
-The current version of the code uses the [OpenFOAM 2.4.0 libraries](http://www.openfoam.org/archive/2.4.0/download/source.php). The code has been developed and tested using a source pack installation, but should be compatible with a installation using a package manager (i.e., [for Ubuntu/Debian](http://www.openfoam.org/archive/2.4.0/download/ubuntu.php)). Some of the tutorial cases use [swak4Foam](https://openfoamwiki.net/index.php/Contrib/swak4Foam) to initialize cases and set boundary conditions. [GNU Octave](https://www.gnu.org/software/octave/) can be used to run validation scripts in the tutorial cases.
+The current version of the code uses the [OpenFOAM 2.4.0 libraries](http://www.openfoam.org/archive/2.4.0/download/source.php). The code has been developed and tested using a source pack installation, but should be compatible with a installation using a package manager (i.e., [for Ubuntu/Debian](http://www.openfoam.org/archive/2.4.0/download/ubuntu.php)). Some of the tutorial cases use [swak4Foam](https://openfoamwiki.net/index.php/Contrib/swak4Foam) to initialize fields and set boundary conditions. [GNU Octave](https://www.gnu.org/software/octave/) can be used to run validation scripts in the tutorial cases.
 
 **To Install:**
 Navigate to a working folder in a shell terminal, clone the git code repository, and build.
@@ -37,7 +37,7 @@ The installation can be tested using the tutorial cases described below.
 ### Stefan (Horizontal Film Condensation)
 This tutorial case demonstrates horizontal film condensation on an isothermal subcooled surface (Stefan problem). In this test case, the dynamic effects are relatively minor. Vapor condenses to form a liquid film on the top surface of an isothermal plate (at Tw) in a pure atmosphere. The analytical solution is readily available.
 
-To run the case, call the `InitScript.sh` script. This will generate the mesh, initialize the fields, and begin the simulation. Results (film thickness) are logged to an output `.dat` file during the run. After completing or ending the run, results can be validated with the provide octave script. To run the validation check, call: `octave CheckStefan.m`. Errors are on the order of 10% early in the simulation due to the relative coarseness of the mesh, but reduce as film thickness grows. The case can be reset using the `cleanup.sh` script. An image of the output is presented below.
+To run the case, call the `InitScript.sh` script. This will generate the mesh, initialize the fields, and begin the simulation. Results (film thickness) are logged to an output `.dat` file during the run. After completing or ending the run, results can be validated with the provided octave script. To run the validation check, call: `octave CheckStefan.m`. Errors are on the order of 10% early in the simulation due to the relative coarseness of the mesh, but reduce as film thickness grows. The case can be reset using the `cleanup.sh` script. An image of the output is presented below.
 
 ![Stefan Problem Example](http://sites.psu.edu/mtfe/wp-content/uploads/sites/23865/2015/12/Stefan_Snapshot.png)
 
