@@ -20,15 +20,17 @@ interThermalPhaseChangeFoam is an extensible open source volume-of-fluid (VOF) b
 If you use this solver in a project or scholarly work, we ask that you include a citation for [Rattner and Garimella (2014)](http://heattransfer.asmedigitalcollection.asme.org/article.aspx?articleid=1829850). 
 
 ## Installation
-The installation process is straightforward. The bash script "Allwmake.sh" (https://github.com/MahdiNabil/CFD-PC/blob/master/interThermalPhaseFoam/Allwmake.sh), i.e. the only file that needs to be executed, is included in the main folder "interThermalPhaseFoam". Line 4 of this script builds "incompressibleTwoPhaseThermalMixture" library which will be dynamically linked to OpenFOAM. The next line will build the solver "interThermalPhaseChangeFoam".
-The interested users only need to go through the below steps to be able to use this solver:
-* Pull the "CFD-PC" folder from the Github repository in a directory of their choice: 
-       * $ git pull https://github.com/MahdiNabil/CFD-PC.git
-* Go into the directory of the main folder: 
-       * $ cd ../CFD-PC/interThermalPhaseFoam
-* Execute the provided bash script to build both the dynamic library and solver:
-       * $ chmod +x Allwmake.sh
-       * $ ./Allwmake.sh
+The current version of the code uses the [OpenFOAM 2.4.0 libraries](http://www.openfoam.org/archive/2.4.0/download/source.php). The code has been developed and tested using a source pack installation, but should be compatible with a installation using a package manager (i.e., [for Ubuntu/Debian](http://www.openfoam.org/archive/2.4.0/download/ubuntu.php)). Some of the tutorial cases use [swak4Foam](https://openfoamwiki.net/index.php/Contrib/swak4Foam) to initialize cases and set boundary conditions. [GNU Octave](https://www.gnu.org/software/octave/) can be used to run validation scripts in the tutorial cases.
+
+**To Install:**
+Navigate to a working folder in a shell terminal, clone the git code repository, and build.
+```
+$ git clone https://github.com/MahdiNabil/CFD-PC.git CFD-PC
+$ cd CFD-PC/interThermalPhaseFoam
+$ source Allwmake.sh
+```
+
+The installation can be tested using the tutorial cases described below.
 
 ## Tutorial cases
 ### Stefan (Horizontal Film Condensation)
