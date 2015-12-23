@@ -22,5 +22,4 @@ collapseEdges -overwrite
 cp -r A/* 0/
 mv 0/alpha1.org 0/alpha1
 setFields
-decomposePar -force
-mpirun -np 12 interThermalPhaseChangeFoam -parallel >NucleateBoiling2D.log&
+interThermalPhaseChangeFoam

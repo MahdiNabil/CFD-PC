@@ -73,7 +73,7 @@ functions
 			//***********************************************************************
 			//Next, total phase change heating rate
 			const volScalarField& Q_pc = mesh().lookupObject<volScalarField>("PhaseChangeHeat");
-			const scalar Q_pcInt = gSum( -mesh().V() * Q_pc.internalField() );  // [W]
+			const scalar Q_pcInt = gSum( mesh().V() * Q_pc.internalField() );  // [W]
 			//***********************************************************************
 
 
@@ -81,18 +81,14 @@ functions
 			//Now get void fraction
 			const volScalarField& alpha1 = mesh().lookupObject<volScalarField>("alpha1");
 
-			//Sum up to get hydrostatic DP
 			const scalar V_Vapor = gSum( (1.0-alpha1.internalField()) * mesh().V() );
-			const scalar V_total  = gSum( mesh().V() );
-			const scalar VoidFrac = V_Vapor/V_total;
 			//***********************************************************************
 
 
 			//***********************************************************************
-			//Now get void fraction
+			//Now get bubble velocity
 			const volVectorField& U = mesh().lookupObject<volVectorField>("U");
 
-			//Sum up to get hydrostatic DP
 			const vector U_Vapor = gSum( (1.0-alpha1.internalField()) * U.internalField() * mesh().V() );
 
 			const scalar Uy_Vapor = U_Vapor[1]/V_Vapor;
@@ -107,7 +103,7 @@ functions
 				std::ofstream fs;
 				fs.open ("Nucleate_Boiling.dat", std::fstream::app);
 				fs.precision(8);
-				fs << t << "\t" << Q_pcInt << "\t" << VoidFrac << "\t" << Uy_Vapor << "\n" ;
+				fs << t << "\t" << dt << "\t" << Q_pcInt << "\t" << V_Vapor << "\t" << Uy_Vapor << "\n" ;
 				fs.close();
 			}
 
