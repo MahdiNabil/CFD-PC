@@ -8,4 +8,4 @@ rm constant/polyMesh/faces
 rm constant/polyMesh/neighbour
 rm constant/polyMesh/owner
 rm constant/polyMesh/points
-rm WallHeatFluxSST.dat
+rm WallHeatFlux.dat
