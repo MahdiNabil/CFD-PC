@@ -34,12 +34,17 @@ The interested users only need to go through the below steps to be able to use t
 ### Stefan (Horizontal Film Condensation)
 This tutorial case demonstrates horizontal film condensation on an isothermal subcooled surface (Stefan problem). In this test case, the dynamic effects are relatively minor. Vapor condenses to form a liquid film on the top surface of an isothermal plate (at Tw) in a pure atmosphere. The analytical solution is readily available.
 
-To run the case, call the `InitScript.sh` script. This will generate the mesh, initialize the fields, and begin the simulation. Results (film thickness) are logged to an output `.dat` file during the run. After completing or ending the run, results can be validated with the provide octave script. To run the validation check, call: `octave CheckStefan.m`. Errors are on the order of 10% early in the simulation due to the relative coarseness of the mesh, but reduce as film thickness grows. An image of the output is presented below.
+To run the case, call the `InitScript.sh` script. This will generate the mesh, initialize the fields, and begin the simulation. Results (film thickness) are logged to an output `.dat` file during the run. After completing or ending the run, results can be validated with the provide octave script. To run the validation check, call: `octave CheckStefan.m`. Errors are on the order of 10% early in the simulation due to the relative coarseness of the mesh, but reduce as film thickness grows. The case can be reset using the `cleanup.sh` script. An image of the output is presented below.
 
 ![Stefan Problem Example](http://sites.psu.edu/mtfe/wp-content/uploads/sites/23865/2015/12/Stefan_Snapshot.png)
 
+### NusseltSmooth (Smooth Falling Film Condensation)
+This tutorial demonstrates condensation of a smooth 2D falling film (Nusselt problem). A mechanistic analytical solution is available for this case. The vertical wall is isothermal, and subcooled. A small vane is employed to prevent inlet film waviness.
 
-* Smooth Laminar Nusselt Falling Film Condensation: Condensation of smooth laminar falling film on a vertical isothermal wall (at Tw) represents a phase-change configuration with more complex dynamics, but for which analytical solutions can still be obtained based on Nusselt analysis.
+The case can be started using the `InitScript.sh` script. The script uses [swak4Foam](https://openfoamwiki.net/index.php/Contrib/swak4Foam) to initialize the film . By default, this script will start a 4-way parallel simulation. Results can be checked using the provided octave script (run `octave CheckNusselt.m`). Wall heat flux errors are generally < 1% after sufficient startup time. Representative film profile and temperature field results are presented below.
+
+![Nusselt Smooth Problem Example](http://sites.psu.edu/mtfe/wp-content/uploads/sites/23865/2015/12/NusseltSmooth_Snapshot.png)
+
 * Wavy Laminar Nusselt Falling Film Condensation: Smooth falling films on vertical plates are inherently unstable, and wavy behavior is initiated at finite Reynolds numbers. Waves tend to generate thin film regions with reduced heat-transfer resistance, yielding increased condensation rates. 
 * Two-dimensional Nucleate Boiling in a Cavity: This test case shows the process of nucleate boiling in a single cavity due to vapor bubble growth and detachment from the heated bottom surface. 
 * Bubble Condensation: This test case represents the phase change (shrinkage) of a vapor bubble condensing as it rises in a column of liquid water (due to Buoyancy force).
