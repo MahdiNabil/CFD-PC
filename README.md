@@ -16,6 +16,7 @@ interThermalPhaseChangeFoam is an extensible open source volume-of-fluid (VOF) b
 * Nucleate boiling
 
 ![Dropwise Condensation Example](http://sites.psu.edu/mtfe/wp-content/uploads/sites/23865/2015/04/DropwiseCond_Sigma_1E-3sm.gif)
+![Nucleate Boiling Example](http://sites.psu.edu/mtfe/wp-content/uploads/sites/23865/2015/04/NucBoilArray-Merge.gif)
 
 If you use this solver in a project or scholarly work, we ask that you include a citation for [Rattner and Garimella (2014)](http://heattransfer.asmedigitalcollection.asme.org/article.aspx?articleid=1829850). 
 
