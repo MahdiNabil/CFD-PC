@@ -18,6 +18,7 @@ fi
 
 makeAxialMesh -overwrite
 collapseEdges -overwrite
+mkdir -p 0
 cp -r A/* 0/
 mv 0/alpha1.org 0/alpha1
 setFields

@@ -1,7 +1,7 @@
 #!/bin/bash
 blockMesh
 checkMesh
-mkdir 0
+mkdir -p 0
 cp -r A/* 0/ 
 setFields
 decomposePar -force
