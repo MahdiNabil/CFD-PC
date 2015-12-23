@@ -20,16 +20,27 @@ interThermalPhaseChangeFoam is an extensible open source volume-of-fluid (VOF) b
 If you use this solver in a project or scholarly work, we ask that you include a citation for [Rattner and Garimella (2014)](http://heattransfer.asmedigitalcollection.asme.org/article.aspx?articleid=1829850). 
 
 ## Installation
-...
+The installation process is straightforward. The bash script "Allwmake.sh" (https://github.com/MahdiNabil/CFD-PC/blob/master/interThermalPhaseFoam/Allwmake.sh), i.e. the only file that needs to be executed, is included in the main folder "interThermalPhaseFoam". Line 4 of this script builds "incompressibleTwoPhaseThermalMixture" library which will be dynamically linked to OpenFOAM. The next line will build the solver "interThermalPhaseChangeFoam".
+The interested users only need to go through the below steps to be able to use this solver:
+* Pull the "CFD-PC" folder from the Github repository in a directory of their choice: 
+       * $ git pull https://github.com/MahdiNabil/CFD-PC.git
+* Go into the directory of the main folder: 
+       * $ cd ../CFD-PC/interThermalPhaseFoam
+* Execute the provided bash script to build both the dynamic library and solver:
+       * $ chmod +x Allwmake.sh
+       * $ ./Allwmake.sh
 
 ## Tutorial cases
-* Horizontal Film Condensation (Stefan Problem)
-* Smooth Nusselt Falling Film Condensation
-* Wavy Nusselt Falling Film Condensation
-* Two-dimensional Nucleate Boiling in a Cavity
-* Bubble Condensation
+* Horizontal Film Condensation (Stefan Problem): In this test case, the dynamic effects are relatively negligible. Vapor condenses to form a liquid film on the top surface of an isothermal plate (at Tw) in a pure atmosphere. The analytical solution is readily available for this well known Stefan problem.
+* Smooth Laminar Nusselt Falling Film Condensation: Condensation of smooth laminar falling film on a vertical isothermal wall (at Tw) represents a phase-change configuration with more complex dynamics, but for which analytical solutions can still be obtained based on Nusselt analysis.
+* Wavy Laminar Nusselt Falling Film Condensation: Smooth falling films on vertical plates are inherently unstable, and wavy behavior is initiated at finite Reynolds numbers. Waves tend to generate thin film regions with reduced heat-transfer resistance, yielding increased condensation rates. 
+* Two-dimensional Nucleate Boiling in a Cavity: This test case shows the process of nucleate boiling in a single cavity due to vapor bubble growth and detachment from the heated bottom surface. 
+* Bubble Condensation: This test case represents the phase change (shrinkage) of a vapor bubble condensing as it rises in a column of liquid water (due to Buoyancy force).
 
 ## Algorithm
+At the beginning, the solver loads the mesh, reads in fields and boundary conditions, and initializes submodels for two-phase fluid properties, turbulence (if selected), and the phase-change model. During this initialization stage, the phase-change model constructs the graph of mesh-cell connectivity used to identify interface cells. The main solver loop is then initiated. First, the time step is
+dynamically modified to ensure numerical stability. Next, the two-phase fluid mixture properties and turbulence quantities are updated. The phase-change model is then evaluated. The discretized phase-fraction equation is then solved for a user-defined number of subtime steps (typically 2–3) using the multidimensional universal limiter with explicit solution solver. This solver is included in the OpenFOAM library, and performs conservative solution of hyperbolic convective transport equations with defined bounds (0 and 1 for α1). Once the updated phase field is obtained, the program enters the pressure–velocity loop, in which p and u are corrected in an alternating fashion. The process of correcting the pressure and velocity fields in sequence is known as pressure implicit with splitting of operators (PISO). In the OpenFOAM environment, PISO is repeated for multiple iterations at each time step. This process is referred to as merged PISO- semi-implicit method for pressure-linked equations (SIMPLE), or the pressure-velocity loop (PIMPLE) process, where SIMPLE is an iterative pressure–velocity solution algorithm for steady flows. The PIMPLE continues for a user specified number of iterations.Finally, the thermal energy transport subsection is entered. First, the enthalpy field is reevaluated from the temperature field. Then for a user-defined number of steps (typically 2–3), alternating correction of the energy equation and update
+of the temperature field (T(h)) are performed. This process is employed because temperature and enthalpy are coupled, but are not directly proportional for many fluids, and thus cannot be solved together in a single system of equations. The main solver loop iterates until program termination. A summary of the simulation algorithm is presented below:
 * Flow Simulation Algorithm Summary:
   * Initialize simulation data and phase change model 
   * WHILE t<t_end DO
@@ -56,21 +67,24 @@ Two sample tutorial cases, i.e. Horizontal film condensation and Smooth Nusselt 
 ## Phase Change Models
 A number of  phase change models are included with the solver, and are described below:
 * HiLoRelaxed – An improved version of the model of Rattner and Garimella (2014) that determines the phase change heat sources so that interface cells recover the saturation temperature at each time step. This model performs a graph scan over mesh cells, and applies phase change on the two-cell thick interface layer about user-specified threshold values of α1. Different high and low threshold values for condensation and evaporation, respectively, can be specified, which has been found to reduce numerical smearing of the interface. Numerical under-relaxation of the phase change rate is supported, which can improve numerical stability.
-* HiLoRelaxedSplit – A modified version of the above model, which splits the liquid and vapor portions of  , and applies them on the respective sides of the interface (Rattner, 2015). This approach yields better conservation of the two phases, and reduces smearing of the interface during evaporation.
-* HiLoNoPCV – A modified version of HiLoRelaxed that sets   to 0. This model can yield accurate results with reduced CFL time step constraints for cases without significant vapor-phase effects on phase change (e.g., falling film condensation in a quiescent vapor medium).
+* HiLoRelaxedSplit – A modified version of the above model, which splits the liquid and vapor portions of the dilatation rate, and applies them on the respective sides of the interface (Rattner, 2015). This approach yields better conservation of the two phases, and reduces smearing of the interface during evaporation.
+* HiLoNoPCV – A modified version of HiLoRelaxed that sets the dilatation rate to 0. This model can yield accurate results with reduced CFL time step constraints for cases without significant vapor-phase effects on phase change (e.g., falling film condensation in a quiescent vapor medium).
+* HiLoNoPCVAlpha1 – A modified version of HiLoNoPCV that sets both the dilatation rate and phase fraction source term to 0. This model can also yield accurate results with reduced CFL time step constraints for cases without significant vapor-phase effects on phase change 
 * Yang – An implementation of the empirical rate parameter model of Yang et al. (2008).
 
 ## Example applications
-* Film Boiling over Heat Generating Rod:        https://www.youtube.com/watch?v=HrVNSpSxnY4
-* Two-Phase Flow Jet with Heat Transfer:        https://www.youtube.com/watch?v=aR9arq0Sc-0
-* Two-Phase Flow between Two Concentric Pipes:  https://www.youtube.com/watch?v=SAP9-ohW3TY
-* Water Discharge in a Liquid Container:        https://www.youtube.com/watch?v=jRguJd2EDgg
+* Progression of dropwise condensation for a moderate surface tension fluid     
+* Progression of dropwise condensation for a low surface tension fluid (transition to film condensation)
+* Simulation of nucleate boiling on a structured surface
+* Simulation of vapor absorption into solution flowing over rectangular cooled tubes (film colored by concentration)
+- For more information, please visit:  http://sites.psu.edu/mtfe/simulation-of-phase-change-flows/
 
 ## Contribute
 MTFE welcomes collaboration with other investigators studying phase-change flows. Please [contact us](mailto:Alex.Rattner@psu.edu) if you are interested in expanding the solver or find bugs to correct. We can also provide limited support (on a case-by-case basis) or consulting servies.
 
 ## License
-Information about the GPL V3.0 license is included in the "GNU License" file in the main CFD-PC directory.
+Information about the GPL V3.0 license is included in the "GNU License" file in the main CFD-PC directory:
+https://github.com/MahdiNabil/CFD-PC/blob/master/GNU%20Licence
 
 ## References
 1. Rattner, A.S., 2015. Single-pressure absorption refrigeration systems for low-source-temperature applications. Ph.D. Thesis, Georgia Institute of Technology, Atlanta, GA. [Link](https://smartech.gatech.edu/handle/1853/53912).
