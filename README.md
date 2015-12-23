@@ -17,8 +17,6 @@ interThermalPhaseChangeFoam is an extensible open source volume-of-fluid (VOF) b
 
 ![Dropwise Condensation Example](http://sites.psu.edu/mtfe/wp-content/uploads/sites/23865/2015/04/DropwiseCond_Sigma_1E-3sm.gif)
 
-![Nucleate Boiling Example](http://sites.psu.edu/mtfe/wp-content/uploads/sites/23865/2015/04/NucBoilArray-Merge.gif)
-
 If you use this solver in a project or scholarly work, we ask that you include a citation for [Rattner and Garimella (2014)](http://heattransfer.asmedigitalcollection.asme.org/article.aspx?articleid=1829850). 
 
 ## Installation
@@ -33,7 +31,14 @@ The interested users only need to go through the below steps to be able to use t
        * $ ./Allwmake.sh
 
 ## Tutorial cases
-* Horizontal Film Condensation (Stefan Problem): In this test case, the dynamic effects are relatively negligible. Vapor condenses to form a liquid film on the top surface of an isothermal plate (at Tw) in a pure atmosphere. The analytical solution is readily available for this well known Stefan problem.
+### Stefan (Horizontal Film Condensation)
+This tutorial case demonstrates horizontal film condensation on an isothermal subcooled surface (Stefan problem). In this test case, the dynamic effects are relatively minor. Vapor condenses to form a liquid film on the top surface of an isothermal plate (at Tw) in a pure atmosphere. The analytical solution is readily available.
+
+To run the case, call the `InitScript.sh` script. This will generate the mesh, initialize the fields, and begin the simulation. Results (film thickness) are logged to an output `.dat` file during the run. After completing or ending the run, results can be validated with the provide octave script. To run the validation check, call: `octave CheckStefan.m`. Errors are on the order of 10% early in the simulation due to the relative coarseness of the mesh, but reduce as film thickness grows. An image of the output is presented below.
+
+![Stefan Problem Example](http://sites.psu.edu/mtfe/wp-content/uploads/sites/23865/2015/12/Stefan_Snapshot.png)
+
+
 * Smooth Laminar Nusselt Falling Film Condensation: Condensation of smooth laminar falling film on a vertical isothermal wall (at Tw) represents a phase-change configuration with more complex dynamics, but for which analytical solutions can still be obtained based on Nusselt analysis.
 * Wavy Laminar Nusselt Falling Film Condensation: Smooth falling films on vertical plates are inherently unstable, and wavy behavior is initiated at finite Reynolds numbers. Waves tend to generate thin film regions with reduced heat-transfer resistance, yielding increased condensation rates. 
 * Two-dimensional Nucleate Boiling in a Cavity: This test case shows the process of nucleate boiling in a single cavity due to vapor bubble growth and detachment from the heated bottom surface. 
@@ -68,17 +73,21 @@ Two sample tutorial cases, i.e. Horizontal film condensation and Smooth Nusselt 
 
 ## Phase Change Models
 A number of  phase change models are included with the solver, and are described below:
-* HiLoRelaxed – An improved version of the model of Rattner and Garimella (2014) that determines the phase change heat sources so that interface cells recover the saturation temperature at each time step. This model performs a graph scan over mesh cells, and applies phase change on the two-cell thick interface layer about user-specified threshold values of α1. Different high and low threshold values for condensation and evaporation, respectively, can be specified, which has been found to reduce numerical smearing of the interface. Numerical under-relaxation of the phase change rate is supported, which can improve numerical stability.
-* HiLoRelaxedSplit – A modified version of the above model, which splits the liquid and vapor portions of the dilatation rate, and applies them on the respective sides of the interface (Rattner, 2015). This approach yields better conservation of the two phases, and reduces smearing of the interface during evaporation.
-* HiLoNoPCV – A modified version of HiLoRelaxed that sets the dilatation rate to 0. This model can yield accurate results with reduced CFL time step constraints for cases without significant vapor-phase effects on phase change (e.g., falling film condensation in a quiescent vapor medium).
-* HiLoNoPCVAlpha1 – A modified version of HiLoNoPCV that sets both the dilatation rate and phase fraction source term to 0. This model can also yield accurate results with reduced CFL time step constraints for cases without significant vapor-phase effects on phase change 
-* Yang – An implementation of the empirical rate parameter model of Yang et al. (2008).
+* **HiLoRelaxed** – An improved version of the model of Rattner and Garimella (2014) that determines the phase change heat sources so that interface cells recover the saturation temperature at each time step. This model performs a graph scan over mesh cells, and applies phase change on the two-cell thick interface layer about user-specified threshold values of α1. Different high and low threshold values for condensation and evaporation, respectively, can be specified, which has been found to reduce numerical smearing of the interface. Numerical under-relaxation of the phase change rate is supported, which can improve numerical stability.
+* **HiLoRelaxedSplit** – A modified version of the above model, which splits the liquid and vapor portions of the dilatation rate, and applies them on the respective sides of the interface (Rattner, 2015). This approach yields better conservation of the two phases, and reduces smearing of the interface during evaporation.
+* **HiLoNoPCV** – A modified version of HiLoRelaxed that sets the dilatation rate to 0. This model can yield accurate results with reduced CFL time step constraints for cases without significant vapor-phase effects on phase change (e.g., falling film condensation in a quiescent vapor medium).
+* **HiLoNoPCVAlpha1** – A modified version of HiLoNoPCV that sets both the dilatation rate and phase fraction source term to 0. This model can also yield accurate results with reduced CFL time step constraints for cases without significant vapor-phase effects on phase change 
+* **Yang** – An implementation of the empirical rate parameter model of Yang et al. (2008).
 
 ## Example applications
-* Progression of dropwise condensation for a moderate surface tension fluid     
+* Progression of dropwise condensation for a moderate surface tension fluid
+![Dropwise condensation, high sigma](http://sites.psu.edu/mtfe/wp-content/uploads/sites/23865/2015/04/DropwiseCond_Sigma_1E-3sm.gif)
 * Progression of dropwise condensation for a low surface tension fluid (transition to film condensation)
+![Dropwise condensation, low sigma](http://sites.psu.edu/mtfe/wp-content/uploads/sites/23865/2015/04/DropwiseCond_Sigma_1E-4sm.gif)
 * Simulation of nucleate boiling on a structured surface
+![Nucleate boiling](http://sites.psu.edu/mtfe/wp-content/uploads/sites/23865/2015/04/NucBoilArray-Merge.gif)
 * Simulation of vapor absorption into solution flowing over rectangular cooled tubes (film colored by concentration)
+![Falling film absorption](http://sites.psu.edu/mtfe/wp-content/uploads/sites/23865/2015/04/SaltTubesBenchmarksm.gif)
 - For more information, please visit:  http://sites.psu.edu/mtfe/simulation-of-phase-change-flows/
 
 ## Contribute
