@@ -118,6 +118,9 @@ MTFE welcomes collaboration with other investigators studying phase-change flows
 Information about the GPL V3.0 license is included in the "GNU License" file in the main CFD-PC directory:
 https://github.com/MahdiNabil/CFD-PC/blob/master/GNU%20Licence
 
+## Acknowledgements
+This research was generously supported, in part, by the US Department of Energy through the Krell Institute, and the National Energy Research Scientific Computing Center.
+
 ## References
 1. Rattner, A.S., 2015. Single-pressure absorption refrigeration systems for low-source-temperature applications. Ph.D. Thesis, Georgia Institute of Technology, Atlanta, GA. [Link](https://smartech.gatech.edu/handle/1853/53912).
 2. Rattner, A.S., Garimella, S., 2014. Simple mechanistically consistent formulation for volume-of-fluid based computations of condensing flows. Journal of Heat Transfer 136 (7): 71501-1–9. [DOI: 10.1115/1.4026808](http://heattransfer.asmedigitalcollection.asme.org/article.aspx?articleid=1829850).
