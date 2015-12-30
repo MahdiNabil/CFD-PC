@@ -23,7 +23,7 @@ startTime       0;
 
 stopAt          endTime;
 
-endTime         1.0;
+endTime         0.2; //This seems to go unstable a little later, we are not certain why yet...
 
 deltaT          1E-6;
 

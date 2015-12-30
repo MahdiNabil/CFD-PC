@@ -9,17 +9,17 @@ rho_L     = 550.6;                     %kg/m^3
 rho_V     = 9.12;                      %kg/m^3
 k_L       = 0.0892;                    %W/m-K
 mu_L      = 2.74E-7 * rho_L;           %kg/m-s
-c_L	  	  = 2446; 					   %J/kgK
-a_L		  = k_L/(rho_L*c_L);           %m^2/s
-L		  = 329365;                    %J/kg
+c_L  	  = 2446;                      %J/kgK
+a_L	  = k_L/(rho_L*c_L);           %m^2/s
+L	  = 329365;                    %J/kg
 
 %Boundary Conditions
-Tsat	  = 298;                       % Saturated temperature [K]
-Tw		  =	293;                       % Wall temperature [K]
+Tsat      = 298;                       % Saturated temperature [K]
+Tw        = 293;                       % Wall temperature [K]
 
 %Read in data from file:
-D       		  = load('LiquidAccumulation.dat');
-t        		  = D(:,1);                    %s
+D       	  = load('LiquidAccumulation.dat');
+t        	  = D(:,1);                    %s
 dt                = D(:,2);                    %s
 delta_sim         = D(:,3);                    %m
 
