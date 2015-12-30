@@ -27,7 +27,7 @@ Navigate to a working folder in a shell terminal, clone the git code repository,
 ```
 $ git clone https://github.com/MahdiNabil/CFD-PC.git CFD-PC
 $ cd CFD-PC/interThermalPhaseFoam
-$ git checkout tags/v2.4.0.1
+$ git checkout tags/v2.4.0.2
 $ source Allwmake.sh
 ```
 
@@ -51,7 +51,7 @@ The case can be started using the `InitScript.sh` script. The script uses [swak4
 ### NusseltWavy (Wavy Falling Film Condensation)
 This case demonstrates wavy falling film condensation on an isothermal subcooled vertical surface. A cyclic domain is employed to enable spontaneous development of waves (requires ~ 0.1 - 0.2 s to initiate). This case uses the sharp surface tension force model of Raeini et al. (2012) to evaluate surface tension effects with high accuracy. Additionally, the hydrostatic contributions are included in the pressure field to simplify definition of boundary conditions for this cyclic simulation. See the `controlDict` and `transportProperties` dictionaries for the flags that enable this behavior.
 
-The wavy film simulation can be initiated using the `InitScript.sh` script. Results can be checked using the `CheckWavy.m` script. No exact solutions are available for wavy film heat transfer, but results are comparable to those predicted using various empirical correlations. A representative output from the case is presented below.
+The wavy film simulation can be initiated using the `InitScript.sh` script. Results can be checked using the `CheckWavy.m` script. No exact solutions are available for wavy film heat transfer, but results are comparable to those predicted using various empirical correlations. This tutorial can become unstable if continued for longer runtimes (unbounded temperature field). We are currently investigating this issue. A representative output from the case is presented below.
 
 ![Nusselt Wavy Problem Example](http://sites.psu.edu/mtfe/wp-content/uploads/sites/23865/2015/12/WavyFilm_Snapshot-e1450901213756.png)
 
