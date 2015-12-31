@@ -32,7 +32,7 @@ vertices
 
 blocks          
 (
-	hex ( 0  1  2  3  4  5  6  7) (75 300 1) simpleGrading (5 1 1)	//00
+	hex ( 0  1  2  3  4  5  6  7) (100 200 1) simpleGrading (5 1 1)	//00
 );
 
 edges           
@@ -44,7 +44,7 @@ boundary
 	Inlet
 	{
 		type            cyclic;
-                neighbourPatch  BotOutlet;
+        neighbourPatch  BotOutlet;
 		faces
 		(
 			( 2  3  7  6)
@@ -54,7 +54,7 @@ boundary
 	BotOutlet
 	{
 		type            cyclic;
-                neighbourPatch  Inlet;
+        neighbourPatch  Inlet;
 		faces
 		(
 			( 0  1  5  4)

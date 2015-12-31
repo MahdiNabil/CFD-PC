@@ -21,8 +21,8 @@ FoamFile
     {
         type            cyclic;
         inGroups        1(cyclic);
-        nFaces          75;
-        startFace       44625;
+        nFaces          100;
+        startFace       39700;
         matchTolerance  0.0001;
         transform       unknown;
         neighbourPatch  BotOutlet;
@@ -31,8 +31,8 @@ FoamFile
     {
         type            cyclic;
         inGroups        1(cyclic);
-        nFaces          75;
-        startFace       44700;
+        nFaces          100;
+        startFace       39800;
         matchTolerance  0.0001;
         transform       unknown;
         neighbourPatch  Inlet;
@@ -40,22 +40,22 @@ FoamFile
     FreeStream
     {
         type            patch;
-        nFaces          300;
-        startFace       44775;
+        nFaces          200;
+        startFace       39900;
     }
     FrontNBack
     {
         type            empty;
         inGroups        1(empty);
-        nFaces          45000;
-        startFace       45075;
+        nFaces          40000;
+        startFace       40100;
     }
     LeftSide
     {
         type            wall;
         inGroups        1(wall);
-        nFaces          300;
-        startFace       90075;
+        nFaces          200;
+        startFace       80100;
     }
 )
 

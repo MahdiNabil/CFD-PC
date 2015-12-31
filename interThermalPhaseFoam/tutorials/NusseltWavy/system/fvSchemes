@@ -28,13 +28,18 @@ interpolationSchemes
 
 divSchemes
 {
-    div(rhoPhi,U)    Gauss limitedLinearV 1;
+    div(rhoPhi,U)        Gauss linearUpwind grad(U);
     div(phi,alpha)  Gauss vanLeer;
     div(phirb,alpha) Gauss interfaceCompression;
+    div(phi,k)           Gauss linearUpwind grad(k);
+    div(phi,epsilon) Gauss upwind;
+    div(phi,R)      Gauss upwind;
     div(R)          Gauss linear;
+    div(phi,nuTilda) Gauss upwind;
+    div(phi,H)       Gauss upwind;
     // Added by MN
     div((muEff*dev(T(grad(U))))) Gauss linear;
-    div(rhoPhi,H)        Gauss limitedLinear 1;
+    div(rhoPhi,H)        Gauss upwind;
     default		Gauss linear;
 }
 
