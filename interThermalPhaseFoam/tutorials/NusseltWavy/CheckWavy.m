@@ -15,7 +15,7 @@ mu_L      = 2.74E-7 * rho_L;         %kg/m-s
 %Read in data from file:
 D         = load('WallHeatFlux.dat');
 %Trim the first 0.1 s for stability
-ind       = find(D(:,1) < 0.1, 1, 'last');
+ind       = find(D(:,1) < 0.5, 1, 'last');
 D         = D(ind:end,:);
 %Get out data entries
 t         = D(:,1);                    %s
@@ -36,5 +36,5 @@ q_avg_sim = sum(dt.*q_w_sim)./sum(dt);
 disp(sprintf('Q_avg simulation: %g W/m^2', q_avg_sim));
 disp(sprintf('Q_avg analytical: %g W/m^2 (Edwards et al., 1979)', q_avg_anA));
 disp(sprintf('     Relative error: %g', abs(q_avg_sim-q_avg_anA)/abs(q_avg_anA) ));
-%disp(sprintf('Q_avg analytical: %g W/m^2 (Fujita and Ueda, 1978)', q_avg_anB));
-%disp(sprintf('     Relative error: %g', abs(q_avg_sim-q_avg_anB)/abs(q_avg_anB) ));
+disp(sprintf('Q_avg analytical: %g W/m^2 (Fujita and Ueda, 1978)', q_avg_anB));
+disp(sprintf('     Relative error: %g', abs(q_avg_sim-q_avg_anB)/abs(q_avg_anB) ));
