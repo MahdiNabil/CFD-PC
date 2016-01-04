@@ -27,7 +27,7 @@ Navigate to a working folder in a shell terminal, clone the git code repository,
 ```
 $ git clone https://github.com/MahdiNabil/CFD-PC.git CFD-PC
 $ cd CFD-PC/interThermalPhaseFoam
-$ git checkout tags/v2.4.0.2
+$ git checkout tags/v2.4.0.3
 $ source Allwmake.sh
 ```
 
@@ -49,9 +49,9 @@ The case can be started using the `InitScript.sh` script. The script uses [swak4
 ![Nusselt Smooth Problem Example](http://sites.psu.edu/mtfe/wp-content/uploads/sites/23865/2015/12/NusseltSmooth_Snapshot.png)
 
 ### NusseltWavy (Wavy Falling Film Condensation)
-This case demonstrates wavy falling film condensation on an isothermal subcooled vertical surface. A cyclic domain is employed to enable spontaneous development of waves (requires ~ 0.1 - 0.2 s to initiate). This case uses the sharp surface tension force model of Raeini et al. (2012) to evaluate surface tension effects with high accuracy. Additionally, the hydrostatic contributions are included in the pressure field to simplify definition of boundary conditions for this cyclic simulation. See the `controlDict` and `transportProperties` dictionaries for the flags that enable this behavior.
+This case demonstrates wavy falling film condensation on an isothermal subcooled vertical surface. A cyclic domain is employed to enable spontaneous development of waves (requires ~0.2 s to initiate). The simulation reaches steady state behavior after ~0.5 s. This case uses the sharp surface tension force model of Raeini et al. (2012) to evaluate surface tension effects with high accuracy. Additionally, the hydrostatic contributions are included in the pressure field to simplify definition of boundary conditions for this cyclic simulation. See the `controlDict` and `transportProperties` dictionaries for the flags that enable this behavior.
 
-The wavy film simulation can be initiated using the `InitScript.sh` script. Results can be checked using the `CheckWavy.m` script. No exact solutions are available for wavy film heat transfer, but results are comparable to those predicted using various empirical correlations. This tutorial can become unstable if continued for longer runtimes (unbounded temperature field). We are currently investigating this issue. A representative output from the case is presented below.
+The wavy film simulation can be initiated using the `InitScript.sh` script. Results can be checked using the `CheckWavy.m` script. No exact solutions are available for wavy film heat transfer, but results are comparable to those predicted using various empirical correlations. About 6% deviation from the correlation of Fujita and Ueda (1978) is found over t = 0.50 - 0.75 s. A representative output from the case is presented below.
 
 ![Nusselt Wavy Problem Example](http://sites.psu.edu/mtfe/wp-content/uploads/sites/23865/2015/12/WavyFilm_Snapshot-e1450901213756.png)
 
@@ -125,10 +125,8 @@ https://github.com/MahdiNabil/CFD-PC/blob/master/GNU%20Licence
 This research was generously supported, in part, by the US Department of Energy through the Krell Institute, and the National Energy Research Scientific Computing Center.
 
 ## References
-1. Rattner, A.S., 2015. Single-pressure absorption refrigeration systems for low-source-temperature applications. Ph.D. Thesis, Georgia Institute of Technology, Atlanta, GA. [Link](https://smartech.gatech.edu/handle/1853/53912).
-2. Rattner, A.S., Garimella, S., 2014. Simple mechanistically consistent formulation for volume-of-fluid based computations of condensing flows. Journal of Heat Transfer 136 (7): 71501-1–9. [DOI: 10.1115/1.4026808](http://heattransfer.asmedigitalcollection.asme.org/article.aspx?articleid=1829850).
-3. Yang, Z., Peng, X. F., & Ye, P., 2008. Numerical and experimental investigation of two phase flow during boiling in a coiled tube. International Journal of Heat and Mass Transfer, 51(5-6), 1003–1016. [doi.org/10.1016/j.ijheatmasstransfer.2007.05.025](http://doi.org/10.1016/j.ijheatmasstransfer.2007.05.025)
-4. A. Q. Raeini, M. J. Blunt, and B. Bijeljic, 2012. Modelling two-phase flow in porous media at the pore scale using the volume-of-fluid method, Journal of Computational Physics, 17(1), 5653–5668. [doi:10.1016/j.jcp.2012.04.011](http://dx.doi.org/10.1016/j.jcp.2012.04.011)
-
-
-
+* Fujita, T., Ueda, T., 1978, Heat transfer to falling liquid films and film breakdown, International Journal of Heat and Mass Transfer, 21, 97-108.
+* Raeini, A.Q., Blunt, M.J.,  Bijeljic, B., 2012. Modelling two-phase flow in porous media at the pore scale using the volume-of-fluid method, Journal of Computational Physics, 17(1), 5653–5668. [doi:10.1016/j.jcp.2012.04.011](http://dx.doi.org/10.1016/j.jcp.2012.04.011).
+* Rattner, A.S., Garimella, S., 2014. Simple mechanistically consistent formulation for volume-of-fluid based computations of condensing flows. Journal of Heat Transfer 136 (7): 71501-1–9. [DOI: 10.1115/1.4026808](http://heattransfer.asmedigitalcollection.asme.org/article.aspx?articleid=1829850).
+* Rattner, A.S., 2015. Single-pressure absorption refrigeration systems for low-source-temperature applications. Ph.D. Thesis, Georgia Institute of Technology, Atlanta, GA. [Link](https://smartech.gatech.edu/handle/1853/53912).
+* Yang, Z., Peng, X. F., Ye, P., 2008. Numerical and experimental investigation of two phase flow during boiling in a coiled tube. International Journal of Heat and Mass Transfer, 51(5-6), 1003–1016. [doi.org/10.1016/j.ijheatmasstransfer.2007.05.025](http://doi.org/10.1016/j.ijheatmasstransfer.2007.05.025).
