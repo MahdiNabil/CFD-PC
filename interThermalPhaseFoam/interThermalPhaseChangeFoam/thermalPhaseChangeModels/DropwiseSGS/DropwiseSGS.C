@@ -235,7 +235,7 @@ double Foam::thermalPhaseChangeModels::DropwiseSGS::GSLFunction(double r, void *
 	double C_11 = (p->C_1);          // constant 1 from Rose 1998
 	double C_21 = (p->C_2);          // constant 2 multiplied by the correction factor from Rose 1998
 
-
+Info<< "T_f: " << T_w1;
 	double GSLFunction = pow(r, -2.0/3.0) * ((T_sat1-T_w1) - (2*sigma1*T_sat1/(r*rho_l1*h_lv1))) / 
 	(C_11*r/k_l1 + C_21*T_sat1*(Gamma1+1)/(h_lv1*h_lv1*rho_v1*(Gamma1-1))*pow(R_g1*T_sat1/(2*M_PI),0.5));
 	
@@ -259,7 +259,8 @@ void Foam::thermalPhaseChangeModels::DropwiseSGS::GSLIntegral()
 			const scalarField WallFaceAreas = fPatch.magSf();
 			const scalarField& Wall_T1 = Tf.boundaryField()[pI];
 			const scalarField rMax = C_3*Foam::sqrt( WallFaceAreas ); // Maximum SGS drop size radius
-			const scalarField rMin = (2.0*sigma*T_sat_.value()) / ((T_sat_.value()-Wall_T1)*rho_l.value()*h_lv_.value()); // Minimum SGS drop size radius
+			scalarField rMin = (2.0*sigma*T_sat_.value()) / (  max( (T_sat_.value()-Wall_T1), SMALL)   *rho_l.value()*h_lv_.value()); // Minimum SGS drop size radius
+			rMin = min(rMin, rMax);
 			
 			gsl_integration_workspace * w = gsl_integration_workspace_alloc (1000);  // A sufficiently large number	
 			forAll(fPatch, fI)  // Now loop over all the cell Faces of the patch and calculate the heat flux 

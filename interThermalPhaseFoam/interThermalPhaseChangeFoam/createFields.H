@@ -191,6 +191,7 @@
         transportProperties.subDict("thermalPhaseChange")
     );
 
+	T.correctBoundaryConditions();                              //Update BCs before initial call
 	//Initialize the phase change model:
 	autoPtr<thermalPhaseChangeModel> phaseChangeModel
 	(
