@@ -32,7 +32,7 @@
                 runTime.timeName(),
                 mesh
             ),
-			0*divU
+			divU
         );
 
 		//alpha1 source term due to condensation and divergence of velocity
@@ -46,6 +46,8 @@
             ),
 			phaseChangeModel->alpha1Gen()
         );
+
+Info<< "alpha1 change: " << gSum(Su.internalField() * mesh.V() ) << endl ;
 
 
 		//MULES::implicitSolve

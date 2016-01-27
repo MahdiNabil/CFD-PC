@@ -235,7 +235,7 @@ double Foam::thermalPhaseChangeModels::DropwiseSGS::GSLFunction(double r, void *
 	double C_11 = (p->C_1);          // constant 1 from Rose 1998
 	double C_21 = (p->C_2);          // constant 2 multiplied by the correction factor from Rose 1998
 
-Info<< "T_f: " << T_w1;
+//Info<< "T_f: " << T_w1;
 	double GSLFunction = pow(r, -2.0/3.0) * ((T_sat1-T_w1) - (2*sigma1*T_sat1/(r*rho_l1*h_lv1))) / 
 	(C_11*r/k_l1 + C_21*T_sat1*(Gamma1+1)/(h_lv1*h_lv1*rho_v1*(Gamma1-1))*pow(R_g1*T_sat1/(2*M_PI),0.5));
 	
