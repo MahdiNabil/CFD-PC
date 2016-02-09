@@ -293,7 +293,7 @@ void Foam::thermalPhaseChangeModels::DropwiseSGS::decayHt()
 			const fvPatch& fPatch = mesh_.boundary()[pI]; 
 			const scalarField WallFaceAreas = fPatch.magSf();
 			const scalarField& Wall_T1 = Tf.boundaryField()[pI];
-			scalarField decayHtConst = (T_sat_.value()-Wall_T1) * 5e5; // we have chosen 5e5 arbitrarily
+			scalarField decayHtConst = -(T_sat_.value()-Wall_T1) * 5e5; // we have chosen 5e5 arbitrarily
 			
 			forAll(fPatch, fI)  // Now loop over all the cell Faces of the patch and calculate the heat flux 
 			{
