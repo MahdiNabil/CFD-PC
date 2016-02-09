@@ -80,6 +80,9 @@ class DropwiseSGS
 	//- Calculate qFlux_sgs_
 	void GSLIntegral();
 
+	//- Calculate qFlux_sgs_ with a grid independent HT constant
+	void decayHt();
+
 	//- This phase change model needs access to the mesh:
 	const fvMesh& mesh_;
 

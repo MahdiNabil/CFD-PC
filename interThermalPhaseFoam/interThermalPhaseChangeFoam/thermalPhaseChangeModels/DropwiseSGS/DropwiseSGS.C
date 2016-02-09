@@ -137,7 +137,8 @@ Foam::thermalPhaseChangeModels::DropwiseSGS::DropwiseSGS
 Info<< sigma << endl;
 		
 	correct();
-	GSLIntegral();
+	//GSLIntegral();
+	decayHt();
 }
 
 
@@ -278,6 +279,29 @@ void Foam::thermalPhaseChangeModels::DropwiseSGS::GSLIntegral()
 	}
 }
 
+void Foam::thermalPhaseChangeModels::DropwiseSGS::decayHt()
+{
+	qFlux_sgs_ = dimensionedScalar( "dummy", dimensionSet(1,0,-3,0,0,0,0), 0 ); // set the flux to 0 initialy
+
+	// some interpolated variables that would be used in the calculation
+	const surfaceScalarField Tf = fvc::interpolate(T_);	    // Temperature interpolated to cell faces
+	
+	forAll( mesh_.boundary(), pI )
+	{
+		if( isA<wallFvPatch>( mesh_.boundary()[pI] ) )    
+		{
+			const fvPatch& fPatch = mesh_.boundary()[pI]; 
+			const scalarField WallFaceAreas = fPatch.magSf();
+			const scalarField& Wall_T1 = Tf.boundaryField()[pI];
+			scalarField decayHtConst = (T_sat_.value()-Wall_T1) * 5e5; // we have chosen 5e5 arbitrarily
+			
+			forAll(fPatch, fI)  // Now loop over all the cell Faces of the patch and calculate the heat flux 
+			{
+				qFlux_sgs_.boundaryField()[pI][fI] = decayHtConst[fI];
+			}
+		}
+	}
+}
 
 bool Foam::thermalPhaseChangeModels::DropwiseSGS::read(const dictionary& thermalPhaseChangeProperties)
 {
