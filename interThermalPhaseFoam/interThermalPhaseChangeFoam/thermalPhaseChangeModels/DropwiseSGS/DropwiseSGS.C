@@ -89,6 +89,32 @@ Foam::thermalPhaseChangeModels::DropwiseSGS::DropwiseSGS
 		mesh_,
 		dimensionedScalar( "dummy", dimensionSet(1,0,-3,0,0,0,0), 0 )
     ),
+	wet
+    (
+        IOobject
+        (
+            "wet",
+            T_.time().timeName(),
+            mesh_,
+            IOobject::NO_READ,
+            IOobject::NO_WRITE
+        ),
+        mesh_,
+        dimensionedScalar( "dummy", dimensionSet(0,0,0,0,0,0,0), 0 )
+	),
+	faceTime
+    (
+        IOobject
+        (
+            "faceTime",
+            T_.time().timeName(),
+            mesh_,
+            IOobject::NO_READ,
+            IOobject::NO_WRITE
+        ),
+        mesh_,
+        dimensionedScalar( "dummy", dimensionSet(0,0,1,0,0,0,0), 0 )
+	),
 	InterfaceMeshGraph( mesh_, alpha1 ),
     InterfaceField_	
     (
@@ -214,8 +240,29 @@ void Foam::thermalPhaseChangeModels::DropwiseSGS::calcQ_pc()
 	Q_pc_ = RelaxFac * Q_pc_;
 
 	//Now apply subgridscale model on the wall patches
-	const surfaceScalarField alpha1f = fvc::interpolate(alpha1_); //Alpha1 on faces
+	surfaceScalarField alpha1f = fvc::interpolate(alpha1_); //Alpha1 on faces
 
+	//- Applying the subGrid Model
+	forAll(mesh_.boundary(),pI)
+	{
+		if(isA<wallFvPatch>(mesh_.boundary()[pI]))
+		{
+			scalarField& faceTimePatch = faceTime.boundaryField()[pI];
+			faceTimePatch += dT.value();
+			scalarField& wetPatch = wet.boundaryField()[pI];  
+			scalarField& alphaPatch = alpha1f.boundaryField()[pI];
+			
+			forAll(wetPatch, fI) 
+			{
+				wetPatch[fI] = ( (alphaPatch[fI] > 0.9) || ((wetPatch[fI] == 1.0) && (alphaPatch[fI] > 0.1)) ) ? 1.0 : 0.0;
+			}
+
+			faceTimePatch = (1.0-wetPatch)*faceTimePatch;
+
+			scalarField& qFlux_sgsPatch = qFlux_sgs_.boundaryField()[pI];
+			qFlux_sgsPatch = -(1.0-wetPatch)*min(20000.0,100.0/faceTimePatch); // For now 5 is arbitrary 	
+		}	
+	}
 	//Calculate volumetric SGS phase change rate in the cell	
 	Q_pc_sgs_ = fvc::surfaceIntegrate( (1-alpha1f)*qFlux_sgs_*mesh_.magSf() );
 }

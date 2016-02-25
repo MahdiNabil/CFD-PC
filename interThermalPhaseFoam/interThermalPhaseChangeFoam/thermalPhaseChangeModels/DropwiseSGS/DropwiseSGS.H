@@ -95,6 +95,12 @@ class DropwiseSGS
 	//- Subgridscale heatflux from the integral
 	surfaceScalarField qFlux_sgs_;
 
+	//- Subgrid Scale fields
+	surfaceScalarField wet; 
+	surfaceScalarField faceTime;
+
+	//volScalarField faceTimeOld_; 
+
 	//- Graph of mesh grid, used for finding interface cells
 	MeshGraph InterfaceMeshGraph;
 
@@ -117,6 +123,7 @@ class DropwiseSGS
 	double R_g;                      // specific ideal gas constant
 	double sigma;                    // surface tension
 	double C_3;			 // constant relating the lengthscale to Rmax
+
 
 public:
 
