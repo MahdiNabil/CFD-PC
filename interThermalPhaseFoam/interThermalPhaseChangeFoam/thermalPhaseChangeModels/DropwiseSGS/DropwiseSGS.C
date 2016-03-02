@@ -260,7 +260,7 @@ void Foam::thermalPhaseChangeModels::DropwiseSGS::calcQ_pc()
 			faceTimePatch = (1.0-wetPatch)*faceTimePatch;
 
 			scalarField& qFlux_sgsPatch = qFlux_sgs_.boundaryField()[pI];
-			qFlux_sgsPatch = -(1.0-wetPatch)*min(20000.0,100.0/faceTimePatch); // For now 5 is arbitrary 	
+			qFlux_sgsPatch = -(1.0-wetPatch)*max(0.0, -4.7299227865E13*pow(faceTimePatch,6) + 1.6449395141E13*pow(faceTimePatch,5) -2.2825094164E12*pow(faceTimePatch,4) + 1.6093512189E11*pow(faceTimePatch,3) -6.0445420553E9*pow(faceTimePatch,2) + 1.1211182551E8*faceTimePatch - 1.8102791418E5);  	
 		}	
 	}
 	//Calculate volumetric SGS phase change rate in the cell	
