@@ -124,6 +124,11 @@ class DropwiseSGS
 	double sigma;                    // surface tension
 	double C_3;			 // constant relating the lengthscale to Rmax
 
+	// some constants for the fitted function of heat flux 
+	double C_4 = 2.0;				// All these could be later read from a file
+	double C_5 = 7.5;	
+	double C_6 = 632000;			// peak flux
+	double C_7 = 6.7;
 
 public:
 
