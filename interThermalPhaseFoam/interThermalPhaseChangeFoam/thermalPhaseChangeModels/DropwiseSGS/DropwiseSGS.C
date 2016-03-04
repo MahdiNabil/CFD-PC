@@ -96,8 +96,8 @@ Foam::thermalPhaseChangeModels::DropwiseSGS::DropwiseSGS
             "wet",
             T_.time().timeName(),
             mesh_,
-            IOobject::NO_READ,
-            IOobject::NO_WRITE
+            IOobject::READ_IF_PRESENT,
+            IOobject::AUTO_WRITE
         ),
         mesh_,
         dimensionedScalar( "dummy", dimensionSet(0,0,0,0,0,0,0), 0 )
@@ -109,8 +109,8 @@ Foam::thermalPhaseChangeModels::DropwiseSGS::DropwiseSGS
             "faceTime",
             T_.time().timeName(),
             mesh_,
-            IOobject::NO_READ,
-            IOobject::NO_WRITE
+            IOobject::READ_IF_PRESENT,
+            IOobject::AUTO_WRITE
         ),
         mesh_,
         dimensionedScalar( "dummy", dimensionSet(0,0,1,0,0,0,0), 0 )
@@ -212,6 +212,7 @@ void Foam::thermalPhaseChangeModels::DropwiseSGS::calcQ_pc()
 	//Compute some helpful props:
 	//For some reason dT is dimensionless
 	const dimensionedScalar& dT = alpha1_.time().deltaTValue() * dimensionedScalar( "dummy", dimensionSet(0,0,1,0,0,0,0), 1.0 );
+	const dimensionedScalar& time = alpha1_.time().value() * dimensionedScalar( "dummy", dimensionSet(0,0,1,0,0,0,0), 1.0 );
 	const dimensionedScalar& rho1 = twoPhaseProperties_.rho1();
 	const dimensionedScalar& rho2 = twoPhaseProperties_.rho2();
 
@@ -258,7 +259,7 @@ void Foam::thermalPhaseChangeModels::DropwiseSGS::calcQ_pc()
 			}
 
 			faceTimePatch = (1.0-wetPatch)*faceTimePatch;
-
+Info << "time = " << time.value();
 			scalarField& qFlux_sgsPatch = qFlux_sgs_.boundaryField()[pI];
 			qFlux_sgsPatch = -(1.0-wetPatch)*max(0.0, (-1.0/faceTimePatch + C_4*(faceTimePatch/exp(faceTimePatch)) + C_5)*(C_6/C_7)); 	
 		}	
