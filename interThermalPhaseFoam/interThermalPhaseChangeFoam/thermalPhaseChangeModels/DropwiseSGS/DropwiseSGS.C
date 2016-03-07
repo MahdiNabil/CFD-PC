@@ -258,7 +258,7 @@ void Foam::thermalPhaseChangeModels::DropwiseSGS::calcQ_pc()
 				wetPatch[fI] = ( (alphaPatch[fI] > 0.9) || ((wetPatch[fI] == 1.0) && (alphaPatch[fI] > 0.1)) ) ? 1.0 : 0.0;
 			}
 
-			faceTimePatch = max(1e-7, (1.0-wetPatch)*faceTimePatch);
+			faceTimePatch = max(SMALL, (1.0-wetPatch)*faceTimePatch);
 Info << "patch time = " << faceTimePatch;
 			scalarField& qFlux_sgsPatch = qFlux_sgs_.boundaryField()[pI];
 			qFlux_sgsPatch = -(1.0-wetPatch)*max(0.0, (-1.0/faceTimePatch + C_4*(faceTimePatch/exp(faceTimePatch)) + C_5)*(C_6/C_7)); 	
