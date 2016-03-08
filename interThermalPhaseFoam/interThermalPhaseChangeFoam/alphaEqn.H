@@ -32,6 +32,7 @@
                 runTime.timeName(),
                 mesh
             ),
+			//0*divU
 			divU
         );
 
@@ -46,8 +47,6 @@
             ),
 			phaseChangeModel->alpha1Gen()
         );
-
-Info<< "alpha1 change: " << gSum(Su.internalField() * mesh.V() ) << endl ;
 
 
 		//MULES::implicitSolve

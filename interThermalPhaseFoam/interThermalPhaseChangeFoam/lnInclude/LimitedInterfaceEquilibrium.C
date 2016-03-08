@@ -1,1 +1,0 @@
-../thermalPhaseChangeModels/LimitedInterfaceEquilibrium/LimitedInterfaceEquilibrium.C

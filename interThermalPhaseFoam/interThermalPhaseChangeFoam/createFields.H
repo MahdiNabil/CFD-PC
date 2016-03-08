@@ -1,3 +1,8 @@
+
+Switch CombinedHSPressure("no");
+runTime.controlDict().readIfPresent("CombinedHSPressure", CombinedHSPressure);
+const scalar CHSP = CombinedHSPressure ? 1.0 : 0;
+
     Info<< "Reading field p_rgh\n" << endl;
     volScalarField p_rgh
     (
@@ -72,8 +77,6 @@
         mesh
     );
 
-
-
     Info<< "Reading transportProperties\n" << endl;
     twoPhaseThermalMixture twoPhaseProperties(U, phi);
 
@@ -82,7 +85,6 @@
     const dimensionedScalar& rho2 = twoPhaseProperties.rho2();
     const dimensionedScalar& cp1 = twoPhaseProperties.cp1();
     const dimensionedScalar& cp2 = twoPhaseProperties.cp2();
-
 
     // Need to store rho for ddt(rho, U)
     volScalarField rho
@@ -97,7 +99,6 @@
         alpha1*rho1 + (scalar(1) - alpha1)*rho2,
         alpha1.boundaryField().types()
     );
-
 
     rho.oldTime();
 
@@ -191,11 +192,23 @@
         transportProperties.subDict("thermalPhaseChange")
     );
 
-	T.correctBoundaryConditions();                              //Update BCs before initial call
+	//This dictionary contains important props for phase change:
+    const dictionary& surfaceTensionForceProperties
+    (
+        transportProperties.subDict("surfaceTensionForce")
+    );
+
+
 	//Initialize the phase change model:
 	autoPtr<thermalPhaseChangeModel> phaseChangeModel
 	(
 		thermalPhaseChangeModel::New( thermalPhaseChangeProperties.lookup("model"), thermalPhaseChangeProperties, twoPhaseProperties, T, alpha1 )
+	);
+
+	//Initialize the surface tension force model:
+	autoPtr<surfaceTensionForceModel> stfModel
+	(
+		surfaceTensionForceModel::New( surfaceTensionForceProperties.lookup("model"), surfaceTensionForceProperties, interface, alpha1 )
 	);
 	
 
@@ -205,7 +218,8 @@
     volScalarField gh("gh", g & mesh.C());
     surfaceScalarField ghf("ghf", g & mesh.Cf());
 
-    volScalarField p
+    //Total Pressure Field:
+	volScalarField p
     (
         IOobject
         (
@@ -215,7 +229,7 @@
             IOobject::NO_READ,
             IOobject::AUTO_WRITE
         ),
-        p_rgh + rho*gh
+        p_rgh + (1.0-CHSP)*rho*gh + stfModel->pcap()  
     );
 
     label pRefCell = 0;
@@ -229,20 +243,19 @@
         pRefValue
     );
 
-    if (p_rgh.needReference())
-    {
-        p += dimensionedScalar
-        (
-            "p",
-            p.dimensions(),
-            pRefValue - getRefCellValue(p, pRefCell)
-        );
-        p_rgh = p - rho*gh;
-    }
 
-    
+	if (p_rgh.needReference())
+	{
+	    p += dimensionedScalar
+	    (
+	        "p",
+	        p.dimensions(),
+	        pRefValue - getRefCellValue(p, pRefCell)
+	    );
+	    p_rgh = p - (1.0-CHSP)*rho*gh - stfModel->pcap(); 
+	}
+
     fv::IOoptionList fvOptions(mesh);
-
 
 	//Create kEff here so it can be accessed globally
 	surfaceScalarField kEff

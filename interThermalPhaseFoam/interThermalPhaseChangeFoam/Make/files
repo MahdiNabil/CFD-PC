@@ -12,4 +12,9 @@ thermalPhaseChangeModels/noPhaseChange/noPhaseChange.C
 thermalPhaseChangeModels/HiLoNoPCV/HiLoNoPCV.C
 thermalPhaseChangeModels/HiLoNoPCVAlpha1/HiLoNoPCVAlpha1.C
 
+surfaceTensionForceModels/surfaceTensionForceModel/surfaceTensionForceModel.C
+surfaceTensionForceModels/surfaceTensionForceModel/newSurfaceTensionForceModel.C
+surfaceTensionForceModels/Brackbill/Brackbill.C
+surfaceTensionForceModels/SST/SST.C
+
 EXE = $(FOAM_USER_APPBIN)/interThermalPhaseChangeFoam

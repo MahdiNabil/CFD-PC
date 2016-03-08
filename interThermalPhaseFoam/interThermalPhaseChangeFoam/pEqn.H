@@ -1,3 +1,8 @@
+
+Switch CombinedHSPressure("no");
+runTime.controlDict().readIfPresent("CombinedHSPressure", CombinedHSPressure);
+const scalar CHSP = CombinedHSPressure ? 1.0 : 0;
+
 {
     volScalarField rAU(1.0/UEqn.A());
     surfaceScalarField rAUf(fvc::interpolate(rAU));
@@ -14,11 +19,46 @@
 
     adjustPhi(phiU, U, p_rgh);
 
-    phi = phiU +
+	//Calculate the flux from surface tension:
+	surfaceScalarField phi_c
     (
-        fvc::interpolate(interface.sigmaK())*fvc::snGrad(alpha1)
-      - ghf*fvc::snGrad(rho) 
-    )*rAUf*mesh.magSf();
+        IOobject
+        (
+            "phi_c",
+            runTime.timeName(),
+            mesh,
+            IOobject::NO_READ,
+            IOobject::NO_WRITE
+        ),
+        mesh,
+        dimensionedScalar("flux", dimLength*dimLength*dimLength/dimTime, 0)
+    );
+
+
+	phi_c   = stfModel->phi_c( rAUf );		
+
+	//Calculate the flux from gravitational forces
+	surfaceScalarField phi_rgh
+    (
+        IOobject
+        (
+            "phi_rgh",
+            runTime.timeName(),
+            mesh,
+            IOobject::NO_READ,
+            IOobject::NO_WRITE
+        ),
+        mesh,
+        dimensionedScalar("flux", dimLength*dimLength*dimLength/dimTime, 0)
+    );
+
+	if (!CombinedHSPressure)
+	{
+		phi_rgh =  -ghf*fvc::snGrad(rho) * rAUf*mesh.magSf();
+	}
+
+	phi = phiU + stfModel->phi_c( rAUf ) + phi_rgh;
+
 
    // Update the fixedFluxPressure BCs to ensure flux consistency
     setSnGrad<fixedFluxPressureFvPatchScalarField>
@@ -51,22 +91,28 @@
 
     }
 
-    U += rAU*fvc::reconstruct((phi - phiU)/rAUf);
+	// Added Condition for Modified Surface Tension Case 
+	U += rAU*fvc::reconstruct((phi - phiU)/rAUf);
+
     U.correctBoundaryConditions();
 
     #include "continuityErrs.H"
+	p == p_rgh + (1.0-CHSP)*rho*gh + stfModel->pcap();    //Add in surface tension
 
-    p == p_rgh + rho*gh;
+	if (p_rgh.needReference())
+	{
+	    p += dimensionedScalar
+	    (
+	       "p",
+	        p.dimensions(),
+	        pRefValue - getRefCellValue(p, pRefCell)
+	    );
+	    p_rgh = p - (1.0-CHSP)*rho*gh - stfModel->pcap(); //Add in surface tension
+	}
 
-    if (p_rgh.needReference())
-    {
-        p += dimensionedScalar
-        (
-            "p",
-            p.dimensions(),
-            pRefValue - getRefCellValue(p, pRefCell)
-        );
-        p_rgh = p - rho*gh;
-    }
 }
+
+
+
+
 

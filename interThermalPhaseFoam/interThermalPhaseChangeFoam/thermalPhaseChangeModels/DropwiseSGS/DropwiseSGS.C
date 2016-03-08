@@ -252,6 +252,7 @@ void Foam::thermalPhaseChangeModels::DropwiseSGS::calcQ_pc()
 			faceTimePatch += dT.value();
 			scalarField& wetPatch = wet.boundaryField()[pI];  
 			scalarField& alphaPatch = alpha1f.boundaryField()[pI];
+			scalarField& qFlux_sgsPatch = qFlux_sgs_.boundaryField()[pI];
 			
 			forAll(wetPatch, fI) 
 			{
@@ -259,9 +260,22 @@ void Foam::thermalPhaseChangeModels::DropwiseSGS::calcQ_pc()
 			}
 
 			faceTimePatch = max(SMALL, (1.0-wetPatch)*faceTimePatch);
+			
+			forAll(faceTimePatch, fI)
+			{
+				if(faceTimePatch[fI] <= 1E-3)
+				{
+
+					qFlux_sgsPatch[fI] = -(1.0-wetPatch[fI])*pow(10,qFlux_sgsPatch[fI]);
+					qFlux_sgsPatch[fI] = -(1.0-wetPatch[fI])*(C_9 + C_10*faceTimePatch[fI]); 
+				}
+				else
+				{
+					qFlux_sgsPatch[fI] = C_4*pow(log10(faceTimePatch[fI]),4) + C_5*pow(log10(faceTimePatch[fI]),3) + C_6*pow(log10(faceTimePatch[fI]),2) + C_7*log10(faceTimePatch[fI]) + C_8;
+					qFlux_sgsPatch[fI] = -(1.0-wetPatch[fI])*pow(10,qFlux_sgsPatch[fI]);
+				}			
+			}
 Info << "patch time = " << faceTimePatch;
-			scalarField& qFlux_sgsPatch = qFlux_sgs_.boundaryField()[pI];
-			qFlux_sgsPatch = -(1.0-wetPatch)*max(0.0, (-1.0/faceTimePatch + C_4*(faceTimePatch/exp(faceTimePatch)) + C_5)*(C_6/C_7)); 	
 		}	
 	}
 	//Calculate volumetric SGS phase change rate in the cell	

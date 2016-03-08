@@ -125,10 +125,13 @@ class DropwiseSGS
 	double C_3;			 // constant relating the lengthscale to Rmax
 
 	// some constants for the fitted function of heat flux 
-	double C_4 = 2.0;				// All these could be later read from a file
-	double C_5 = 7.5;	
-	double C_6 = 632000;			// peak flux
-	double C_7 = 6.7;
+	double C_4 = -6.37641E-3;				// All these could be later read from a file
+	double C_5 = -6.84449E-3;	
+	double C_6 = 2.57578E-3;			
+	double C_7 = -2.48608E-1;
+	double C_8 = 5.09007; 
+	double C_9 = 8.83233E3;					// Heat flux at time t = 0 
+	double C_10 = 3.2798004213E8;			
 
 public:
 
