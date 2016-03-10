@@ -1,0 +1,4 @@
+alphaContactAngle/dynamicKistlerAlphaContactAngle/dynamicKistlerAlphaContactAngleFvPatchScalarField.C
+alphaContactAngle/RiddersRoot/RiddersRoot.C
+
+LIB = $(FOAM_USER_LIBBIN)/libtwoPhaseTransportProperties
