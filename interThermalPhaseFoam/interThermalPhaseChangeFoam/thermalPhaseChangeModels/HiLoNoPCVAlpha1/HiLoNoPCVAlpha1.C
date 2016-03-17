@@ -178,7 +178,7 @@ void Foam::thermalPhaseChangeModels::HiLoNoPCVAlpha1::calcQ_pc()
 	forAll( WallCells, cI )
 	{   
 		WallField[WallCells[cI]] = 1;
-		InterfaceField_[WallCells[cI]] = 1;
+		//InterfaceField_[WallCells[cI]] = 1;
 	}
 
 	//List total int. cells
