@@ -1,6 +1,6 @@
 
 	//Update kEff
-	kEff = fvc::interpolate( twoPhaseProperties.lambda() ) + fvc::interpolate( rho*twoPhaseProperties.cp()*turbulence->nut() );
+	kEff = twoPhaseProperties.lambdaf() + fvc::interpolate( rho*twoPhaseProperties.cp()*turbulence->nut() );
 
     surfaceScalarField alphaEffRho
     (

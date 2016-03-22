@@ -1,0 +1,157 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  1.7.0                                 |
+|   \\  /    A nd           | Web:      www.OpenFOAM.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "system";
+    object      controlDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+application     ASRInterThermalPhaseFoam;
+
+startFrom       latestTime;
+
+startTime       0;
+
+stopAt          endTime;
+
+endTime         0.125;
+
+deltaT          1E-7;
+
+writeControl    adjustableRunTime;
+writeInterval   0.002;
+
+purgeWrite      0;
+
+writeFormat     binary;
+
+writePrecision  6;
+
+writeCompression uncompressed;
+
+timeFormat      general;
+
+timePrecision   6;
+
+runTimeModifiable yes;
+
+adjustTimeStep  on;
+
+maxAlphaCo      0.25;
+maxCo           0.25;
+maxFourier      100;
+maxDeltaT       2E-5;
+// ************************************************************************** //
+//Global vars for funky/groovy
+functions
+(
+	defineGlobalVars
+	{
+		type addGlobalVariable;
+		globalScope globalVars;
+		globalVariables 
+		{
+			T_sat
+			{
+				valueType scalar;
+				value 0;
+			}
+			
+			rho_l
+			{
+				valueType scalar;
+				value 890.47;
+			}
+
+			cp_l
+			{
+				valueType scalar;
+				value 4400;
+			}
+        }
+    }
+
+	DataSummary //Returns: time (s), dt (s), wall heat flux (W), phase-change heating rate (W), Liquid volume fraction (-),
+	{
+		functionObjectLibs ("libutilityFunctionObjects.so");
+		type coded;
+		redirectType DataSummary;	
+		outputControl timeStep;
+		outputInterval 10;
+		code		
+		#{
+
+			//***********************************************************************
+			//First get t and dt
+			scalar t = mesh().time().value();
+			scalar dt = mesh().time().deltaTValue();
+			//***********************************************************************
+
+			//***********************************************************************
+			//Next, total phase change heating rate
+			const volScalarField& Q_pc = mesh().lookupObject<volScalarField>("PhaseChangeHeat");
+			const scalar Q_pcInt = gSum( -mesh().V() * Q_pc.internalField() );  // [W]
+			//***********************************************************************
+
+
+			//***********************************************************************
+			//Now get void fraction
+			const volScalarField& alpha1 = mesh().lookupObject<volScalarField>("alpha1");
+
+			const scalar V_Vapor = gSum( (1.0-alpha1.internalField()) * mesh().V() );
+			const scalar V_total  = gSum( mesh().V() );
+			const scalar VoidFrac = V_Vapor/V_total;
+			//***********************************************************************
+
+
+			//***********************************************************************
+			//Now get bubble velocity
+			const volVectorField& U = mesh().lookupObject<volVectorField>("U");
+			const vector U_Vapor = gSum( (1.0-alpha1.internalField()) * U.internalField() * mesh().V() );
+
+			const scalar Uy_Vapor = U_Vapor[1]/V_Vapor;
+			//***********************************************************************
+
+
+			//***********************************************************************
+			//Finally print out results:
+			//Now write out data:
+			if( Pstream::master() == true )
+			{
+				std::ofstream fs;
+				fs.open ("Bubble_Condensation.dat", std::fstream::app);
+				fs.precision(8);
+				fs << t << "\t" << Q_pcInt << "\t" << VoidFrac << "\t" << Uy_Vapor << "\n" ;
+				fs.close();
+			}
+
+		#}; 
+
+		codeInclude
+		#{
+			#include <fstream>
+		#};
+	}
+
+
+);
+
+// ************************************************************************** //
+
+libs ( "libsimpleSwakFunctionObjects.so"
+       "libswakFunctionObjects.so"
+       "libOpenFOAM.so"
+       "libutilityFunctionObjects.so" 
+       "libgroovyBC.so"
+       "libsimpleSwakFunctionObjects.so"
+       "libswakFunctionObjects.so" );
+// ************************************************************************* //
