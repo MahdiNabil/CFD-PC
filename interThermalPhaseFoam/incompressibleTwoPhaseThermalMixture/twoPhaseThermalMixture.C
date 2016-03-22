@@ -249,12 +249,21 @@ Foam::tmp<Foam::volScalarField> Foam::twoPhaseThermalMixture::lambda() const
     return tmp<volScalarField>
     (
         //This is a pretty naive model for mixture conductivity (linear interpolation), but easy to evaluate
-		new volScalarField
+		
+	new volScalarField
         (
             "lambda",
             limitedAlpha1*lambdaModel1_->lambda()
           + (scalar(1) - limitedAlpha1)*lambdaModel2_->lambda()
         )
+/*	
+	new volScalarField //ASR temporary tweak
+        (
+            "lambda",
+            1.0/( limitedAlpha1/lambdaModel1_->lambda()
+          + (scalar(1) - limitedAlpha1)/lambdaModel2_->lambda() )
+        )
+*/
     );
 }
 
@@ -340,12 +349,21 @@ Foam::tmp<Foam::surfaceScalarField> Foam::twoPhaseThermalMixture::lambdaf() cons
 
     return tmp<surfaceScalarField>
     (
+
         new surfaceScalarField
         (
             "lambdaf",
             alpha1f*fvc::interpolate(lambdaModel1_->lambda())
           + (scalar(1) - alpha1f)*fvc::interpolate(lambdaModel2_->lambda())
         )
+/*
+	new surfaceScalarField //ASR temporary tweak
+        (
+            "lambdaf",
+            1.0/( alpha1f/fvc::interpolate(lambdaModel1_->lambda())
+          + (scalar(1) - alpha1f)/fvc::interpolate(lambdaModel2_->lambda()) )
+	)
+*/
     );
 }
 
