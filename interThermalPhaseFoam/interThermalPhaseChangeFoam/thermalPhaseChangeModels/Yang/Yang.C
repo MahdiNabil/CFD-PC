@@ -48,7 +48,7 @@ Foam::thermalPhaseChangeModels::Yang::Yang
 		const volScalarField& alpha1
 )
 :
-    thermalPhaseChangeModel(name, thermalPhaseChangeProperties, twoPhaseProperties, T, alpha1),
+	thermalPhaseChangeModel(name, thermalPhaseChangeProperties, twoPhaseProperties, T, alpha1),
 	Q_pc_
     (
         IOobject
@@ -65,8 +65,7 @@ Foam::thermalPhaseChangeModels::Yang::Yang
 {
 
 	// reading rl and rv
-    thermalPhaseChangeProperties_.lookup("rl") >> rl;	
-    thermalPhaseChangeProperties_.lookup("rv") >> rv;	
+	read(thermalPhaseChangeProperties);
 
 	correct();
 }
@@ -87,7 +86,8 @@ bool Foam::thermalPhaseChangeModels::Yang::read(const dictionary& thermalPhaseCh
 {
 	thermalPhaseChangeModel::read(thermalPhaseChangeProperties);
 	thermalPhaseChangeProperties_.lookup("rl") >> rl;	
-    thermalPhaseChangeProperties_.lookup("rv") >> rv;
+	thermalPhaseChangeProperties_.lookup("rv") >> rv;
+
 	return true;
 }
 
