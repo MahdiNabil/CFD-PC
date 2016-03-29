@@ -252,7 +252,7 @@ Foam::tmp<Foam::volScalarField> Foam::twoPhaseThermalMixture::mu() const
 		                             + (1.0 - alpha1f)*(rho2_*fvc::interpolate( nuModel2().nu() ) );
 		const surfaceScalarField mu_par = 1.0 /( alpha1f/(rho1_*fvc::interpolate( nuModel1().nu() ) ) 
 		                             + (1.0 - alpha1f)/(rho2_*fvc::interpolate( nuModel2().nu() ) ) );
-		const surfaceScalarField mu_impf = eta_mu*mu_ser + (1.0 - eta_mu)*mu_par;
+		const surfaceScalarField mu_impf = (1.0 - eta_mu)*mu_ser + eta_mu*mu_par;
 		
 		return tmp<volScalarField>
 		(
@@ -304,7 +304,9 @@ Foam::tmp<Foam::volScalarField> Foam::twoPhaseThermalMixture::lambda() const
 		                             + (1.0 - alpha1f) * fvc::interpolate( lambdaModel2_->lambda() );
 		const surfaceScalarField lambda_par = 1.0 /( alpha1f / fvc::interpolate( lambdaModel1_->lambda() )
 		                             + (1.0 - alpha1f) / fvc::interpolate( lambdaModel2_->lambda() ) );
+
 		const surfaceScalarField lambda_impf = eta_lambda*lambda_par + (1.0 - eta_lambda)*lambda_ser;
+
 		return tmp<volScalarField>
 		(
 			new volScalarField
@@ -412,7 +414,7 @@ Foam::tmp<Foam::surfaceScalarField> Foam::twoPhaseThermalMixture::muf() const
 		                             + (1.0 - alpha1f)*(rho2_*fvc::interpolate( nuModel2().nu() ) );
 		const surfaceScalarField mu_par = 1.0 /( alpha1f/(rho1_*fvc::interpolate( nuModel1().nu() ) ) 
 		                             + (1.0 - alpha1f)/(rho2_*fvc::interpolate( nuModel2().nu() ) ) );
-		const surfaceScalarField mu_impf = eta_mu*mu_ser + (1.0 - eta_mu)*mu_par;
+		const surfaceScalarField mu_impf = (1.0-eta_mu)*mu_ser + eta_mu*mu_par;
 				
 		return tmp<surfaceScalarField>
 		(
@@ -473,6 +475,8 @@ Foam::tmp<Foam::surfaceScalarField> Foam::twoPhaseThermalMixture::lambdaf() cons
 		const surfaceScalarField lambda_par = 1.0 /( alpha1f / fvc::interpolate( lambdaModel1_->lambda() )
 		                             + (1.0 - alpha1f) / fvc::interpolate( lambdaModel2_->lambda() ) );
 		const surfaceScalarField lambda_impf = eta_lambda*lambda_par + (1.0 - eta_lambda)*lambda_ser;
+
+
 		return tmp<surfaceScalarField>
 		(
 			new surfaceScalarField

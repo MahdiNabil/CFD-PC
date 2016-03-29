@@ -14,5 +14,6 @@ surfaceTensionForceModels/surfaceTensionForceModel/surfaceTensionForceModel.C
 surfaceTensionForceModels/surfaceTensionForceModel/newSurfaceTensionForceModel.C
 surfaceTensionForceModels/Brackbill/Brackbill.C
 surfaceTensionForceModels/SST/SST.C
+surfaceTensionForceModels/SmoothedSF/SmoothedSF.C
 
 EXE = $(FOAM_USER_APPBIN)/interThermalPhaseChangeFoam
