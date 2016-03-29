@@ -62,17 +62,20 @@ class thermalPhaseChangeModel
 
 protected:
 
-    // Protected data
-		word name_;
+	// Protected data
+	word name_;
         dictionary thermalPhaseChangeProperties_;
-		//Thermal mixture props
-		const twoPhaseThermalMixture& twoPhaseProperties_;
-		//Pointers to important fields
-		const volScalarField& T_;
-		const volScalarField& alpha1_;
-		//Get these properties from the thermalPhaseChange dictionary		
-		dimensionedScalar T_sat_;
-		dimensionedScalar h_lv_;
+	//Thermal mixture props
+	const twoPhaseThermalMixture& twoPhaseProperties_;
+	//Pointers to important fields
+	const volScalarField& T_;
+	const volScalarField& alpha1_;
+	//Get these properties from the thermalPhaseChange dictionary		
+	dimensionedScalar T_sat_;
+	dimensionedScalar h_lv_;
+	// Switch to turn off and on the alpha1 and v_pc source terms
+	Switch sw_PCV;
+	Switch sw_alpha1Gen;
 
 
     // Private Member Functions
@@ -160,7 +163,7 @@ public:
         virtual void correct() = 0;
 
         //- Read the thermalPhaseChange dictionary and update
-        virtual bool read(const dictionary& thermalPhaseChangeProperties) = 0;
+        virtual bool read(const dictionary& thermalPhaseChangeProperties);
 };
 
 
