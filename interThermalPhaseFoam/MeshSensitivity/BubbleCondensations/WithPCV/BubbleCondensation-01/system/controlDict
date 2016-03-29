@@ -1,0 +1,193 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  1.7.0                                 |
+|   \\  /    A nd           | Web:      www.OpenFOAM.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "system";
+    object      controlDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+application     ASRInterThermalPhaseFoam;
+
+startFrom       latestTime;
+
+startTime       0;
+
+stopAt          endTime;
+
+endTime         0.15;
+
+deltaT          1E-7;
+
+writeControl    adjustableRunTime;
+writeInterval   0.002;
+
+purgeWrite      0;
+
+writeFormat     binary;
+
+writePrecision  6;
+
+writeCompression uncompressed;
+
+timeFormat      general;
+
+timePrecision   6;
+
+runTimeModifiable yes;
+
+adjustTimeStep  on;
+
+maxAlphaCo      0.25;
+maxCo           0.25;
+maxFourier      100;
+maxDeltaT       2E-5;
+// ************************************************************************** //
+//Global vars for funky/groovy
+functions
+(
+	DataSummary //Returns: time (s), dt (s), wall heat flux (W), phase-change heating rate (W), Liquid volume fraction (-),
+	{
+		functionObjectLibs ("libutilityFunctionObjects.so");
+		type coded;
+		redirectType DataSummary;	
+		outputControl timeStep;
+		outputInterval 10;
+		code		
+		#{
+
+			//***********************************************************************
+			//First get t and dt
+			scalar t = mesh().time().value();
+			scalar dt = mesh().time().deltaTValue();
+			//***********************************************************************
+
+			//***********************************************************************
+			//Next, total phase change heating rate
+			const volScalarField& Q_pc = mesh().lookupObject<volScalarField>("PhaseChangeHeat");
+			const scalar Q_pcInt = gSum( -mesh().V() * Q_pc.internalField() );  // [W]
+			//***********************************************************************
+
+			//***********************************************************************
+			//Get top and bottom half phase change heating rates
+			const scalar y_C = 0.001;
+			const scalar Q_top = gSum( -mesh().V() * Q_pc.internalField() * pos( mesh().C().internalField().component(1) - y_C ) );
+			const scalar Q_bot = gSum( -mesh().V() * Q_pc.internalField() * neg( mesh().C().internalField().component(1) - y_C ) );
+			
+
+
+			//***********************************************************************
+			//Now get void fraction
+			const volScalarField& alpha1 = mesh().lookupObject<volScalarField>("alpha1");
+
+			const scalar V_Vapor = gSum( (1.0-alpha1.internalField()) * mesh().V() );
+			const scalar V_total  = gSum( mesh().V() );
+			const scalar VoidFrac = V_Vapor/V_total;
+			//***********************************************************************
+
+
+			//***********************************************************************
+			//Now get bubble velocity
+			const volVectorField& U = mesh().lookupObject<volVectorField>("U");
+			//const vector U_Vapor = gSum( (1.0-alpha1.internalField()) * U.internalField() * mesh().V() );
+
+			//const scalar Uy_Vapor = U_Vapor[1]/V_Vapor;
+			//Updated bubble velocity
+			const fvBoundaryMesh& bMesh = mesh().boundary();
+			const label TopPatchID  = bMesh.findPatchID("Top");
+			const vector UpU( U.boundaryField()[TopPatchID][0] );
+			const scalar Uy_Vapor = -UpU[1];
+
+			//***********************************************************************
+
+
+			//***********************************************************************
+			//Finally print out results:
+			//Now write out data:
+			if( Pstream::master() == true )
+			{
+				std::ofstream fs;
+				fs.open ("Bubble_Condensation.dat", std::fstream::app);
+				fs.precision(8);
+				fs << t << "\t" << Q_pcInt << "\t" << VoidFrac << "\t" << Uy_Vapor << "\t" << Q_bot << "\t" << Q_top << "\n" ;
+				fs.close();
+			}
+
+		#}; 
+
+		codeInclude
+		#{
+			#include <fstream>
+		#};
+	}
+
+
+	CenterBubble //Keeps bubble centered in the domain
+	{
+		functionObjectLibs ("libutilityFunctionObjects.so");
+		type coded;
+		redirectType CenterBubble;	
+		outputControl timeStep;
+		outputInterval 1;
+		code		
+		#{
+			//Load some refs...
+			const fvBoundaryMesh& bMesh = mesh().boundary();
+			const label TopPatchID  = bMesh.findPatchID("Top");
+			const volScalarField& alpha1 = mesh().lookupObject<volScalarField>("alpha1");
+			const volVectorField& U = mesh().lookupObject<volVectorField>("U");
+			//DANGER DANGER casting const to non-const
+			volVectorField& U_nc = const_cast<volVectorField&>(U);
+
+			//Find current y-center and velocity of the Taylor bubble
+			const vector BubVolC = gSum( mesh().V() * mesh().C().internalField() * (1.0-alpha1.internalField()) ); //Unscaled first moment of gas volume
+			const vector BubVolU = gSum( mesh().V() * U.internalField() * (1.0-alpha1.internalField()) ); //Velocity moment of bubble
+			const scalar BubVol  = gSum( mesh().V() * (1.0 - alpha1.internalField()) ); //Total gas volume
+			const scalar BubCenterY = BubVolC[1] / BubVol;
+			const scalar BubU       = BubVolU[1] / BubVol;
+			Info<< "Bub Y: " << BubCenterY << "     Bub V: " << BubU << endl;
+
+
+			//Try dangerously tweaking the BC + U-field here
+			vector UpU( U_nc.boundaryField()[TopPatchID][0] );
+			UpU[1] -= BubU;
+			const dimensionedVector U_correct("U_correct", dimLength/dimTime, vector(0, -BubU, 0) );
+			U_nc += U_correct;
+
+			fixedValueFvPatchVectorField& UInBC = refCast<fixedValueFvPatchVectorField>( U_nc.boundaryField()[TopPatchID] );
+			forAll(UInBC, j)
+			{
+				UInBC[j] = UpU;
+			}
+			
+
+		#}; 
+
+		codeInclude
+		#{
+
+		#};
+	}
+
+
+
+);
+
+// ************************************************************************** //
+
+libs ( "libsimpleSwakFunctionObjects.so"
+       "libswakFunctionObjects.so"
+       "libOpenFOAM.so"
+       "libutilityFunctionObjects.so" 
+       "libgroovyBC.so"
+       "libsimpleSwakFunctionObjects.so"
+       "libswakFunctionObjects.so" );
+// ************************************************************************* //

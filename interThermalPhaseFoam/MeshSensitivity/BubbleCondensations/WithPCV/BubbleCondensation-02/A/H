@@ -1,0 +1,58 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  2.0.x                                 |
+|   \\  /    A nd           | Web:      www.OpenFOAM.org                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       volScalarField;
+    location    "0";
+    object      H;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+//H is actually calculated automatically during operation, no need to do anything here, I guess...
+
+dimensions      [0 2 -2 0 0 0 0];
+
+internalField   uniform 0;
+
+boundaryField
+{
+    Bottom
+    {
+		type           zeroGradient;
+    }
+
+    FarStream
+    {
+		type           zeroGradient;
+    }
+
+    Top
+    {
+		type           zeroGradient;
+    }
+
+    Axis
+    {
+        type            symmetryPlane;
+    }
+
+    FrontNBack_pos
+    {
+        type            wedge;
+    }
+
+    FrontNBack_neg
+    {
+        type            wedge;
+    }
+}
+
+
+// ************************************************************************* //

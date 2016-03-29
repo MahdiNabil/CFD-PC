@@ -1,0 +1,78 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  2.0.x                                 |
+|   \\  /    A nd           | Web:      www.OpenFOAM.org                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       volScalarField;
+    location    "0";
+    object      alpha1;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+dimensions      [0 0 0 0 0 0 0];
+
+internalField   uniform 0;
+
+boundaryField
+{
+    VertWall
+    {
+		type            constantAlphaContactAngle;
+        gradient        uniform 0;
+        limit           gradient;
+        theta0          20;
+        value           uniform 1;
+        /*type            dynamicKistlerAlphaContactAngle;
+        thetaA          30;
+        thetaR          10;
+        muEffKistler    muEffKistler;
+        sigmaKistler    sigmaKistler;
+		value		    uniform 1;*/
+    }
+
+	Vane
+    {
+        type            zeroGradient;
+        value           uniform 1;
+    }
+
+    Inlet
+    {
+        type            inletOutlet;
+        inletValue      uniform 1;
+        value           uniform 1;
+    }
+    
+    FreeStream
+    {
+        type            fixedValue;
+        value           uniform 0;
+    }
+
+    Top
+    {
+        type            inletOutlet;
+        inletValue      uniform 0;
+        value           uniform 0;
+    }
+
+    Bottom
+    {
+        type            zeroGradient;
+        value           uniform 0;
+    }
+
+    Sides
+    {
+        type            empty;
+    }
+}
+
+
+// ************************************************************************* //
