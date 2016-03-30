@@ -96,16 +96,16 @@ public:
     // Member Functions
 
         //- Return phase change heat
-	tmp<volScalarField> Q_pc() const
-	{
-		return Q_pc_;
-	}
+		tmp<volScalarField> Q_pc() const
+		{
+			return Q_pc_;
+		}
 
         //- Correct the thermalPhaseChange model
         void correct()
-	{
-		calcQ_pc();
-	}
+		{
+			calcQ_pc();
+		}
 
         //- Read the transportProperties dictionary and update
         bool read(const dictionary& thermalPhaseChangeProperties);
