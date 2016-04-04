@@ -1,0 +1,196 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  1.7.0                                 |
+|   \\  /    A nd           | Web:      www.OpenFOAM.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "system";
+    object      controlDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+application     ASRInterThermalPhaseFoam;
+
+startFrom       latestTime;
+
+startTime       0;
+
+stopAt          endTime;
+
+endTime         0.25;
+
+deltaT          5E-6;
+
+writeControl    adjustableRunTime;
+writeInterval   0.01;
+
+
+purgeWrite      0;
+
+writeFormat     ascii;
+
+writePrecision  6;
+
+writeCompression uncompressed;
+
+timeFormat      general;
+
+timePrecision   6;
+
+runTimeModifiable yes;
+
+adjustTimeStep  on;
+
+maxCo           0.4;
+maxAlphaCo      0.4;
+maxFourier	    0.25;
+
+maxDeltaT       1E-2;
+
+
+//Global vars for funky/groovy
+functions
+(
+	defineGlobalVars
+	{
+		type addGlobalVariable;
+		globalScope globalVars;
+		globalVariables 
+		{
+			T_w
+			{
+				valueType scalar;
+				value -5;
+			}
+
+			T_sat
+			{
+				valueType scalar;
+				value 0;
+			}
+
+			d_f
+			{
+				valueType scalar;
+				value 15E-5;
+			}
+			
+			rho_l
+			{
+				valueType scalar;
+				value 500;
+			}
+
+			Gamma
+			{
+				valueType scalar;
+				value 5E-3;
+			}
+
+			cp_l
+			{
+				valueType scalar;
+				value 2000;
+			}
+        }
+    }
+    
+    
+	GlobalHeatTransfer //Gives heat transfer rates (W) for storage, wall flux, inlet, and outlet
+	{
+		functionObjectLibs ("libutilityFunctionObjects.so");
+		type coded;
+		redirectType GlobalHeatTransfer;
+		outputControl timeStep;
+		outputInterval 50;
+		
+		code
+		#{
+			//Some constants first:                 
+			scalar k = 0.5;        //Fluid conductivity
+			scalar rho = 500;       //Liquid Density
+			scalar mu = 1.0E-6*rho;  //Liquid viscosity
+			scalar Ymax = 0.004;      //Lower height to simulate
+
+
+			//***********************************************************************
+			//Now get wall heat flux
+			//Get mesh boundary
+			const fvBoundaryMesh& bMesh = mesh().boundary();
+			//Next get wall patch:
+			label WallPatchID  = bMesh.findPatchID("VertWall");
+			const fvPatch& WallPatch = bMesh[WallPatchID];
+			//Get temp gradient on the wall
+			const volScalarField& T = mesh().lookupObject<volScalarField>("T");
+			const surfaceScalarField SnGradT = fvc::snGrad(T);
+			const scalarField GradTWall = SnGradT.boundaryField()[WallPatchID];
+			const vectorField& Cfs = WallPatch.Cf();    //Cell face centers
+			const scalarField& Afs = WallPatch.magSf(); //Cell face areas
+			
+			
+
+			//Average heat flux on lower half of wall:
+			const scalar Q_Wall = -gSum( WallPatch.magSf() * GradTWall * k * pos(Ymax - Cfs.component(1)) )
+			                    / gSum( Afs * pos(Ymax - Cfs.component(1)) );
+			//***********************************************************************
+
+
+			//***********************************************************************
+			//Now get Film-Re
+			//Get mesh boundary
+			const volVectorField& U = mesh().lookupObject<volVectorField>("U");
+			const volScalarField& alpha1 = mesh().lookupObject<volScalarField>("alpha1");
+						const volScalarField Ualpha1 = -U.component(1) * alpha1;
+			const volScalarField& Ccs = mesh().C().component(1);
+			const scalar Gamma = rho * gSum( Ualpha1 * mesh().V() * pos(Ymax - Ccs.field() ) )
+			                   / gSum( Afs * pos(Ymax - Cfs.component(1)) );
+
+			//Average heat flux on lower half of wall:
+			Info<< "Gamma " << Gamma << endl;
+			const scalar Re = 4*Gamma/mu;
+			//***********************************************************************
+
+
+			//***********************************************************************
+			//Finally print out results:
+
+			//Get t and dt for reference
+			scalar t = mesh().time().value();
+			scalar dt = mesh().time().deltaTValue();
+
+			//Now write out data:
+			if( Pstream::master() == true )
+			{
+				std::ofstream fs;
+				fs.open ("WallHeatFlux.dat", std::fstream::app);
+				fs.precision(12);
+				fs << t << "\t" << dt << "\t" << Q_Wall << "\t" << Re << "\n";
+				fs.close();
+			}
+			//***********************************************************************
+
+		#}; 
+
+		codeInclude
+		#{
+			#include <fstream>
+		#};
+	}
+);
+
+
+libs ( "libtwoPhaseProperties.so"
+ 	   "libinterfaceProperties.so"    
+       "libgroovyBC.so"
+       "libsimpleSwakFunctionObjects.so"
+       "libswakFunctionObjects.so"
+       "libOpenFOAM.so" );
+
+
+// ************************************************************************* //

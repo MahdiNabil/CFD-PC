@@ -1,0 +1,69 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  2.0.x                                 |
+|   \\  /    A nd           | Web:      www.OpenFOAM.org                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       volScalarField;
+    location    "0";
+    object      T;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+dimensions      [0 0 0 1 0 0 0];
+
+internalField   uniform 0; //Initialize to the saturation temperature, but the wall is subcooled
+
+boundaryField
+{
+	VertWall
+	{
+		type    groovyBC;
+		globalScopes ( "globalVars" );
+		valueExpression  "T_w";
+		value           uniform 0;
+	}
+
+	FreeStream  //saturation at freestream
+	{
+		type		fixedValue;
+		value		uniform 0;
+	}
+
+	Vane
+	{
+		type        zeroGradient;
+	}
+
+	Inlet
+	{
+		type    groovyBC;
+		globalScopes ( "globalVars" );
+		valueExpression  "T_w+(T_sat-T_w)*(pos().x/d_f)";
+		value       uniform 0;
+	}
+
+	Top  //saturated inlet
+	{
+		type		fixedValue;
+		value		uniform 0;
+	}
+
+	Bottom
+	{
+        	type        zeroGradient;
+	}
+
+	Sides
+	{
+		type            empty;
+	}
+}
+
+
+// ************************************************************************* //

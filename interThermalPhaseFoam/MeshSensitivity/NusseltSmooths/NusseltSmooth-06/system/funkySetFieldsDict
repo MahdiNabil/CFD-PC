@@ -1,0 +1,51 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  2.0.X                                 |
+|   \\  /    A nd           | Web:      www.OpenFOAM.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "system";
+    object      funkySetFieldsDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+
+expressions
+(
+	CreateFilmAlpha1
+	{
+		field alpha1;
+        globalScopes ( "globalVars" );
+		expression "1";
+		condition "pos().x<=d_f";
+		keepPatches 1;
+	}
+
+	CreateFilmTemp
+	{
+		field T;
+        globalScopes ( "globalVars" );
+		expression "T_w+(T_sat-T_w)*(pos().x/d_f)";
+		condition "pos().x<=d_f";
+		keepPatches 1;
+	}
+
+	CreateFilmVelocity
+	{
+		field U;
+        globalScopes ( "globalVars" );
+		expression  "vector(0,-(3*Gamma/(rho_l*d_f))*((pos().x/d_f)-0.5*pow(pos().x/d_f,2)),0)";
+		condition "pos().x<=d_f";
+		keepPatches 1;
+	}
+
+);
+
+
+// *********************************************************************** //
