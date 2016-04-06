@@ -29,12 +29,11 @@ boundaryField
 		value           uniform 0;
 	}
 
-
-    FreeStream		//saturation at freestream
-    {
-        type		fixedValue;
+	FreeStream  //saturation at freestream
+	{
+		type		fixedValue;
 		value		uniform 0;
-    }
+	}
 
 	Vane
 	{
@@ -44,26 +43,26 @@ boundaryField
 	Inlet
 	{
 		type    groovyBC;
-        globalScopes ( "globalVars" );
+		globalScopes ( "globalVars" );
 		valueExpression  "T_w+(T_sat-T_w)*(pos().x/d_f)";
 		value       uniform 0;
 	}
 
-    Top				//saturated inlet
-    {
-        type		fixedValue;
+	Top  //saturated inlet
+	{
+		type		fixedValue;
 		value		uniform 0;
-    }
+	}
 
-    Bottom
-    {
-        type        zeroGradient;
-    }
+	Bottom
+	{
+        	type        zeroGradient;
+	}
 
-    Sides
-    {
-        type            empty;
-    }
+	Sides
+	{
+		type            empty;
+	}
 }
 
 

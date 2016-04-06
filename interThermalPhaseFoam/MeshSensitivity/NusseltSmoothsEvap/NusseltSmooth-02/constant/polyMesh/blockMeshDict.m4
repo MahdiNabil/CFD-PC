@@ -26,7 +26,7 @@ define(hV, 2.5E-4);        //Height of the inlet vane
 define(hB, 0.8E-2);         //Bulk section height
 define(thB, 0.6E-3);        //Thickness of the bulk section
 //Discretization params
-define(hX, 4.6154E-6);         //Normal direction resolution
+define(hX, 4.615E-6);         //Normal direction resolution
 define(hXB, 1.5385E-5);		//Normal direction resolution in the bulk
 define(hY, 1.5385E-5);           //Length-direction resolution
 

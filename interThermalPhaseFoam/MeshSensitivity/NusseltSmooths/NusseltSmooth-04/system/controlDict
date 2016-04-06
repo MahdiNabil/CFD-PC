@@ -23,7 +23,7 @@ startTime       0;
 
 stopAt          endTime;
 
-endTime         0.1;
+endTime         0.25;
 
 deltaT          5E-6;
 
@@ -113,10 +113,10 @@ functions
 		code
 		#{
 			//Some constants first:                 
-			const scalar k = 0.5;        //Fluid conductivity
-			const scalar rho = 500;       //Liquid Density
-			const scalar mu = 1.0E-6*rho;  //Liquid viscosity
-			const scalar Ymax = 0.004;      //Lower height to simulate
+			scalar k = 0.5;        //Fluid conductivity
+			scalar rho = 500;       //Liquid Density
+			scalar mu = 1.0E-6*rho;  //Liquid viscosity
+			scalar Ymax = 0.004;      //Lower height to simulate
 
 
 			//***********************************************************************
@@ -146,7 +146,7 @@ functions
 			//Get mesh boundary
 			const volVectorField& U = mesh().lookupObject<volVectorField>("U");
 			const volScalarField& alpha1 = mesh().lookupObject<volScalarField>("alpha1");
-			const volScalarField Ualpha1 = -U.component(1) * alpha1;
+						const volScalarField Ualpha1 = -U.component(1) * alpha1;
 			const volScalarField& Ccs = mesh().C().component(1);
 			const scalar Gamma = rho * gSum( Ualpha1 * mesh().V() * pos(Ymax - Ccs.field() ) )
 			                   / gSum( Afs * pos(Ymax - Cfs.component(1)) );
@@ -154,16 +154,6 @@ functions
 			//Average heat flux on lower half of wall:
 			Info<< "Gamma " << Gamma << endl;
 			const scalar Re = 4*Gamma/mu;
-			//***********************************************************************
-
-
-			//***********************************************************************
-			//Now get Film thickness
-			//Get mesh boundary
-
-			const volScalarField& CcsB = mesh().C().component(1); //Weird resetting of this field...
-			const scalar delta_f = gSum( alpha1 * mesh().V() * pos(Ymax - CcsB.field() ) )
-			                    / gSum( Afs * pos(Ymax - Cfs.component(1)) );
 			//***********************************************************************
 
 
@@ -180,7 +170,7 @@ functions
 				std::ofstream fs;
 				fs.open ("WallHeatFlux.dat", std::fstream::app);
 				fs.precision(12);
-				fs << t << "\t" << dt << "\t" << Q_Wall << "\t" << Re << "\t" << delta_f << "\n";
+				fs << t << "\t" << dt << "\t" << Q_Wall << "\t" << Re << "\n";
 				fs.close();
 			}
 			//***********************************************************************

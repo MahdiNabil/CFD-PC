@@ -22,45 +22,45 @@ FoamFile
         type            wall;
         inGroups        1(wall);
         nFaces          536;
-        startFace       86918;
+        startFace       87989;
     }
     Vane
     {
         type            wall;
         inGroups        1(wall);
         nFaces          43;
-        startFace       87454;
+        startFace       88525;
     }
     FreeStream
     {
         type            patch;
         nFaces          536;
-        startFace       87497;
+        startFace       88568;
     }
     Inlet
     {
         type            patch;
-        nFaces          32;
-        startFace       88033;
+        nFaces          33;
+        startFace       89104;
     }
     Top
     {
         type            patch;
         nFaces          39;
-        startFace       88065;
+        startFace       89137;
     }
     Bottom
     {
         type            patch;
-        nFaces          82;
-        startFace       88104;
+        nFaces          83;
+        startFace       89176;
     }
     Sides
     {
         type            empty;
         inGroups        1(empty);
-        nFaces          87552;
-        startFace       88186;
+        nFaces          88624;
+        startFace       89259;
     }
 )
 
