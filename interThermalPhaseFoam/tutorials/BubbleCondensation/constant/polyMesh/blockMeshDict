@@ -32,7 +32,7 @@ vertices
 
 blocks          
 (
-hex ( 0  3  7  4  1  2  6  5) (90 150 1) simpleGrading (4 1 1)      //00
+hex ( 0  3  7  4  1  2  6  5) (105 172 1) simpleGrading (4 1 1)      //00
 );
 
 edges           
@@ -41,7 +41,7 @@ edges
 
 patches         
 (
-	wall Bottom
+	patch Bottom
 	(
 		( 0 3 2 1 )
 	)

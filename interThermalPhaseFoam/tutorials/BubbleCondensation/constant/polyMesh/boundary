@@ -19,50 +19,49 @@ FoamFile
 (
     Bottom
     {
-        type            wall;
-        inGroups        1(wall);
-        nFaces          90;
-        startFace       26760;
+        type            patch;
+        nFaces          105;
+        startFace       35843;
     }
     FarStream
     {
         type            patch;
-        nFaces          150;
-        startFace       26850;
+        nFaces          172;
+        startFace       35948;
     }
     Top
     {
         type            patch;
-        nFaces          90;
-        startFace       27000;
+        nFaces          105;
+        startFace       36120;
     }
     Axis
     {
         type            symmetryPlane;
         inGroups        1(symmetryPlane);
         nFaces          0;
-        startFace       27090;
+        startFace       36225;
     }
     FrontNBack
     {
         type            empty;
         inGroups        1(empty);
         nFaces          0;
-        startFace       27090;
+        startFace       36225;
     }
     FrontNBack_pos
     {
         type            wedge;
         inGroups        1(wedge);
-        nFaces          13500;
-        startFace       27090;
+        nFaces          18060;
+        startFace       36225;
     }
     FrontNBack_neg
     {
         type            wedge;
         inGroups        1(wedge);
-        nFaces          13500;
-        startFace       40590;
+        nFaces          18060;
+        startFace       54285;
     }
 )
 

@@ -23,9 +23,8 @@ boundaryField
 {
     Bottom
     {
-		type            fixedValue;
-		value           uniform (0 0 0);
-	}
+		type            zeroGradient;
+    }
 
     FarStream
     {
@@ -35,7 +34,7 @@ boundaryField
     Top
     {
         type            fixedValue;
-		value           uniform (0 0 0);//(0 -0.004 0);
+		value           uniform (0 0 0);
     }
 
     Axis

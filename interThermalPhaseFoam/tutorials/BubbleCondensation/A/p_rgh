@@ -23,7 +23,12 @@ boundaryField
 {
     Bottom
     {
-        type            fixedFluxPressure;
+        type            totalPressure;
+        rho             rho;
+        psi             none;
+        gamma           1;
+        p0              uniform 0;
+        value           uniform 0;
     }
 
     FarStream
@@ -33,12 +38,7 @@ boundaryField
 
     Top
     {
-        type            totalPressure;
-        rho             rho;
-        psi             none;
-        gamma           1;
-        p0              uniform 0;
-        value           uniform 0;
+        type            fixedFluxPressure;
     }
 
     Axis

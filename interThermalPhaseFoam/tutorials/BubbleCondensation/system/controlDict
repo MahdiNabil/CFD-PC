@@ -19,16 +19,16 @@ application     ASRInterThermalPhaseFoam;
 
 startFrom       latestTime;
 
-startTime       0.0;
+startTime       0;
 
 stopAt          endTime;
 
-endTime         0.04;
+endTime         0.15;
 
 deltaT          1E-7;
 
 writeControl    adjustableRunTime;
-writeInterval   0.001;
+writeInterval   0.002;
 
 purgeWrite      0;
 
@@ -54,32 +54,6 @@ maxDeltaT       2E-5;
 //Global vars for funky/groovy
 functions
 (
-	defineGlobalVars
-	{
-		type addGlobalVariable;
-		globalScope globalVars;
-		globalVariables 
-		{
-			T_sat
-			{
-				valueType scalar;
-				value 0;
-			}
-			
-			rho_l
-			{
-				valueType scalar;
-				value 890.47;
-			}
-
-			cp_l
-			{
-				valueType scalar;
-				value 4400;
-			}
-        }
-    }
-
 	DataSummary //Returns: time (s), dt (s), wall heat flux (W), phase-change heating rate (W), Liquid volume fraction (-),
 	{
 		functionObjectLibs ("libutilityFunctionObjects.so");
@@ -102,6 +76,13 @@ functions
 			const scalar Q_pcInt = gSum( -mesh().V() * Q_pc.internalField() );  // [W]
 			//***********************************************************************
 
+			//***********************************************************************
+			//Get top and bottom half phase change heating rates
+			const scalar y_C = 0.001;
+			const scalar Q_top = gSum( -mesh().V() * Q_pc.internalField() * pos( mesh().C().internalField().component(1) - y_C ) );
+			const scalar Q_bot = gSum( -mesh().V() * Q_pc.internalField() * neg( mesh().C().internalField().component(1) - y_C ) );
+			
+
 
 			//***********************************************************************
 			//Now get void fraction
@@ -116,9 +97,15 @@ functions
 			//***********************************************************************
 			//Now get bubble velocity
 			const volVectorField& U = mesh().lookupObject<volVectorField>("U");
-			const vector U_Vapor = gSum( (1.0-alpha1.internalField()) * U.internalField() * mesh().V() );
+			//const vector U_Vapor = gSum( (1.0-alpha1.internalField()) * U.internalField() * mesh().V() );
 
-			const scalar Uy_Vapor = U_Vapor[1]/V_Vapor;
+			//const scalar Uy_Vapor = U_Vapor[1]/V_Vapor;
+			//Updated bubble velocity
+			const fvBoundaryMesh& bMesh = mesh().boundary();
+			const label TopPatchID  = bMesh.findPatchID("Top");
+			const vector UpU( U.boundaryField()[TopPatchID][0] );
+			const scalar Uy_Vapor = -UpU[1];
+
 			//***********************************************************************
 
 
@@ -130,7 +117,7 @@ functions
 				std::ofstream fs;
 				fs.open ("Bubble_Condensation.dat", std::fstream::app);
 				fs.precision(8);
-				fs << t << "\t" << Q_pcInt << "\t" << VoidFrac << "\t" << Uy_Vapor << "\n" ;
+				fs << t << "\t" << Q_pcInt << "\t" << VoidFrac << "\t" << Uy_Vapor << "\t" << Q_bot << "\t" << Q_top << "\n" ;
 				fs.close();
 			}
 
@@ -141,6 +128,55 @@ functions
 			#include <fstream>
 		#};
 	}
+
+
+	CenterBubble //Keeps bubble centered in the domain
+	{
+		functionObjectLibs ("libutilityFunctionObjects.so");
+		type coded;
+		redirectType CenterBubble;	
+		outputControl timeStep;
+		outputInterval 1;
+		code		
+		#{
+			//Load some refs...
+			const fvBoundaryMesh& bMesh = mesh().boundary();
+			const label TopPatchID  = bMesh.findPatchID("Top");
+			const volScalarField& alpha1 = mesh().lookupObject<volScalarField>("alpha1");
+			const volVectorField& U = mesh().lookupObject<volVectorField>("U");
+			//DANGER DANGER casting const to non-const
+			volVectorField& U_nc = const_cast<volVectorField&>(U);
+
+			//Find current y-center and velocity of the Taylor bubble
+			const vector BubVolC = gSum( mesh().V() * mesh().C().internalField() * (1.0-alpha1.internalField()) ); //Unscaled first moment of gas volume
+			const vector BubVolU = gSum( mesh().V() * U.internalField() * (1.0-alpha1.internalField()) ); //Velocity moment of bubble
+			const scalar BubVol  = gSum( mesh().V() * (1.0 - alpha1.internalField()) ); //Total gas volume
+			const scalar BubCenterY = BubVolC[1] / BubVol;
+			const scalar BubU       = BubVolU[1] / BubVol;
+			Info<< "Bub Y: " << BubCenterY << "     Bub V: " << BubU << endl;
+
+
+			//Try dangerously tweaking the BC + U-field here
+			vector UpU( U_nc.boundaryField()[TopPatchID][0] );
+			UpU[1] -= BubU;
+			const dimensionedVector U_correct("U_correct", dimLength/dimTime, vector(0, -BubU, 0) );
+			U_nc += U_correct;
+
+			fixedValueFvPatchVectorField& UInBC = refCast<fixedValueFvPatchVectorField>( U_nc.boundaryField()[TopPatchID] );
+			forAll(UInBC, j)
+			{
+				UInBC[j] = UpU;
+			}
+			
+
+		#}; 
+
+		codeInclude
+		#{
+
+		#};
+	}
+
 
 
 );

@@ -27,17 +27,14 @@ interpolationSchemes
 
 divSchemes
 {
-	div(rhoPhi,U)       Gauss linearUpwindV grad(U);;
-	div(phi,alpha)  Gauss vanLeer; 
-    div(phirb,alpha) Gauss interfaceCompression;
-    div(phi,k)           Gauss linearUpwind grad(k);
-    div(phi,epsilon) Gauss upwind;
-    div(phi,R)      Gauss upwind;
-    div(R)          Gauss linear;
-    div(phi,nuTilda) Gauss upwind;
-    div(rhoPhi,H)       Gauss upwind grad(H);
-	div((muEff*dev(T(grad(U))))) Gauss linear;
-    default		Gauss linear;
+	div(rhoPhi,U)                 Gauss vanLeerV; //Gauss linearUpwindV grad(U);;
+	div(phi,alpha)                Gauss vanLeer; 
+	div(phirb,alpha)              Gauss interfaceCompression;
+	div(R)                        Gauss linear;
+	//div(rhoPhi,U)                 Gauss linearUpwind grad(U);
+	div(rhoPhi,U)                 Gauss vanLeer;
+	div((muEff*dev(T(grad(U)))))  Gauss linear;
+	default                       Gauss linear;
 }
 
 gradSchemes
@@ -52,7 +49,7 @@ laplacianSchemes
 
 snGradSchemes
 {
-    default              limited 0.33;
+    default              limited 0.5;
 }
 
 fluxRequired

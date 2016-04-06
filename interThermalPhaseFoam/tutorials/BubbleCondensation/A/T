@@ -24,8 +24,8 @@ boundaryField
     Bottom
     {
         type            inletOutlet;
-        inletValue      uniform 95;
-        value           uniform 95;
+        inletValue      uniform 99;
+        value           uniform 99;
 	}
 
     FarStream
@@ -35,8 +35,9 @@ boundaryField
 
     Top
     {
-		type            fixedValue;
-		value           uniform 95;
+        type            inletOutlet;
+        inletValue      uniform 99;
+        value           uniform 99;
     }
 
     Axis
