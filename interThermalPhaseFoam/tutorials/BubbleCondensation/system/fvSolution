@@ -29,7 +29,7 @@ solvers
         preconditioner   DILU;
         tolerance        1e-12;
         relTol           1E-4;
-        cAlpha          2.0;
+        cAlpha           1.0;
     };
 
     pcorr
@@ -183,8 +183,8 @@ PIMPLE
     nAlphaSubCycles 3;
     nEnergyLoops    3;
 
-	pcRefPoint (1E-6 1E-6 0);
-	pcRefValue 0;
+//	pcRefPoint (1E-6 1E-6 0);
+//	pcRefValue 0;
 }
 
 relaxationFactors

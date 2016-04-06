@@ -1,6 +1,9 @@
 #!/bin/bash
 
 #Cleanup script
+. $WM_PROJECT_DIR/bin/tools/CleanFunctions
+cleanTimeDirectories
+
 rm -r processor*
 rm -r dynamicCode
 rm -r 0/*

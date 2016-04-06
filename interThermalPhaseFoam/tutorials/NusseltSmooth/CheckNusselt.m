@@ -15,7 +15,7 @@ mu_L      = 1.0E-6 * rho_L;          %kg/m-s
 %Read in data from file:
 D         = load('WallHeatFlux.dat');
 %Trim the first 0.025 s for stability
-ind       = find(D(:,1) < 0.025, 1, 'last');
+ind       = find(D(:,1) < 0.1, 1, 'last');
 D         = D(ind:end,:);
 %Get out data entries
 t         = D(:,1);                    %s

@@ -26,34 +26,37 @@ twoPhase
 phase1
 {
     transportModel  		Newtonian;
-    nu              		nu [ 0 2 -1 0 0 0 0 ] 1E-6;//1.71E-7;
+    nu              		nu [ 0 2 -1 0 0 0 0 ] 5E-6;//1.71E-7;
     rho             		rho [ 1 -3 0 0 0 0 0 ] 900;
     thermalTransportModel	Fourier;
-    lambda			lambda [1 1 -3 -1 0 0 0] 0.6;
-    cp				cp [ 0 2 -2 -1 0 0 0] 4000;
+    lambda			lambda [1 1 -3 -1 0 0 0] 1.0;
+    cp				cp [ 0 2 -2 -1 0 0 0] 2000;
 }
 
 phase2
 {
     transportModel		Newtonian;
-    nu				nu [ 0 2 -1 0 0 0 0 ] 1E-5;
+    nu				nu [ 0 2 -1 0 0 0 0 ] 5E-5;
     rho				rho [ 1 -3 0 0 0 0 0 ] 10;
     thermalTransportModel	Fourier;
     lambda			lambda [1 1 -3 -1 0 0 0] 0.02;
     cp				cp [ 0 2 -2 -1 0 0 0] 2500;
 }
 
-sigma           sigma [ 1 0 -2 0 0 0 0 ] 0.01;
+sigma                           sigma [ 1 0 -2 0 0 0 0 ] 0.005;
 T_0				T_0 [0 0 0 1 0 0 0] 100;
 
 
+ImprovedTransportBlending yes;
+
 thermalPhaseChange
 {
-	model                Yang;
+	model                HiLoRelaxedSplit;
 	h_lv		         h_lv  [0 2 -2 0 0 0 0 ] 2000E3;
 	T_sat		         T_sat [0 0 0 1 0 0 0]  100;
-	rl					 rl	   [0 0 -1 0 0 0 0] 5E4;
-	rv					 rv    [0 0 -1 0 0 0 0] 5E4;
+	CondThresh           0.5; //Interface threshold for condensing cell pairs
+	EvapThresh           0.05; //Interface threshold for evaporating cell pairs
+	RelaxFac             1.0; //Under-relax phase change rate in each time step
 }
 
 surfaceTensionForce
