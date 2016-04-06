@@ -27,7 +27,7 @@ Navigate to a working folder in a shell terminal, clone the git code repository,
 ```
 $ git clone https://github.com/MahdiNabil/CFD-PC.git CFD-PC
 $ cd CFD-PC/interThermalPhaseFoam
-$ git checkout tags/v2.4.0.3
+$ git checkout tags/v2.4.0.4
 $ source Allwmake.sh
 ```
 
