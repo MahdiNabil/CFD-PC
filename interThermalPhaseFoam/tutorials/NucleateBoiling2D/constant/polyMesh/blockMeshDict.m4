@@ -22,13 +22,13 @@ define(roundcalc, [esyscmd(perl -e 'printf ( int( ($1) + 0.5 ) )')])
 //Some dimensions here
 define(R_c, 25E-6);       //Cavity radius
 define(H_c, 50E-6);      //Cavity Height
-define(R_m, 150E-6);      //Main domain radius (width/2)
-define(H_m, 225E-6);      //Main domain height
+define(R_m, 300E-6);      //Main domain radius (width/2)
+define(H_m, 450E-6);      //Main domain height
 //Discretization params
 define(N_c_x, 8);        //Cavity x-direction
 define(N_c_y, 15);        //Cavity y-direction
-define(N_m_x, 45);       //Main-zone x-direction
-define(N_m_y, 68);       //Main-zone y-direction
+define(N_m_x, 90);       //Main-zone x-direction
+define(N_m_y, 136);       //Main-zone y-direction
 
 convertToMeters 1;
 

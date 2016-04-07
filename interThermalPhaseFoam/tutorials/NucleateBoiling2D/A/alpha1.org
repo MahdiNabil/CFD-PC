@@ -28,11 +28,18 @@ boundaryField
     }
     Base
     {
-        type            constantAlphaContactAngle;
-        gradient        uniform 0;
-        limit           zeroGradient;
-        theta0          60;
-        value           uniform 0;
+	type            dynamicKistlerAlphaContactAngle;
+        thetaA          80;
+        thetaR          40;
+        muEffKistler    muEffKistler;
+        sigmaKistler    sigmaKistler;
+	value           uniform 0;
+
+//	type            constantAlphaContactAngle;
+//        gradient        uniform 0;
+//        limit           zeroGradient;
+//        theta0          60;
+//        value           uniform 0;
     }
     FarStream
     {

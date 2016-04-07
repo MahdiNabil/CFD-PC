@@ -53,3 +53,4 @@ linux64IccDPOpt
 dynamicCode
 processor[0-9]*
 octave-workspace
+lnInclude

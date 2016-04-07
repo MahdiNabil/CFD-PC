@@ -1,0 +1,4 @@
+dynamicKistlerAlphaContactAngle/dynamicKistlerAlphaContactAngleFvPatchScalarField.C
+RiddersRoot/RiddersRoot.C
+
+LIB = $(FOAM_USER_LIBBIN)/libDynamicKistlerContactAngle

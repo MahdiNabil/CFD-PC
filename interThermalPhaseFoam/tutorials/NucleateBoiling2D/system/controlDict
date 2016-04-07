@@ -23,7 +23,7 @@ startTime       0.0;
 
 stopAt          endTime;
 
-endTime         0.01;
+endTime         0.015;
 
 deltaT          1E-7;
 
@@ -126,5 +126,6 @@ libs ( "libsimpleSwakFunctionObjects.so"
        "libutilityFunctionObjects.so" 
        "libgroovyBC.so"
        "libsimpleSwakFunctionObjects.so"
-       "libswakFunctionObjects.so" );
+       "libswakFunctionObjects.so"
+       "libDynamicKistlerContactAngle.so");
 // ************************************************************************* //
