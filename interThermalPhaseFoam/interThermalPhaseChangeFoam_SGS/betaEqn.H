@@ -1,6 +1,3 @@
-// Cell gradient of beta
-const volVectorField gradbeta = fvc::grad(beta);
-
 // Alpha1 on faces
 const surfaceScalarField alpha1f = min(max(fvc::interpolate(alpha1), scalar(0)), scalar(1));
 
@@ -21,15 +18,12 @@ fvScalarMatrix betaEqn
       + fvm::div(Ubetaf, beta)
 );
 
-/*
 solve
 (
     		betaEqn
  		==
-		  - beta * (1.0 - alpha1) * (r/mag(Delta))
-          + alpha1f*fvm::laplacian(nuEff, beta)
-		  - max((beta - beta0), scalar(0)) * (c1/mag(Delta))
+			fvc::average(alpha1f)*fvm::laplacian(nuEff, beta)
+		  - beta * (1.0 - alpha1) * (r/fvc::average(Delta))
+		  - max((beta - beta0), 0.0) * (c1/fvc::average(Delta))
 );
-*/
 
-//betaEqn.solve();
