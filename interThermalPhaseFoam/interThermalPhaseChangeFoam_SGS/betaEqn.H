@@ -1,0 +1,35 @@
+// Cell gradient of beta
+const volVectorField gradbeta = fvc::grad(beta);
+
+// Alpha1 on faces
+const surfaceScalarField alpha1f = min(max(fvc::interpolate(alpha1), scalar(0)), scalar(1));
+
+// Velocity of bubbles on the faces
+const surfaceScalarField Ubetaf = mag(fvc::interpolate(Ubeta));
+
+// Lookup for rate parameters
+const dimensionedScalar r = transportProperties.lookup("r");
+const dimensionedScalar c1 = transportProperties.lookup("c1");
+const dimensionedScalar beta0 = transportProperties.lookup("beta0");
+
+// Cell size definition
+const surfaceScalarField Delta =  Foam::sqrt(mesh.magSf());
+
+fvScalarMatrix betaEqn
+(
+        fvm::ddt(alpha1, beta)
+      + fvm::div(Ubetaf, beta)
+);
+
+/*
+solve
+(
+    		betaEqn
+ 		==
+		  - beta * (1.0 - alpha1) * (r/mag(Delta))
+          + alpha1f*fvm::laplacian(nuEff, beta)
+		  - max((beta - beta0), scalar(0)) * (c1/mag(Delta))
+);
+*/
+
+//betaEqn.solve();
