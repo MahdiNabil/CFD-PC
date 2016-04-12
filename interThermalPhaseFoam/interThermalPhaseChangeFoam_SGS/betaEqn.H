@@ -27,3 +27,9 @@ solve
 		  - max((beta - beta0), 0.0) * (c1/fvc::average(Delta))
 );
 
+
+Info<< "SGS beta volume fraction = "
+    << beta.weightedAverage(mesh.Vsc()).value()
+    << "  Min(" << beta.name() << ") = " << min(beta).value()
+    << "  Max(" << beta.name() << ") = " << max(beta).value()
+    << endl;
