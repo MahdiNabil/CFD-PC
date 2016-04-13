@@ -102,7 +102,6 @@ const scalar CHSP = CombinedHSPressure ? 1.0 : 0;
 	const dimensionedScalar& nu1 = twoPhaseProperties.nu1();
     //const dimensionedScalar& nu2 = twoPhaseProperties.nu2();
 
-	const dimensionedScalar diam("diam", dimensionSet(0,1,0,0,0,0,0), 1E-7);
 
     // Need to store rho for ddt(rho, U)
     volScalarField rho
@@ -264,6 +263,8 @@ const scalar CHSP = CombinedHSPressure ? 1.0 : 0;
     volScalarField gh("gh", g & mesh.C());
     surfaceScalarField ghf("ghf", g & mesh.Cf());
 
+	//Assigning a value for SGS bubbles diameter
+	const dimensionedScalar diam("diam", dimensionSet(0,1,0,0,0,0,0), 1E-7);
 
 	Info<< "Reading field Ubeta\n" << endl;
     volVectorField Ubeta
