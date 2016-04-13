@@ -22,8 +22,10 @@ solve
 (
     		betaEqn
  		==
-			fvc::average(alpha1f)*fvm::laplacian(nuEff, beta)
-		  - beta * (1.0 - alpha1) * (r/fvc::average(Delta))
+			fvc::average(alpha1f)*fvm::laplacian(turbulence->nuEff(), beta)
+		  //fvc::average(alpha1f)*fvm::laplacian(nuEff, beta)
+		  - fvm::Sp((1.0 - alpha1)*(r/fvc::average(Delta)), beta)		  
+		//- beta * (1.0 - alpha1) * (r/fvc::average(Delta))
 		  - max((beta - beta0), 0.0) * (c1/fvc::average(Delta))
 );
 
