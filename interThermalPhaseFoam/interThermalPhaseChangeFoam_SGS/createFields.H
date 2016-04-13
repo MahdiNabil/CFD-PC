@@ -59,20 +59,6 @@ const scalar CHSP = CombinedHSPressure ? 1.0 : 0;
         mesh
     );
 
-	Info<< "Reading field Ubeta\n" << endl;
-    volVectorField Ubeta
-    (
-        IOobject
-        (
-            "Ubeta",
-            runTime.timeName(),
-            mesh,
-            IOobject::MUST_READ,
-            IOobject::AUTO_WRITE
-        ),
-        mesh
-    );
-
     #include "createPhi.H"
 
     
@@ -113,6 +99,10 @@ const scalar CHSP = CombinedHSPressure ? 1.0 : 0;
     const dimensionedScalar& rho2 = twoPhaseProperties.rho2();
     const dimensionedScalar& cp1 = twoPhaseProperties.cp1();
     const dimensionedScalar& cp2 = twoPhaseProperties.cp2();
+	const dimensionedScalar& nu1 = twoPhaseProperties.nu1();
+    //const dimensionedScalar& nu2 = twoPhaseProperties.nu2();
+
+	const dimensionedScalar diam("diam", dimensionSet(0,1,0,0,0,0,0), 1E-7);
 
     // Need to store rho for ddt(rho, U)
     volScalarField rho
@@ -274,6 +264,20 @@ const scalar CHSP = CombinedHSPressure ? 1.0 : 0;
     volScalarField gh("gh", g & mesh.C());
     surfaceScalarField ghf("ghf", g & mesh.Cf());
 
+
+	Info<< "Reading field Ubeta\n" << endl;
+    volVectorField Ubeta
+    (
+        IOobject
+        (
+            "Ubeta",
+            runTime.timeName(),
+            mesh,
+            IOobject::MUST_READ,
+            IOobject::AUTO_WRITE
+        ),
+        U + (1.0/18.0)*g*pow(diam,2.0)*(rho1-rho2)/(nu1*rho1)
+    );
 
 
     //Total Pressure Field:

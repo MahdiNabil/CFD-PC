@@ -80,7 +80,6 @@ bool Foam::conductivityModels::Fourier::read
 
     conductivityProperties_.lookup("lambda") >> lambda0_;
     lambda_ = lambda0_;
-
     return true;
 }
 

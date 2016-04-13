@@ -43,7 +43,7 @@ Foam::autoPtr<Foam::conductivityModel> Foam::conductivityModel::New
 
     dictionaryConstructorTable::iterator cstrIter =
         dictionaryConstructorTablePtr_->find(modelType);
-
+		Info<< "Test 1_lib" << endl;
     if (cstrIter == dictionaryConstructorTablePtr_->end())
     {
         FatalErrorIn
@@ -56,10 +56,10 @@ Foam::autoPtr<Foam::conductivityModel> Foam::conductivityModel::New
             << dictionaryConstructorTablePtr_->sortedToc()
             << exit(FatalError);
     }
-
+		Info<< "Test 2_lib" << endl;
     return autoPtr<conductivityModel>
         (cstrIter()(name, conductivityProperties, U, phi));
+		Info<< "Test 3_lib" << endl;
 }
-
 
 // ************************************************************************* //

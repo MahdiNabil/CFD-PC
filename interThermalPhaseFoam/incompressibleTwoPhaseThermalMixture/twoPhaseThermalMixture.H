@@ -2,8 +2,8 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011 OpenFOAM Foundation and
-     \\/     M anipulation  | Copyright (C) 2016 Alex Rattner and Mahdi Nabil
+    \\  /    A nd           | Copyright (C) 2011 OpenFOAM Foundation
+     \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
     This file is part of OpenFOAM.
@@ -76,22 +76,23 @@ protected:
 	//Added by ASR
 	dimensionedScalar cp1_;
 	dimensionedScalar cp2_;
+	//Added by MN
+	dimensionedScalar nu1_;
+	dimensionedScalar nu2_;
 
 	const volVectorField& U_;
 	const surfaceScalarField& phi_;
 
 	const volScalarField& alpha1_;
+
 	volScalarField nu_;
+        //Added by MN
+        //volScalarField mesh_;
 
 	//Added by ASR
 	volScalarField lambda_;
 	volScalarField cp_;
 	volScalarField rho_;
-	//Added by ASR
-        const fvMesh& mesh_;
-
-	//Whether or not to use improved transport property blending models
-	Switch ImprovedTransportBlending;
 
     // Private Member Functions
 
@@ -186,54 +187,70 @@ public:
             return cp2_;
         };
 
+		//- Return const-access to phase1 viscosity
+        const dimensionedScalar& nu1() const
+        {
+            return nu1_;
+        }
+
+        //- Return const-access to phase2 viscosity
+        const dimensionedScalar& nu2() const
+        {
+            return nu2_;
+        };
+
         //- Return the dynamic laminar viscosity
         tmp<volScalarField> mu() const;
 
-	//- RAS Return the conductivity
-	tmp<volScalarField> lambda() const;
+		//- RAS Return the conductivity
+		tmp<volScalarField> lambda() const;
 
         //- Return the face-interpolated dynamic laminar viscosity
         tmp<surfaceScalarField> muf() const;
 
-	//- RAS Return the face-interpolated dynamic laminar conductivity
-	tmp<surfaceScalarField> lambdaf() const;
+		//- RAS Return the face-interpolated dynamic laminar conductivity
+		tmp<surfaceScalarField> lambdaf() const;
 
-	//- Return the kinematic laminar viscosity
-	tmp<volScalarField> nu() const
-	{
-		return nu_;
-	}
+		//- Return the kinematic laminar viscosity
+		virtual tmp<volScalarField> nu() const
+		{
+		    return nu_;
+		}
 
+		//- Return the laminar viscosity for patch
+                //const volScalarField nuP(this->nu()); 
+//      		virtual tmp<volScalarField> nuP(const label patchi) const;
         tmp<scalarField> nu(const label patchi) const
         {
             return nu_.boundaryField()[patchi];
         }
 
+
         //- Return the face-interpolated kinematic laminar viscosity
         tmp<surfaceScalarField> nuf() const;
 
-	//- ASR Return the specific heats
-	tmp<volScalarField> cp() const;
+		//- ASR Return the specific heats
+		tmp<volScalarField> cp() const;
 
-	//- ASR Return the specific heats at faces
-	tmp<surfaceScalarField> cpf() const;
+		//- ASR Return the specific heats at faces
+		tmp<surfaceScalarField> cpf() const;
 
-	//- ASR for calculating thermal diffusivity
-	tmp<volScalarField> alpha() const;
+		//- ASR for calculating thermal diffusivity
+		tmp<volScalarField> alpha() const;
 
-	//- ASR for calculating alpha at faces
-	tmp<surfaceScalarField> alphaf() const;
+		//- ASR for calculating alpha at faces
+		tmp<surfaceScalarField> alphaf() const;
 
-	//- ASR return the density
-	tmp<volScalarField> rho() const;
+		//- ASR return the density
+		tmp<volScalarField> rho() const;
 
         //- ASR Correct the laminar viscosity and conductivity
         virtual void correct()
         {
-		calcNu();
-		calcLambda();
-		calcCp();
-		calcRho();
+            calcNu();
+			calcLambda();
+			calcCp();
+			calcRho();
         }
 
         //- Read base transportProperties dictionary

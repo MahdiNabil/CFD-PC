@@ -2,6 +2,7 @@
 const surfaceScalarField alpha1f = min(max(fvc::interpolate(alpha1), scalar(0)), scalar(1));
 
 // Velocity of bubbles on the faces
+fvOptions.correct(Ubeta);
 const surfaceScalarField Ubetaf = mag(fvc::interpolate(Ubeta));
 
 // Lookup for rate parameters
@@ -35,3 +36,4 @@ Info<< "SGS beta volume fraction = "
     << "  Min(" << beta.name() << ") = " << min(beta).value()
     << "  Max(" << beta.name() << ") = " << max(beta).value()
     << endl;
+
