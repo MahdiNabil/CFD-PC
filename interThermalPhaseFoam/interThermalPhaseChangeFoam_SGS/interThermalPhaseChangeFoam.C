@@ -108,7 +108,7 @@ int main(int argc, char *argv[])
 		//Solve for alpha1
         #include "alphaEqnSubCycle.H"
 
-		//Solve for beta
+		//Solve for beta (SGS)
         #include "betaEqn.H"
 
 		//Update the surface tension force model
