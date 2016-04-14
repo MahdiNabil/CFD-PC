@@ -266,7 +266,23 @@ const scalar CHSP = CombinedHSPressure ? 1.0 : 0;
 	//Assigning a value for SGS bubbles diameter
 	const dimensionedScalar diam("diam", dimensionSet(0,1,0,0,0,0,0), 1E-7);
 
+
 	Info<< "Reading field Ubeta\n" << endl;
+	//Drift Velocity of SGS Bubbles
+	volVectorField Ubeta1
+    (
+        IOobject
+        (
+            "Ubeta1",
+            runTime.timeName(),
+            mesh,
+            IOobject::NO_READ,
+            IOobject::AUTO_WRITE
+        ),
+        mesh,
+        (1.0/18.0)*g*pow(diam,2.0)*(rho1-rho2)/(nu1*rho1)
+    );
+	//SGS Bubbles Velovity definition
     volVectorField Ubeta
     (
         IOobject
@@ -277,9 +293,21 @@ const scalar CHSP = CombinedHSPressure ? 1.0 : 0;
             IOobject::NO_READ,
             IOobject::AUTO_WRITE
         ),
-        U + (1.0/18.0)*g*pow(diam,2.0)*(rho1-rho2)/(nu1*rho1)
+        U + Ubeta1
     );
 
+	surfaceScalarField phibeta
+	(
+		IOobject
+		(
+		    "phibeta",
+		    runTime.timeName(),
+		    mesh,
+		    IOobject::NO_READ,
+		    IOobject::AUTO_WRITE
+		),
+		linearInterpolate(Ubeta) & mesh.Sf()
+	);
 
     //Total Pressure Field:
 	volScalarField p

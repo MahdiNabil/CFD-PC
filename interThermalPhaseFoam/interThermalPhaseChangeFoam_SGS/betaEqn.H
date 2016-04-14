@@ -1,9 +1,9 @@
 // Alpha1 on faces
 const surfaceScalarField alpha1f = min(max(fvc::interpolate(alpha1), scalar(0)), scalar(1));
 
-// Velocity of bubbles on the faces
-fvOptions.correct(Ubeta);
-const surfaceScalarField Ubetaf = mag(fvc::interpolate(Ubeta));
+// Velocity of small bubbles
+Ubeta = U + Ubeta1;
+phibeta = phi +	(fvc::interpolate(Ubeta1) & mesh.Sf());
 
 // Lookup for rate parameters
 const dimensionedScalar r = transportProperties.lookup("r");
@@ -17,7 +17,7 @@ const surfaceScalarField Delta =  Foam::sqrt(mesh.magSf());
 fvScalarMatrix betaEqn
 (
         fvm::ddt(alpha1, beta)
-      + fvm::div(Ubetaf, beta)
+      + fvm::div(phibeta, beta)
 );
 
 solve
@@ -32,9 +32,13 @@ solve
 );
 
 
-Info<< "SGS beta volume fraction = "
+Info<< "*****************"
+    << "   "
+	<< "SGS beta volume fraction = "
     << beta.weightedAverage(mesh.Vsc()).value()
     << "  Min(" << beta.name() << ") = " << min(beta).value()
     << "  Max(" << beta.name() << ") = " << max(beta).value()
+    << "   "
+	<< "*****************"
     << endl;
 
