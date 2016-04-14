@@ -274,7 +274,7 @@ const scalar CHSP = CombinedHSPressure ? 1.0 : 0;
             "Ubeta",
             runTime.timeName(),
             mesh,
-            IOobject::MUST_READ,
+            IOobject::NO_READ,
             IOobject::AUTO_WRITE
         ),
         U + (1.0/18.0)*g*pow(diam,2.0)*(rho1-rho2)/(nu1*rho1)

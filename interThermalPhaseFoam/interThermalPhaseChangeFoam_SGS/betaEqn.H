@@ -8,7 +8,8 @@ const surfaceScalarField Ubetaf = mag(fvc::interpolate(Ubeta));
 // Lookup for rate parameters
 const dimensionedScalar r = transportProperties.lookup("r");
 const dimensionedScalar c1 = transportProperties.lookup("c1");
-const dimensionedScalar beta0 = transportProperties.lookup("beta0");
+//const dimensionedScalar beta0 = transportProperties.lookup("beta0");
+scalar beta0 = 0.2;
 
 // Cell size definition
 const surfaceScalarField Delta =  Foam::sqrt(mesh.magSf());
