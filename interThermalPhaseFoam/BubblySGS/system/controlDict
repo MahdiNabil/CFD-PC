@@ -71,8 +71,9 @@ functions
                 #{    
            			    //Sum up liquid volume:
             		  	const volScalarField& alpha1 = mesh().lookupObject<volScalarField>("alpha1");
+						const volScalarField& beta = mesh().lookupObject<volScalarField>("beta");
                   	    const scalar VolLiquid = gSum( mesh().V() * alpha1.internalField() );
-                  	    const scalar VolBubble = gSum( mesh().V() * (1.0 - alpha1.internalField()) );
+                  	    const scalar VolSmallBubble = gSum( mesh().V() * beta.internalField() );
                         //***********************************************************************
 
                         //Finally print out results:
@@ -86,7 +87,7 @@ functions
                                 std::ofstream fs;
                                 fs.open ("SummaryData.dat", std::fstream::app);
                                 fs.precision(12);
-                                fs << t << "\t" << VolLiquid << "\t" << VolBubble <<"\n";
+                                fs << t << "\t" << VolLiquid << "\t" << VolSmallBubble <<"\n";
                                 fs.close();
                         }
 
