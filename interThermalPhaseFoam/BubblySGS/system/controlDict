@@ -86,7 +86,7 @@ functions
                                 std::ofstream fs;
                                 fs.open ("SummaryData.dat", std::fstream::app);
                                 fs.precision(12);
-                                fs << t << "\t" << VolLiquid << VolBubble <<"\n";
+                                fs << t << "\t" << VolLiquid << "\t" << VolBubble <<"\n";
                                 fs.close();
                         }
 
