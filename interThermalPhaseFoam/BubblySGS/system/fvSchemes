@@ -1,0 +1,75 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  1.7.0                                 |
+|   \\  /    A nd           | Web:      www.OpenFOAM.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "system";
+    object      fvSchemes;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+ddtSchemes
+{
+    default         Euler;
+}
+
+interpolationSchemes
+{
+    default         linear;
+	//default           midPoint;
+}
+
+divSchemes
+{
+    div(rhoPhi,U)        Gauss linearUpwind grad(U);
+    div(phi,alpha)  Gauss vanLeer;
+    div(phirb,alpha) Gauss interfaceCompression;
+    div(phi,k)           Gauss linearUpwind grad(k);
+    div(phi,epsilon) Gauss upwind;
+    div(phi,R)      Gauss upwind;
+    div(R)          Gauss linear;
+    div(phi,nuTilda) Gauss upwind;
+    div(phi,H)       Gauss upwind;
+    // Added by MN
+    div((muEff*dev(T(grad(U))))) Gauss linear;
+    div(rhoPhi,H)        Gauss upwind;
+    default		Gauss linear;
+}
+
+gradSchemes
+{
+    default         Gauss linear;
+}
+
+laplacianSchemes
+{
+    default         Gauss linear limited 0.5;
+}
+
+snGradSchemes
+{
+    default              limited 0.5;
+    snGrad(pd)           limited 0.5;
+    snGrad(rho)          limited 0.5;
+    snGrad(alpha1)       limited 0.5;
+    snGrad(T)            limited 0.5;
+	snGrad(pc)           limited 0.5;
+}
+
+fluxRequired
+{
+    default         none;
+    p_rgh;
+    pcorr;
+    alpha1;
+}
+
+
+// ************************************************************************* //
