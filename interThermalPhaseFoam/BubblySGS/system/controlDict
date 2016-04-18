@@ -23,7 +23,7 @@ startTime       0.0;
 
 stopAt          endTime;
 
-endTime         5.0;
+endTime         1.0;
 
 deltaT          1E-6;
 
@@ -47,6 +47,7 @@ runTimeModifiable yes;
 adjustTimeStep  on;
 
 maxCo           0.4;
+maxUbetaCo      0.4;
 maxAlphaCo      0.4;
 maxFourier	    0.25;
 

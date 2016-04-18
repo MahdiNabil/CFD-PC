@@ -26,15 +26,15 @@ sets
     {
         type    midPoint;
         axis    y;
-        start   ( 0.001 0 0.00025 );
-        end     ( 0.001 0.001 0.00025 );
-        //nPoints 100;
+        start   ( 0.001 0 		0.00002 );
+        end     ( 0.001 0.002   0.00002 );
+        //nPoints 200;
     }
 
 );
 
 
-fields          ( alpha1 T PhaseChangeEnergy U);
+fields          ( beta );
 
 
 // ************************************************************************* //

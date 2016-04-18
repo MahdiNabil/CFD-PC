@@ -34,12 +34,19 @@ scalar maxAlphaCo
     readScalar(runTime.controlDict().lookup("maxAlphaCo"))
 );
 
+scalar maxUbetaCo
+(
+    readScalar(runTime.controlDict().lookup("maxUbetaCo"))
+);
+
 scalar alphaCoNum = 0.0;
 scalar meanAlphaCoNum = 0.0;
+scalar UbetaCoNum = 0.0;
+scalar meanUbetaCoNum = 0.0;
 
 if (mesh.nInternalFaces())
 {
-
+	//Alpha1 Courant Number
     scalarField sumPhi
     (
         pos(alpha1 - 0.01)*pos(0.99 - alpha1)
@@ -50,9 +57,23 @@ if (mesh.nInternalFaces())
 
     meanAlphaCoNum =
         0.5*(gSum(sumPhi)/gSum(mesh.V().field()))*runTime.deltaTValue();
+
+	//Ubeta Courant Number
+    scalarField sumphibeta
+    (
+        fvc::surfaceSum(mag(phibeta))().internalField()
+    );
+
+    UbetaCoNum = 0.5*gMax(sumphibeta/mesh.V().field())*runTime.deltaTValue();
+
+    meanUbetaCoNum =
+        0.5*(gSum(sumphibeta)/gSum(mesh.V().field()))*runTime.deltaTValue();
 }
 
 Info<< "Interface Courant Number mean: " << meanAlphaCoNum
     << " max: " << alphaCoNum << endl;
+
+Info<< "Ubeta Courant Number mean: " << meanUbetaCoNum
+    << " max: " << UbetaCoNum << endl;
 
 // ************************************************************************* //
