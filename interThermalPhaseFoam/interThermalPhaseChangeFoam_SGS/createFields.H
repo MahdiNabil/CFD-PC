@@ -179,7 +179,7 @@ const scalar CHSP = CombinedHSPressure ? 1.0 : 0;
             runTime.timeName(),
             mesh,
             IOobject::NO_READ,
-            IOobject::NO_WRITE
+            IOobject::AUTO_WRITE
         ),
         muEff/rho 
     );

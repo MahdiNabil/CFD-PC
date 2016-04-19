@@ -1,0 +1,9 @@
+#!/bin/bash
+blockMesh
+checkMesh
+cp -r A/* 0/ 
+#setFields
+rm -r SummaryData.dat
+rm -rf postProcessing
+decomposePar -force
+mpirun -np 4 interThermalPhaseChangeFoam_SGS -parallel
