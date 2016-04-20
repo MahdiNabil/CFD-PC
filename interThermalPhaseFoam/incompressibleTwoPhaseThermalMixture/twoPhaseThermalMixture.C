@@ -80,7 +80,8 @@ Foam::twoPhaseThermalMixture::twoPhaseThermalMixture
 (
     const volVectorField& U,
     const surfaceScalarField& phi,
-    const word& alpha1Name
+    const word& alpha1Name,
+    const word& betaName
 )
 :
 	//transportModel(U, phi), -ASR: the old version of OpenFOAM had transport model inherit from IODictionary, and had a corresponding constructor with this signature. In the new version they are decoupled, and have to be inherited separately. Hooray for multiple inheritence.
@@ -158,6 +159,7 @@ Foam::twoPhaseThermalMixture::twoPhaseThermalMixture
     phi_(phi),
 
     alpha1_(U_.db().lookupObject<const volScalarField> (alpha1Name)),
+    beta_(U_.db().lookupObject<const volScalarField> (betaName)),
 
     nu_
     (
@@ -288,13 +290,19 @@ Foam::tmp<Foam::volScalarField> Foam::twoPhaseThermalMixture::rho() const
 		min(max(alpha1_, scalar(0)), scalar(1))
 	);
 
+	const volScalarField limitedbeta
+	(
+		min(max(beta_, scalar(0)), scalar(1))
+	);
+
 	//Calculate average density
 	return tmp<volScalarField>
 	(
 		new volScalarField
 		(
 			"rho",
-			limitedAlpha1*rho1_ + (scalar(1) - limitedAlpha1)*rho2_
+			limitedAlpha1*(scalar(1) - limitedbeta)*rho1_ + ((scalar(1) - limitedAlpha1) + (limitedbeta*limitedAlpha1) )*rho2_
+	   	    //limitedAlpha1*rho1_ + (scalar(1) - limitedAlpha1)*rho2_
 		)
 	);
 }

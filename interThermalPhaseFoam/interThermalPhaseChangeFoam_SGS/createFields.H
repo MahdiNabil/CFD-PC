@@ -113,8 +113,9 @@ const scalar CHSP = CombinedHSPressure ? 1.0 : 0;
             mesh,
             IOobject::READ_IF_PRESENT
         ),
-        alpha1*rho1 + (scalar(1) - alpha1)*rho2,
-        alpha1.boundaryField().types()
+        //alpha1*rho1 + (scalar(1) - alpha1)*rho2,
+        alpha1*(scalar(1) - beta)*rho1 + ((scalar(1) - alpha1) + beta*alpha1)*rho2,
+		alpha1.boundaryField().types()
     );
 
     rho.oldTime();

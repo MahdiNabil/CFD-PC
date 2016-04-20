@@ -84,6 +84,7 @@ protected:
 	const surfaceScalarField& phi_;
 
 	const volScalarField& alpha1_;
+	const volScalarField& beta_;
 
 	volScalarField nu_;
         //Added by MN
@@ -118,7 +119,8 @@ public:
         (
             const volVectorField& U,
             const surfaceScalarField& phi,
-            const word& alpha1Name = "alpha1"
+            const word& alpha1Name = "alpha1",
+            const word& betaName = "beta"
         );
 
 
