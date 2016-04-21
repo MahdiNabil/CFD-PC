@@ -90,34 +90,6 @@ Foam::thermalPhaseChangeModels::interfacialResistance::interfacialResistance
         mesh_,
         scalar(0)
     ),
-	PCVField //Is initialized to zero, and stays as such...
-	(
-        IOobject
-        (
-            "PhaseChangeVolume",
-            T_.time().timeName(),
-            mesh_,
-            IOobject::NO_READ,
-            IOobject::AUTO_WRITE
-        ),
-		mesh_,
-		dimensionedScalar( "dummy", dimensionSet(0,0,-1,0,0,0,0), 0 )
-	),
-
-	alpha1Field //Is initialized to zero, and stays as such...
-	(
-        IOobject
-        (
-            "PhaseChangeAlpha1",
-            T_.time().timeName(),
-            mesh_,
-            IOobject::NO_READ,
-            IOobject::AUTO_WRITE
-        ),
-		mesh_,
-		dimensionedScalar( "dummy", dimensionSet(0,0,-1,0,0,0,0), 0 )
-	),
-
 	interfaceArea //Is initialized to zero
 	(
         IOobject
@@ -130,7 +102,9 @@ Foam::thermalPhaseChangeModels::interfacialResistance::interfacialResistance
         ),
 		mesh_,
 		dimensionedScalar( "dummy", dimensionSet(0,2,0,0,0,0,0), 0 )
-	)
+	),
+	v_lv( (1.0/twoPhaseProperties_.rho2().value()) - (1.0/twoPhaseProperties_.rho1().value()) ),
+	hi( (2.0*sigmaHat/(2.0-sigmaHat)) * (h_lv_.value()*h_lv_.value()/(T_sat_.value()*v_lv)) * pow(1.0/(2.0*3.1416*R_g*T_sat_.value()),0.5) )
 
 {
 	//Read in the cond/evap int. thresholds
@@ -139,8 +113,8 @@ Foam::thermalPhaseChangeModels::interfacialResistance::interfacialResistance
 	thermalPhaseChangeProperties_.lookup("sigmaHat") >> sigmaHat;
 	thermalPhaseChangeProperties_.lookup("R_g") >> R_g;
 	
-	v_lv = (1.0/twoPhaseProperties_.rho2().value()) - (1.0/twoPhaseProperties_.rho1().value());
-	hi = (2.0*sigmaHat/(2.0-sigmaHat)) * (h_lv_.value()*h_lv_.value()/(T_sat_.value()*v_lv)) * pow(1.0/(2.0*3.1416*R_g*T_sat_.value()),0.5);
+	//v_lv = (1.0/twoPhaseProperties_.rho2().value()) - (1.0/twoPhaseProperties_.rho1().value());
+	//hi = (2.0*sigmaHat/(2.0-sigmaHat)) * (h_lv_.value()*h_lv_.value()/(T_sat_.value()*v_lv)) * pow(1.0/(2.0*3.1416*R_g*T_sat_.value()),0.5);
 
 	correct();
 }
@@ -220,8 +194,10 @@ Info << "hi = " << hi << endl;
 Info << "vlv = " << v_lv << endl;
 
 	//limited phase change heat
-	Q_pc_.internalField() = hi*interfaceArea*(T_-T_sat_)/mesh_.V(); 
+	//Q_pc_.internalField() = hi*interfaceArea*(T_-T_sat_)/mesh_.V(); 
 
+	//decaying Phase Change Heat
+	Q_pc_.internalField() = mesh_.V()*twoPhaseProperties_.rho()*twoPhaseProperties_.cp()*((1.0-exp(hi*interfaceArea/(mesh_.V()*twoPhaseProperties_.rho()*twoPhaseProperties_.cp())))*(T_-T_sat_)/dT.value());
 
 	//Unlimited phase change heat
 	//Q_pc_ = InterfaceField_*twoPhaseProperties_.rho()*twoPhaseProperties_.cp()*((T_-T_sat_)/dT);

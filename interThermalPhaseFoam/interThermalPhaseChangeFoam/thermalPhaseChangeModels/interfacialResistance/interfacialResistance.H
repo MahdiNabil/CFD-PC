@@ -85,12 +85,6 @@ class interfacialResistance
 	//- Field for blocking evaporation on wall cells
 	volScalarField WallField;
 
-	//- Volume change field (from phase change)
-	volScalarField PCVField;
-
-	//- Volumetric production rate of the alpha1 field (from phase change)
-	volScalarField alpha1Field;
-
 	//- magnitude of alphaGradient field
 	volScalarField interfaceArea;
 
@@ -149,21 +143,6 @@ public:
 			return InterfaceField_;
 		}
 		
-		//- Gets volume generation (split and applied slightly away from interface)
-		tmp<volScalarField> PCV() const
-		{
-			return PCVField;
-		}
-
-
-		//- Returns the Change in Liquid Volume Fraction due to Phase Change
-		//  This is positive in the case of condensation, or negative
-		//  for evaporation, units (1/s)
-		tmp<volScalarField> alpha1Gen() const
-		{
-			return alpha1Field;
-		}
-
 
         //- Read the transportProperties dictionary and update
         bool read(const dictionary& thermalPhaseChangeProperties);
