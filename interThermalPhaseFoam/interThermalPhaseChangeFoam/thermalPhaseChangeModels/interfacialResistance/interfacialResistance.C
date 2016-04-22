@@ -103,16 +103,18 @@ Foam::thermalPhaseChangeModels::interfacialResistance::interfacialResistance
 		mesh_,
 		dimensionedScalar( "dummy", dimensionSet(0,2,0,0,0,0,0), 0 )
 	),
+	R_g( thermalPhaseChangeProperties_.lookup("R_g") ),
+	sigmaHat( thermalPhaseChangeProperties_.lookup("sigmaHat") ),
 	v_lv( (1.0/twoPhaseProperties_.rho2().value()) - (1.0/twoPhaseProperties_.rho1().value()) ),
-	hi( (2.0*sigmaHat/(2.0-sigmaHat)) * (h_lv_.value()*h_lv_.value()/(T_sat_.value()*v_lv)) * pow(1.0/(2.0*3.1416*R_g*T_sat_.value()),0.5) )
+	hi( (2.0*sigmaHat.value()/(2.0-sigmaHat.value())) * (h_lv_.value()*h_lv_.value()/(T_sat_.value()*v_lv)) * pow(1.0/(2.0*3.1416*R_g.value()*T_sat_.value()),0.5) )
 
 {
 	//Read in the cond/evap int. thresholds
 	thermalPhaseChangeProperties_.lookup("CondThresh") >> CondThresh;
 	thermalPhaseChangeProperties_.lookup("EvapThresh") >> EvapThresh;
-	thermalPhaseChangeProperties_.lookup("sigmaHat") >> sigmaHat;
-	thermalPhaseChangeProperties_.lookup("R_g") >> R_g;
-	
+	//thermalPhaseChangeProperties_.lookup("sigmaHat") >> sigmaHat;
+	//thermalPhaseChangeProperties_.lookup("R_g") >> R_g;
+Info << 'a' << endl;
 	//v_lv = (1.0/twoPhaseProperties_.rho2().value()) - (1.0/twoPhaseProperties_.rho1().value());
 	//hi = (2.0*sigmaHat/(2.0-sigmaHat)) * (h_lv_.value()*h_lv_.value()/(T_sat_.value()*v_lv)) * pow(1.0/(2.0*3.1416*R_g*T_sat_.value()),0.5);
 

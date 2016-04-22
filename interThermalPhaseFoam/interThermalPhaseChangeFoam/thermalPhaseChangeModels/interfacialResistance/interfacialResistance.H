@@ -93,8 +93,8 @@ class interfacialResistance
 	scalar EvapThresh;
 
 	//Some constants for interfacial heat transfer
-	double sigmaHat;					// accomodation coefficient
-	double R_g;							// specific ideal gas constant 
+	dimensionedScalar sigmaHat;					// accomodation coefficient
+	dimensionedScalar R_g;							// specific ideal gas constant 
 	double v_lv;						// change in specific volume 
 	double hi;							// interfacial resistance
 	
