@@ -1,4 +1,4 @@
-interThermalPhaseChangeFoam.C
+interThermalPhaseChangeFoam_LagrangianBubbles.C
 
 thermalPhaseChangeModels/MeshGraph/MeshGraph.C
 thermalPhaseChangeModels/thermalPhaseChangeModel/thermalPhaseChangeModel.C
@@ -16,4 +16,4 @@ surfaceTensionForceModels/Brackbill/Brackbill.C
 surfaceTensionForceModels/SST/SST.C
 surfaceTensionForceModels/SmoothedSF/SmoothedSF.C
 
-EXE = $(FOAM_USER_APPBIN)/interThermalPhaseChangeFoam
+EXE = $(FOAM_USER_APPBIN)/interThermalPhaseChangeFoam_LagrangianBubbles

@@ -1,0 +1,97 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  2.4.0                                 |
+|   \\  /    A nd           | Web:      www.OpenFOAM.org                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "constant";
+    object      kinematicCloudProperties;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+solution
+{
+    active          true;
+    coupled         false;
+    transient       yes;
+    cellValueSourceCorrection off;
+    maxCo           0.3;
+
+    interpolationSchemes
+    {
+        rho             cell;
+        U               cellPoint;
+        mu              cell;
+        muEffKistler    cell;
+    }
+
+    integrationSchemes
+    {
+        U               Euler;
+    }
+}
+
+constantProperties
+{
+    rho0            5; //Not sure about this one...
+}
+
+subModels
+{
+    particleForces
+    {
+        sphereDrag;
+        gravity;
+    }
+
+    injectionModels
+    {
+        model1
+        {
+            type            patchInjection;
+            SOI             0;  //Start of injection?
+            massTotal       1.5625E-4; //Total mass to inject
+            parcelBasisType mass;
+            patchName       Base;
+            duration        1;  //Duration of injection...
+            parcelsPerSecond 60E4;
+            U0              (0 0.1 0);
+            flowRateProfile constant 1;
+            sizeDistribution
+            {
+                type        fixedValue;
+		fixedValueDistribution
+		{
+	                value       0.001;
+		}
+            }
+        }
+    }
+
+    dispersionModel none;
+
+    patchInteractionModel none;
+
+    surfaceFilmModel none;
+
+    stochasticCollisionModel none;
+
+    standardWallInteractionCoeffs
+    {
+        type            rebound;
+    }
+   
+}
+
+
+cloudFunctions
+{}
+
+
+// ************************************************************************* //

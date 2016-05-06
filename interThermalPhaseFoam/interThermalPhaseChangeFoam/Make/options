@@ -7,16 +7,25 @@ EXE_INC = \
     -I$(LIB_SRC)/transportModels/twoPhaseProperties/alphaContactAngle/alphaContactAngle \
     -I$(LIB_SRC)/fvOptions/lnInclude \
     -I$(LIB_SRC)/finiteVolume/lnInclude \
-	-IthermalPhaseChangeModels/thermalPhaseChangeModel \ 
+    -IthermalPhaseChangeModels/thermalPhaseChangeModel \ 
     -I$(LIB_SRC)/meshTools/lnInclude \
-	-IthermalPhaseChangeModels/MeshGraph \
+    -IthermalPhaseChangeModels/MeshGraph \
     -I$(LIB_SRC)/sampling/lnInclude \
-   	-IsurfaceTensionForceModels/surfaceTensionForceModel
+    -IsurfaceTensionForceModels/surfaceTensionForceModel \
+    -I$(LIB_SRC)/lagrangian/basic/lnInclude \
+    -I$(LIB_SRC)/lagrangian/intermediate/lnInclude \
+    -I$(LIB_SRC)/regionModels/regionModel/lnInclude \
+    -I$(LIB_SRC)/regionModels/surfaceFilmModels/lnInclude
 
 EXE_LIBS = \
     -ltwoPhaseProperties \
     -linterfaceProperties \
     -ltwoPhaseMixture \
+    -llagrangian \
+    -llagrangianIntermediate \
+    -llagrangianTurbulence \
+    -lregionModels \
+    -lsurfaceFilmModels \
     -lincompressibleTransportModels \
     -lincompressibleTurbulenceModel \
     -lincompressibleRASModels \

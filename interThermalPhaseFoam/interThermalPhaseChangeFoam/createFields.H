@@ -272,3 +272,19 @@ const scalar CHSP = CombinedHSPressure ? 1.0 : 0;
 		+ fvc::interpolate( rho*twoPhaseProperties.cp()*turbulence->nut() )
 	);
 
+
+	//ASR New Lagrangian
+	//Add in the object representing the bubbles:
+	Info<< "\nConstructing bubble swarm" << endl;
+
+	basicKinematicCloud Bubbles
+	(
+		"Bubbles",
+		rho,
+		U,
+		muEffKistler,
+		g
+	);
+
+
+
