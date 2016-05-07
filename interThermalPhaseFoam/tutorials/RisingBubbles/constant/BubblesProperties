@@ -18,10 +18,19 @@ FoamFile
 solution
 {
     active          true;
-    coupled         false;
+    coupled         true;
     transient       yes;
     cellValueSourceCorrection off;
     maxCo           0.3;
+
+    sourceTerms
+    {
+        schemes
+        {
+            rho             explicit 1;
+            U               explicit 1;
+        }
+    }
 
     interpolationSchemes
     {
@@ -46,7 +55,7 @@ subModels
 {
     particleForces
     {
-        sphereDrag;
+        sphereDrag; //Eventually should add non-solid sphere drag...
         gravity;
     }
 
@@ -60,7 +69,7 @@ subModels
             parcelBasisType mass;
             patchName       Base;
             duration        1;  //Duration of injection...
-            parcelsPerSecond 60E4;
+            parcelsPerSecond 18E3;
             U0              (0 0.1 0);
             flowRateProfile constant 1;
             sizeDistribution
@@ -68,7 +77,7 @@ subModels
                 type        fixedValue;
 		fixedValueDistribution
 		{
-	                value       0.001;
+	                value       0.0015;
 		}
             }
         }

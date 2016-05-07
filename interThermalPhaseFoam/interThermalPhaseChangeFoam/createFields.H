@@ -287,4 +287,8 @@ const scalar CHSP = CombinedHSPressure ? 1.0 : 0;
 	);
 
 
+	//Two fields for tracking the rate of change of Bubble volume:
+	volScalarField thetaBubbles_Old = Bubbles.theta()();
+	volScalarField thetaBubbles_New = thetaBubbles_Old;
+
 

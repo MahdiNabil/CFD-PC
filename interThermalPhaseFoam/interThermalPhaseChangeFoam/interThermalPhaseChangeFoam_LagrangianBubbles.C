@@ -100,10 +100,10 @@ int main(int argc, char *argv[])
         //Update fields for Kistler model
         muEffKistler = twoPhaseProperties.mu() + rho*turbulence->nut();
 
-Info<< "A" << endl;
 	//Update Bubble positions
+	thetaBubbles_Old = thetaBubbles_New; //Set old volume fraction in cells
 	Bubbles.evolve();
-Info<< "B" << endl;
+	thetaBubbles_New = Bubbles.theta()(); //Updated volume fraction in cells
 
         //Update phase change rates:
 	phaseChangeModel->correct();

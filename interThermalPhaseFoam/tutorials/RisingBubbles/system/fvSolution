@@ -24,7 +24,7 @@ solvers
         CoCoeff          2;
         maxIter          5;
         nLimiterIter     2;
-        cAlpha           1.5;
+        cAlpha           2;
 
         solver           PBiCG;
         preconditioner   DILU;
@@ -124,7 +124,7 @@ PIMPLE
     momentumPredictor no;
     nOuterCorrectors 1;
     nCorrectors     2;
-    nNonOrthogonalCorrectors 1;
+    nNonOrthogonalCorrectors 2;
     nAlphaCorr      1;
     nAlphaSubCycles 3;
     nEnergyLoops    3;

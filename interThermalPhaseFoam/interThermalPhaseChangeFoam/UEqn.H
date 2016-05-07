@@ -16,6 +16,7 @@ fvVectorMatrix UEqn
 	//ASR - the default divDevRhoReff uses the viscosity values on cell centers, better to use the face values with this improved blending model
 	+ ImpTB*( -fvm::laplacian(twoPhaseProperties.muf(), U) + fvm::laplacian(twoPhaseProperties.mu(), U) )
 	- CHSP*rho*g
+	- Bubbles.SU(U)
 );
 
     UEqn.relax();
