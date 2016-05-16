@@ -1,0 +1,152 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  1.7.0                                 |
+|   \\  /    A nd           | Web:      www.OpenFOAM.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "system";
+    object      controlDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+//application     ASRInterThermalPhaseFoam;
+application     interThermalPhaseChangeFoam;
+
+startFrom       latestTime;
+
+startTime       0;
+
+stopAt          endTime;
+
+endTime         0.2;
+
+deltaT          1E-7;
+
+writeControl    adjustableRunTime;
+writeInterval   1E-2;
+
+//writeControl    timeStep;
+//writeInterval   15;
+
+purgeWrite      0;
+
+writeFormat     binary;
+
+writePrecision  6;
+
+writeCompression compressed;
+
+timeFormat      general;
+
+timePrecision   6;
+
+runTimeModifiable yes;
+
+adjustTimeStep  on;
+
+maxCo           0.4;
+maxAlphaCo      0.4;
+maxFourier      60;
+maxDeltaT       1E-4;
+
+
+//Global vars for funky/groovy
+functions
+(
+	DataSummary //Returns: time (s), dt (s), wall heat flux (W), phase-change heating rate (W), Liquid volume fraction (-),
+	{
+		functionObjectLibs ("libutilityFunctionObjects.so");
+		type coded;
+		redirectType DataSummary;	
+		outputControl timeStep;
+		outputInterval 1;
+		code		
+		#{
+
+			//***********************************************************************
+			//First get t and dt
+			scalar t = mesh().time().value();
+			scalar dt = mesh().time().deltaTValue();
+			//***********************************************************************
+
+
+			//***********************************************************************
+			//Now get wall heat flux
+			//Get mesh boundary
+			const fvBoundaryMesh& bMesh = mesh().boundary();
+			//Next get wall patch:
+			label WallPatchID  = bMesh.findPatchID("backWall");
+			const fvPatch& WallPatch = bMesh[WallPatchID]; 
+			//Get temp gradient on the wall
+			const volScalarField& T = mesh().lookupObject<volScalarField>("T");
+			const surfaceScalarField SnGradT = fvc::snGrad(T);
+			const scalarField GradTWall = SnGradT.boundaryField()[WallPatchID];
+			//Get kEff on the wall
+			const surfaceScalarField& kEff = mesh().lookupObject<surfaceScalarField>("kEff");
+			const scalarField& kEffWall = kEff.boundaryField()[WallPatchID];
+
+			//Sum up heat flux on the wall:
+			const scalar Q_wall = gSum( -WallPatch.magSf() * GradTWall * kEffWall );
+			//***********************************************************************		
+			
+			//***********************************************************************
+			//Now get droplet wall heat flux
+			//Get mesh boundary
+			//Get temp gradient on the wall
+			const volScalarField& alpha1 = mesh().lookupObject<volScalarField>("alpha1");
+			const scalarField alpha1Wall = alpha1.boundaryField()[WallPatchID];
+
+			//Sum up heat flux on the wall:
+			const scalar Q_drop = gSum( -WallPatch.magSf() * GradTWall * kEffWall * alpha1Wall );
+			//***********************************************************************
+			//Get the surface area
+			const volVectorField gradAlpha1 = fvc::grad(alpha1);
+			const volScalarField gradAlpha1Mag = mag(gradAlpha1);
+			const scalar sA = gSum(mesh().V()*gradAlpha1Mag.internalField());
+
+			//***********************************************************************
+			//Next, total phase change heating rate
+			const volScalarField& Q_pc = mesh().lookupObject<volScalarField>("PhaseChangeHeat");
+			const scalar Q_pcInt = gSum( -mesh().V() * Q_pc.internalField() );
+			const scalar volume = gSum( mesh().V() * alpha1.internalField() ); 
+			//***********************************************************************
+			//get the qpc at a distance from the wall
+			const dimensionedScalar dist = dimensionedScalar( "dummy", dimensionSet(0,1,0,0,0,0,0), 1e-5 );
+			//***********************************************************************
+			//Finally print out results:
+			//Now write out data:
+			if( Pstream::master() == true )
+			{
+				std::ofstream fs;
+				fs.open ("DataSummary.dat", std::fstream::app);
+				fs.precision(8);
+                fs << t << "\t" << dt << "\t" << Q_wall << "\t" << Q_drop << "\t" << Q_pcInt << "\t" << sA << "\t" << volume << "\n";
+				fs.close();
+			}
+
+		#}; 
+
+		codeInclude
+		#{
+			#include <fstream>
+		#};
+	}
+
+
+);
+
+
+libs ( "libtwoPhaseTransportProperties.so"     
+       "libgroovyBC.so"
+       "libsimpleSwakFunctionObjects.so"
+       "libswakFunctionObjects.so"
+       "libOpenFOAM.so" );
+
+
+// ************************************************************************* //
