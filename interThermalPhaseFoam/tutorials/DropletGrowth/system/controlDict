@@ -142,8 +142,7 @@ functions
 );
 
 
-libs ( "libtwoPhaseTransportProperties.so"     
-       "libgroovyBC.so"
+libs ( "libgroovyBC.so"
        "libsimpleSwakFunctionObjects.so"
        "libswakFunctionObjects.so"
        "libOpenFOAM.so" );
