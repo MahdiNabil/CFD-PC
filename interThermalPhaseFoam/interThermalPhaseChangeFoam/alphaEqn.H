@@ -45,11 +45,10 @@
                 runTime.timeName(),
                 mesh
             ),
-			phaseChangeModel->alpha1Gen()
+		alpha1Gen_accum
         );
 
 
-		//MULES::implicitSolve
 		MULES::explicitSolve
         (
             geometricOneField(),

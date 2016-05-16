@@ -272,3 +272,49 @@ const scalar CHSP = CombinedHSPressure ? 1.0 : 0;
 		+ fvc::interpolate( rho*twoPhaseProperties.cp()*turbulence->nut() )
 	);
 
+	//Modified version of the solver, with multi-energy steps per global time step
+	//Need to accumulate PCV, Q_PC, alpha1_gn over time steps
+
+	//First run thermalPhaseChangeModel correct to get initial values
+	phaseChangeModel->correct();
+
+	volScalarField Q_pc_accum
+	(
+		IOobject
+		(
+			"Q_pc_accum",
+			runTime.timeName(),
+			mesh,
+			IOobject::NO_READ,
+			IOobject::NO_WRITE
+		),
+		phaseChangeModel->Q_pc()
+	);
+
+	volScalarField PCV_accum
+	(
+		IOobject
+		(
+			"PCV_accum",
+			runTime.timeName(),
+			mesh,
+			IOobject::NO_READ,
+			IOobject::NO_WRITE
+		),
+		phaseChangeModel->PCV()
+	);
+
+	volScalarField alpha1Gen_accum
+	(
+		IOobject
+		(
+			"alpha1Gen_accum",
+			runTime.timeName(),
+			mesh,
+			IOobject::NO_READ,
+			IOobject::NO_WRITE
+		),
+		phaseChangeModel->alpha1Gen()
+	);
+
+

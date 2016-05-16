@@ -76,7 +76,7 @@ const scalar CHSP = CombinedHSPressure ? 1.0 : 0;
 	//No need to correct p_rgh for phase change - already incorporated into div(phi) 
         fvScalarMatrix p_rghEqn
         (
-            fvm::laplacian(rAUf, p_rgh) == fvc::div(phi) - phaseChangeModel->PCV()
+            fvm::laplacian(rAUf, p_rgh) == fvc::div(phi) - PCV_accum
         );
 
         p_rghEqn.setReference(pRefCell, getRefCellValue(p_rgh, pRefCell));
