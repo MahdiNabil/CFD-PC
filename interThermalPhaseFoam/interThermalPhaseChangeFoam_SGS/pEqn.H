@@ -78,7 +78,7 @@ Info<< "CHSP " << CHSP << endl;
 	//No need to correct p_rgh for phase change - already incorporated into div(phi) 
         fvScalarMatrix p_rghEqn
         (
-            fvm::laplacian(rAUf, p_rgh) == fvc::div(phi) - phaseChangeModel->PCV()
+            fvm::laplacian(rAUf, p_rgh) == fvc::div(phi) - phaseChangeModel->PCV() + fvc::div(fvc::interpolate(Ubeta1) & mesh.Sf())
         );
 
         p_rghEqn.setReference(pRefCell, getRefCellValue(p_rgh, pRefCell));
