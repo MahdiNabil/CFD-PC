@@ -33,7 +33,7 @@ Description
     This model uses different interface thresholds for identifying
 	evaporating and condensing cell pairs.
 
-	This version has phase change heating, but no change in liquid volume 
+	This version has phase change heating and change in liquid volume 
         fraction due to phase change and no volumetric source due to phase change. Convenient for cases 
         where there is an unlimited source of low momentum phase (e.g. film evaporation or condensation)
 
