@@ -32,7 +32,7 @@
                 runTime.timeName(),
                 mesh
             ),
-			0*divU
+			0*divU + fvc::ddt(beta)/(1.0-beta)
         );
 
 		//alpha1 source term due to condensation and divergence of velocity

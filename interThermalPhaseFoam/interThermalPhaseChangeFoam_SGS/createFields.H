@@ -265,7 +265,7 @@ const scalar CHSP = CombinedHSPressure ? 1.0 : 0;
     surfaceScalarField ghf("ghf", g & mesh.Cf());
 
 	//Assigning a value for SGS bubbles diameter
-	const dimensionedScalar diam("diam", dimensionSet(0,1,0,0,0,0,0), 2E-4);
+	const dimensionedScalar diam("diam", dimensionSet(0,1,0,0,0,0,0), 2E-5);
 
 
 	Info<< "Reading field Ubeta\n" << endl;
@@ -296,6 +296,18 @@ const scalar CHSP = CombinedHSPressure ? 1.0 : 0;
         ),
         U + Ubeta1
     );
+
+	surfaceScalarField phiAlphaAccum
+	(
+		IOobject
+		(
+		    "phiAlphaAccum",
+		    runTime.timeName(),
+		    mesh
+		),
+		mesh,
+		dimensionedScalar("0", dimensionSet(0, 3, -1, 0, 0), 0)
+	);
 
 	surfaceScalarField phibeta
 	(

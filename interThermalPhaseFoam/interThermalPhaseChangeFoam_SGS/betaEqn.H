@@ -3,7 +3,7 @@ const surfaceScalarField alpha1f = min(max(fvc::interpolate(alpha1), scalar(0)),
 
 // Velocity of small bubbles
 Ubeta = U + Ubeta1;
-phibeta = phi +	(fvc::interpolate(Ubeta1) & mesh.Sf());
+phibeta = phiAlphaAccum + (fvc::interpolate(Ubeta1*alpha1) & mesh.Sf());
 
 // Lookup for rate parameters
 const dimensionedScalar r = transportProperties.lookup("r");

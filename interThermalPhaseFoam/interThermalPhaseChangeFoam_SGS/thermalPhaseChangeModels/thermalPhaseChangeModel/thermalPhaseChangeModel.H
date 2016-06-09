@@ -156,6 +156,11 @@ public:
 		//  for evaporation, units (1/s)
         virtual tmp<volScalarField> alpha1Gen() const;
 
+		//- Return volumetric production rate of the beta field due to phase change
+		//  This is positive in the case of condensation, or negative
+		//  for evaporation, units (1/s)
+        virtual tmp<volScalarField> betaGen() const;
+
         //- Correct the thermalPhaseChange model
         virtual void correct() = 0;
 

@@ -82,6 +82,11 @@ Foam::tmp<Foam::volScalarField> Foam::thermalPhaseChangeModel::alpha1Gen() const
     return tmp<volScalarField>( -Q_pc / (twoPhaseProperties_.rho1()  * h_lv_) );
 }
 
+Foam::tmp<Foam::volScalarField> Foam::thermalPhaseChangeModel::betaGen() const
+{
+    return tmp<volScalarField>( 0 );
+}
+
 
 bool Foam::thermalPhaseChangeModel::read(const dictionary& thermalPhaseChangeProperties)
 {
