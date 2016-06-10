@@ -1,0 +1,139 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  1.7.0                                 |
+|   \\  /    A nd           | Web:      www.OpenFOAM.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "system";
+    object      controlDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+application     interThermalPhaseChangeFoam;
+
+startFrom       latestTime;
+
+startTime       0;
+
+stopAt          endTime;
+
+endTime         0.15;
+
+deltaT          1E-5;
+
+writeControl    adjustableRunTime;
+writeInterval   0.002;
+
+purgeWrite      0;
+
+writeFormat     binary;
+
+writePrecision  6;
+
+writeCompression uncompressed;
+
+timeFormat      general;
+
+timePrecision   6;
+
+runTimeModifiable yes;
+
+adjustTimeStep  on;
+
+maxAlphaCo      0.25;
+maxCo           0.25;
+maxFourier      100;
+maxDeltaT       20E-5;
+// ************************************************************************** //
+
+
+//Global vars for funky/groovy
+functions
+(
+	DataSummary //Returns: time (s), dt (s), wall heat flux (W), phase-change heating rate (W), Liquid volume fraction (-),
+	{
+		functionObjectLibs ("libutilityFunctionObjects.so");
+		type coded;
+		redirectType DataSummary;	
+		outputControl timeStep;
+		outputInterval 10;
+		code		
+		#{
+
+			//***********************************************************************
+			//First get t and dt
+			scalar t = mesh().time().value();
+			scalar dt = mesh().time().deltaTValue();
+			//***********************************************************************
+
+			//***********************************************************************
+			//Next, total phase change heating rate
+			const volScalarField& Q_pc = mesh().lookupObject<volScalarField>("PhaseChangeHeat");
+			const scalar Q_pcInt = gSum( mesh().V() * Q_pc.internalField() );  // [W]
+			//***********************************************************************
+
+
+			//***********************************************************************
+			//Now get void fraction
+			const volScalarField& alpha1 = mesh().lookupObject<volScalarField>("alpha1");
+
+			const scalar V_Vapor = gSum( (1.0-alpha1.internalField()) * mesh().V() );
+			//const scalar BubbleRad = pow((3/(2*3.141593)) * (V_Vapor*72), 0.333333);		//bubble radius
+			const scalar BubbleRad = pow((6/3.141593) * V_Vapor, 0.333333);		//bubble radius
+			//***********************************************************************
+
+
+			//***********************************************************************
+			//Now get bubble velocity
+			const volVectorField& U = mesh().lookupObject<volVectorField>("U");
+
+			const vector U_Vapor = gSum( (1.0-alpha1.internalField()) * U.internalField() * mesh().V() );
+
+			const scalar Uy_Vapor = U_Vapor[1]/V_Vapor;
+			//***********************************************************************
+
+
+			//***********************************************************************
+			//Finally print out results:
+			//Now write out data:
+			if( Pstream::master() == true )
+			{
+				std::ofstream fs;
+				fs.open ("Nucleate_Boiling.dat", std::fstream::app);
+				fs.precision(8);
+				fs << t << "\t" << dt << "\t" << Q_pcInt << "\t" << V_Vapor << "\t" << Uy_Vapor << "\t" << BubbleRad << "\n" ;
+				fs.close();
+			}
+
+		#}; 
+
+		codeInclude
+		#{
+			#include <fstream>
+			#include <cmath>
+		#};
+	}
+
+
+);
+
+
+
+// ************************************************************************** //
+
+libs ( "libsimpleSwakFunctionObjects.so"
+       "libswakFunctionObjects.so"
+       "libOpenFOAM.so"
+       "libutilityFunctionObjects.so" 
+       "libgroovyBC.so"
+       "libsimpleSwakFunctionObjects.so"
+       "libswakFunctionObjects.so"
+       "libDynamicKistlerContactAngle.so"
+       "libMicroLayerBoilingBCs.so" );
+// ************************************************************************* //

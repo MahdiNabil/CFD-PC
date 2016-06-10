@@ -1,0 +1,42 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  2.0.X                                 |
+|   \\  /    A nd           | Web:      www.OpenFOAM.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "system";
+    object      funkySetFieldsDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+
+expressions
+(
+	CreateBubble
+	{
+		field alpha1;
+		expression "0";
+		condition "sqrt((pos().x*pos().x)+(pos().y*pos().y)+(pos().z*pos().z))<=0.0015";
+		keepPatches 1;
+	}
+
+
+	CreateBLTemp
+	{
+		field T;
+		expression "573.65";
+		//expression "573.15+(((0.002-pos().y)/0.002)*5)";
+		//condition "pos().y<=0.002";
+		keepPatches 1;
+	}
+
+);
+
+
+// *********************************************************************** //
