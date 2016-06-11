@@ -114,7 +114,7 @@ Foam::thermalPhaseChangeModels::interfacialResistance::interfacialResistance
 	thermalPhaseChangeProperties_.lookup("EvapThresh") >> EvapThresh;
 	//thermalPhaseChangeProperties_.lookup("sigmaHat") >> sigmaHat;
 	//thermalPhaseChangeProperties_.lookup("R_g") >> R_g;
-Info << 'a' << endl;
+
 	//v_lv = (1.0/twoPhaseProperties_.rho2().value()) - (1.0/twoPhaseProperties_.rho1().value());
 	//hi = (2.0*sigmaHat/(2.0-sigmaHat)) * (h_lv_.value()*h_lv_.value()/(T_sat_.value()*v_lv)) * pow(1.0/(2.0*3.1416*R_g*T_sat_.value()),0.5);
 
@@ -200,6 +200,9 @@ Info << "vlv = " << v_lv << endl;
 
 	//decaying Phase Change Heat per unit volume
 	Q_pc_.internalField() = twoPhaseProperties_.rho()*twoPhaseProperties_.cp()*((1.0-exp(-hi*interfaceArea*dT.value()/(mesh_.V()*twoPhaseProperties_.rho()*twoPhaseProperties_.cp())))*(T_-T_sat_)/dT.value());
+
+	//Limit Q_pc_ to act in cells near interface
+	Q_pc_ *= pos(alpha1_ - 0.01)*pos(0.99 - alpha1_);
 
 	//Unlimited phase change heat
 	//Q_pc_ = InterfaceField_*twoPhaseProperties_.rho()*twoPhaseProperties_.cp()*((T_-T_sat_)/dT);

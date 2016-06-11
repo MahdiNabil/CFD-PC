@@ -68,6 +68,9 @@ MicrolayerBoilingVelocityFvPatchVectorField
     fixedValueFvPatchField<vector>(p, iF)//,
 //    rhoInlet_(dict.lookupOrDefault<scalar>("rhoInlet", -VGREAT))
 {
+	//Initialize the patch field for the first run:	
+	updateCoeffs();
+
 /*
     if (dict.found("volumetricFlowRate"))
     {
@@ -139,14 +142,10 @@ MicrolayerBoilingVelocityFvPatchVectorField
 
 void Foam::MicrolayerBoilingVelocityFvPatchVectorField::updateCoeffs()
 {
-Info<< "Here A" << endl;
-
     if (updated())
     {
         return;
     }
-
-Info<< "Here B" << endl;
 
 //    const scalar t = db().time().timeOutputValue();
 
