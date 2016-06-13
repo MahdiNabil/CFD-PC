@@ -1,0 +1,67 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  1.7.0                                 |
+|   \\  /    A nd           | Web:      www.OpenFOAM.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "constant";
+    object      transportProperties;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+twoPhase
+{
+    transportModel  twoPhase;
+    phase1          phase1;
+    phase2          phase2;
+}
+
+//Water-steam, 400K
+phase1
+{
+    transportModel          Newtonian;
+    nu                      nu [ 0 2 -1 0 0 0 0 ] 2.32E-7;
+    rho                     rho [ 1 -3 0 0 0 0 0 ] 937.2;
+    thermalTransportModel    Fourier;
+    lambda            lambda [1 1 -3 -1 0 0 0] 0.688;
+    cp                cp [ 0 2 -2 -1 0 0 0] 4256;
+}
+
+phase2
+{
+    transportModel        Newtonian;
+    nu                nu [ 0 2 -1 0 0 0 0 ] 9.54E-6;
+    rho                rho [ 1 -3 0 0 0 0 0 ] 1.368;
+    thermalTransportModel    Fourier;
+    lambda            lambda [1 1 -3 -1 0 0 0] 0.0272;
+    cp                cp [ 0 2 -2 -1 0 0 0] 2158;
+}
+
+sigma           sigma [ 1 0 -2 0 0 0 0 ] 0.0536;
+T_0            T_0 [0 0 0 1 0 0 0] 373.15;
+r				r [0 1 -1 0 0 0 0] 0.3;
+c1				c1 [0 1 -1 0 0 0 0] 0.0;
+beta0		 	0.2;
+
+thermalPhaseChange
+{
+	model       HiLoRelaxedSplit;
+    h_lv          h_lv  [0 2 -2 0 0 0 0 ] 2183E3;
+    T_sat         T_sat [0 0 0 1 0 0 0] 373.15;
+	CondThresh  0.5; //Interface threshold for condensing cell pairs
+	EvapThresh  0.5; //Interface threshold for evaporating cell pairs
+	RelaxFac	1.0;
+}
+
+surfaceTensionForce
+{
+	model      Brackbill;
+}
+
+// ************************************************************************* //

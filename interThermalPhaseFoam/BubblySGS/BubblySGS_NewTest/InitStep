@@ -1,0 +1,12 @@
+#!/bin/bash
+blockMesh
+checkMesh
+cp -r A/* 0/ 
+#setFields
+rm -r SummaryData.dat
+rm -rf postProcessing
+rm -rf dynamicCode
+decomposePar -force
+funkySetFields
+#funkySetFields -time 0 -create -field Ubeta1 -expression "(1.0/18.0)*9.81*pow(2E-5,2.0)*(937.2-1.368)/(2.32E-7*937.2)"
+mpirun -np 4 interThermalPhaseChangeFoam_SGS -parallel

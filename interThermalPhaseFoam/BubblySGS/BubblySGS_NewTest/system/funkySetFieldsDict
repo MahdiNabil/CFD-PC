@@ -1,0 +1,31 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| ========= |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version: 2.0.X                                 |
+|   \\  /    A nd           | Web: www.OpenFOAM.com                      |
+|    \\/     M anipulation |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "system";
+    object      funkySetFieldsDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+
+expressions
+(
+    InitialSGSVelocity
+    {
+        field Ubeta1;
+        variables "g=9.81;diam=2E-5;rho1=937.2;rho2=1.368;nu1=2.32E-7;";
+        expression "(1.0/18.0)*g*pow(diam,2.0)*(rho1-rho2)/(nu1*rho1)";
+        keepPatches 1;
+    }
+);
+
+
+// *********************************************************************** //

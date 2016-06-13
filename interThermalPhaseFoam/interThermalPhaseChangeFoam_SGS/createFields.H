@@ -277,7 +277,7 @@ const scalar CHSP = CombinedHSPressure ? 1.0 : 0;
             "Ubeta1",
             runTime.timeName(),
             mesh,
-            IOobject::NO_READ,
+            IOobject::MUST_READ,
             IOobject::AUTO_WRITE
         ),
         mesh,
