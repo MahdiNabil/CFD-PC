@@ -156,15 +156,22 @@ void Foam::MicrolayerBoilingVelocityFvPatchVectorField::updateCoeffs()
 
 	//operator==(n*avgU);
 
-	const vector zeroVelocity (0,0,0);
+	//Inward pointing normals into the domain
+	tmp<vectorField> n = -patch().nf();
 
-    const vectorField Zeros
+
+	//Find out which cell faces are liquid vs. vapor:
+    const fvPatchScalarField& alpha1p = patch().lookupPatchField<volScalarField, scalar>("alpha1");
+
+	const scalar VaporInletVelocity = 0.01;
+
+    const vectorField VaporInletVelocityp
     (
-		0.0*patch().nf()
+		n*VaporInletVelocity*pos(0.01 - alpha1p)
     );
 
 
-	operator==(Zeros);
+	operator==(VaporInletVelocityp);
 
     fixedValueFvPatchVectorField::updateCoeffs();
 }
