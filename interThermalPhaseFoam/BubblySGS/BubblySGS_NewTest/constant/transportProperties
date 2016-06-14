@@ -44,7 +44,7 @@ phase2
 }
 
 sigma           sigma [ 1 0 -2 0 0 0 0 ] 0.0536;
-T_0            T_0 [0 0 0 1 0 0 0] 373.15;
+T_0             T_0 [0 0 0 1 0 0 0] 373.15;
 r				r [0 1 -1 0 0 0 0] 0.3;
 c1				c1 [0 1 -1 0 0 0 0] 0.4;
 beta0		 	0.2;
@@ -52,8 +52,8 @@ beta0		 	0.2;
 thermalPhaseChange
 {
 	model       HiLoRelaxedSplit;
-    h_lv          h_lv  [0 2 -2 0 0 0 0 ] 2183E3;
-    T_sat         T_sat [0 0 0 1 0 0 0] 373.15;
+    h_lv        h_lv  [0 2 -2 0 0 0 0 ] 2183E3;
+    T_sat       T_sat [0 0 0 1 0 0 0] 373.15;
 	CondThresh  0.5; //Interface threshold for condensing cell pairs
 	EvapThresh  0.5; //Interface threshold for evaporating cell pairs
 	RelaxFac	1.0;
