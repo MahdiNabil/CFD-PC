@@ -10,6 +10,18 @@ surfaceScalarField rhoPhi
     dimensionedScalar("0", dimensionSet(1, 0, -1, 0, 0), 0)
 );
 
+surfaceScalarField phiAlphaAccum
+	(
+		IOobject
+		(
+		    "phiAlphaAccum",
+		    runTime.timeName(),
+		    mesh
+		),
+		mesh,
+		dimensionedScalar("0", dimensionSet(0, 3, -1, 0, 0), 0)
+	);
+
 {
 	label nAlphaCorr(readLabel(pimple.dict().lookup("nAlphaCorr")));
 
