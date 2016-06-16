@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2013 Alex Rattner
+    \\  /    A nd           | Copyright (C) 2015 Alex Rattner and Mahdi Nabil
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -22,29 +22,21 @@ License
     along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
 
 Class
-	Foam::thermalPhaseChangeModel::HiLoNoPCVAlpha1
+	Foam::thermalPhaseChangeModel::Yang
 
 Description
-    This model forces wall and interface cells to the equilibrium state,
-    causing evaporation or condensation as appropriate. The phase change
-    heat term is limited to not produce/sink more than the volume of a 
-	cell in a single time step(like the courantAlpha limit).
-
-    This model uses different interface thresholds for identifying
-	evaporating and condensing cell pairs.
-
-	This version has phase change heating, but no change in liquid volume 
-        fraction due to phase change and no volumetric source due to phase change. Convenient for cases 
-        where there is an unlimited source of low momentum phase (e.g. film evaporation or condensation)
+    This model implements the empirical rate parameter phase change
+    formulation of Yang et al., 2008, Numerical and experimental
+    investigation of two phase flow during boiling in a coiled tube.
 
 
 SourceFiles
-    interfacialResistance.C
+    Yang.C
 
 \*--------------------------------------------------------------------*/
 
-#ifndef interfacialResistance_H
-#define interfacialResistance_H
+#ifndef Yang_H
+#define Yang_H
 
 #include "thermalPhaseChangeModel.H"
 #include "MeshGraph.H"
@@ -57,61 +49,36 @@ namespace thermalPhaseChangeModels
 {
 
 /*--------------------------------------------------------------------*\
-                              Class HiLoNoPCVAlpha1
+                              Class LimitedInterfaceEquilibrium
 \*--------------------------------------------------------------------*/
 
-class interfacialResistance
+class Yang
 :
     public thermalPhaseChangeModel
 {
 
 // Private Member Functions
 
-	//- Calculate the phase change heat rate
+	//- Calculate and return the phase change heat rate
 	void calcQ_pc();
-
-	//- This phase change model needs access to the mesh:
-	const fvMesh& mesh_;
 
 	//- Phase change heat
 	volScalarField Q_pc_;
 
-	//- Graph of mesh grid, used for finding interface cells
-	MeshGraph InterfaceMeshGraph;
-
-	//- Field for tracking Interface cells
-    volScalarField InterfaceField_;
-
-	//- Field for blocking evaporation on wall cells
-	volScalarField WallField;
-
-	//- magnitude of alphaGradient field
-	volScalarField interfaceArea;
-
-	//- Thresholding function for the interface 
-	volScalarField threshold_;
-
-	//Scalar parameters for identifying condensation and evaporation int. cell pairs:
-	scalar CondThresh;
-	scalar EvapThresh;
-
-	//Some constants for interfacial heat transfer
-	dimensionedScalar sigmaHat;					// accomodation coefficient
-	dimensionedScalar R_g;							// specific ideal gas constant 
-	double v_lv;						// change in specific volume 
-	double hi;							// interfacial resistance
-	
+	// declaring rl and rv
+	dimensionedScalar rl;
+	dimensionedScalar rv;
 
 public:
 
     //- Runtime type information
-    TypeName("interfacialResistance");
+    TypeName("Yang");
 
 
     // Constructors
 
 	//- construct from components
-	interfacialResistance
+	Yang
 	(
 		const word& name,
 		const dictionary& thermalPhaseChangeProperties,
@@ -122,7 +89,7 @@ public:
 
 
     //- Destructor
-    ~interfacialResistance()
+    ~Yang()
     {}
 
 
@@ -139,13 +106,6 @@ public:
 		{
 			calcQ_pc();
 		}
-
-		//- Return interface cells marker field:
-		tmp<volScalarField> InterfaceField() const
-		{
-			return InterfaceField_;
-		}
-		
 
         //- Read the transportProperties dictionary and update
         bool read(const dictionary& thermalPhaseChangeProperties);

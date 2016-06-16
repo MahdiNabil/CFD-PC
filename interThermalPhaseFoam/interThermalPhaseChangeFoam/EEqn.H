@@ -12,7 +12,7 @@
     const volScalarField limAlpha1( min(max(alpha1, scalar(0)), scalar(1)) );
 
 	//Check how many Energy equation sub-cycles to use
-	label nEnergySubCycles( pimple.dict().lookupOrDefault<int>("nEnergySubCycles", 1) );
+	//label nEnergySubCycles( pimple.dict().lookupOrDefault<int>("nEnergySubCycles", 1) );
 
 	//Zero out accumulated fields
 	Q_pc_accum       = dimensionedScalar("0", dimensionSet(1, -1, -3, 0, 0), 0);
@@ -22,15 +22,27 @@
 	//Keep a reference to the global time step:
 	dimensionedScalar totalDeltaT = runTime.deltaT();
 
-	for ( subCycle<volScalarField> EnergySubCycle(H, nEnergySubCycles); !(++EnergySubCycle).end(); )
-	{
+//Info<< "T mean 1: " << gAverage( T.internalField() ) << endl;
+//Info<< "H mean 1: " << gAverage( H.internalField() ) << endl;
 
-		//Update phase change model at new temperature field values
-		phaseChangeModel->correct();
+
+	//Latent heat accounted for in source term
+	T.correctBoundaryConditions();
+	H = ( (T - T_0)*(limAlpha1*rho1*cp1 + (1-limAlpha1)*rho2*cp2) )/rho;
+Info << "number of Energy Sub Cycles: " << numESCycles << endl;
+	for ( subCycle<volScalarField> EnergySubCycle(H, numESCycles); !(++EnergySubCycle).end(); )
+	{
 
 		//Latent heat accounted for in source term
 		T.correctBoundaryConditions();
 		H = ( (T - T_0)*(limAlpha1*rho1*cp1 + (1-limAlpha1)*rho2*cp2) )/rho;
+
+
+		//Update phase change model at new temperature field values
+		phaseChangeModel->correct();
+
+//Info<< "T mean 2: " << gAverage( T.internalField() ) << endl;
+//Info<< "H mean 2: " << gAverage( H.internalField() ) << endl;
 
 		//Scalar factor for artificial diffusion in the energy equation
 		scalar ChillaxFac = 1.0;
@@ -51,7 +63,16 @@
 			);
 			EEqn.solve();
 			//Now reevaluate T for the updated enthalpy fields
+
+//Info<< "T mean 3: " << gAverage( T.internalField() ) << endl;
+//Info<< "H mean 3: " << gAverage( H.internalField() ) << endl;
+
+
 			T = T_0 + rho*H/( limAlpha1*rho1*cp1 + (1-limAlpha1)*rho2*cp2 );
+
+//Info<< "T mean 4: " << gAverage( T.internalField() ) << endl;
+//Info<< "H mean 4: " << gAverage( H.internalField() ) << endl;
+
 		}
 
 		//Accumulate Q_PC_accum, PCV_accum, alpha1Gen

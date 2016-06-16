@@ -23,7 +23,7 @@ License
 
 \*---------------------------------------------------------------------------*/
 
-#include "interfacialResistance.H"
+#include "HiLoRelaxed.H"
 #include "addToRunTimeSelectionTable.H"
 
 // * * * * * * * * * * * * * * Static Data Members * * * * * * * * * * * * * //
@@ -32,14 +32,14 @@ namespace Foam
 {
 namespace thermalPhaseChangeModels
 {
-    defineTypeNameAndDebug(interfacialResistance, 0);
-    addToRunTimeSelectionTable(thermalPhaseChangeModel, interfacialResistance, dictionary);
+    defineTypeNameAndDebug(HiLoRelaxed, 0);
+    addToRunTimeSelectionTable(thermalPhaseChangeModel, HiLoRelaxed, dictionary);
 }
 }
 
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
 
-Foam::thermalPhaseChangeModels::interfacialResistance::interfacialResistance
+Foam::thermalPhaseChangeModels::HiLoRelaxed::HiLoRelaxed
 (
 		const word& name,
 		const dictionary& thermalPhaseChangeProperties,
@@ -89,47 +89,12 @@ Foam::thermalPhaseChangeModels::interfacialResistance::interfacialResistance
         ),
         mesh_,
         scalar(0)
-    ),
-	interfaceArea //Is initialized to zero
-	(
-        IOobject
-        (
-            "interfaceArea",
-            T_.time().timeName(),
-            mesh_,
-            IOobject::NO_READ,
-            IOobject::AUTO_WRITE
-        ),
-		mesh_,
-		dimensionedScalar( "dummy", dimensionSet(0,2,0,0,0,0,0), 0 )
-	),
-	threshold_ //Is initialized to zero
-	(
-        IOobject
-        (
-            "threshold",
-            T_.time().timeName(),
-            mesh_,
-            IOobject::NO_READ,
-            IOobject::NO_WRITE
-        ),
-		mesh_,
-		dimensionedScalar( "dummy", dimensionSet(0,0,0,0,0,0,0), 0 )
-	),
-	R_g( thermalPhaseChangeProperties_.lookup("R_g") ),
-	sigmaHat( thermalPhaseChangeProperties_.lookup("sigmaHat") ),
-	v_lv( (32.0/twoPhaseProperties_.rho2().value()) - (1.0/twoPhaseProperties_.rho1().value()) ),
-	hi( (2.0*sigmaHat.value()/(2.0-sigmaHat.value())) * (h_lv_.value()*h_lv_.value()/(T_sat_.value()*v_lv)) * pow(1.0/(2.0*3.1416*R_g.value()*T_sat_.value()),0.5) )
-
+    )
 {
 	//Read in the cond/evap int. thresholds
 	thermalPhaseChangeProperties_.lookup("CondThresh") >> CondThresh;
 	thermalPhaseChangeProperties_.lookup("EvapThresh") >> EvapThresh;
-	//thermalPhaseChangeProperties_.lookup("sigmaHat") >> sigmaHat;
-	//thermalPhaseChangeProperties_.lookup("R_g") >> R_g;
-Info << 'a' << endl;
-	//v_lv = (1.0/twoPhaseProperties_.rho2().value()) - (1.0/twoPhaseProperties_.rho1().value());
-	//hi = (2.0*sigmaHat/(2.0-sigmaHat)) * (h_lv_.value()*h_lv_.value()/(T_sat_.value()*v_lv)) * pow(1.0/(2.0*3.1416*R_g*T_sat_.value()),0.5);
+	thermalPhaseChangeProperties_.lookup("RelaxFac") >> RelaxFac;	
 
 	correct();
 }
@@ -137,9 +102,8 @@ Info << 'a' << endl;
 
 // * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * * //
 
-void Foam::thermalPhaseChangeModels::interfacialResistance::calcQ_pc()
+void Foam::thermalPhaseChangeModels::HiLoRelaxed::calcQ_pc()
 {
-		
 	//Get the sets of interface cell face pairs for evaporation/condensation
 	std::vector<MeshGraph::CellFacePair> CondIntCellFacePairs, EvapIntCellFacePairs;
 
@@ -187,17 +151,14 @@ void Foam::thermalPhaseChangeModels::interfacialResistance::calcQ_pc()
 	forAll( WallCells, cI )
 	{   
 		WallField[WallCells[cI]] = 1;
-		//InterfaceField_[WallCells[cI]] = 1;
+		InterfaceField_[WallCells[cI]] = 1;
 	}
 
 	//List total int. cells
 	//Info<< "Total interface cells: " << gSum(InterfaceField_) << endl;
-	
+
 	//Reset all Q_pc to 0
 	Q_pc_ = dimensionedScalar( "dummy", dimensionSet(1,-1,-3,0,0,0,0), 0 );
-
-	//Reset all threshold to 0
-	threshold_ = dimensionedScalar( "dummy", dimensionSet(0,0,0,0,0,0,0), 0 );
 
 	//Compute some helpful props:
 	//For some reason dT is dimensionless
@@ -205,28 +166,8 @@ void Foam::thermalPhaseChangeModels::interfacialResistance::calcQ_pc()
 	const dimensionedScalar& rho1 = twoPhaseProperties_.rho1();
 	const dimensionedScalar& rho2 = twoPhaseProperties_.rho2();
 
-	interfaceArea.internalField() = mag(fvc::grad(alpha1_))*mesh_.V();
-Info << "interfaceArea1 = " << gSum(interfaceArea.internalField()) << endl;
-Info << "interfaceArea2 = " << gSum(InterfaceField_*interfaceArea.internalField()) << endl;
-Info << "hi = " << hi << endl;
-Info << "vlv = " << v_lv << endl;
-Info << "dtUtilizedByTheThermalPhaseChangeModel = " << dT.value() << endl;
-
-	//limited phase change heat
-	//Q_pc_.internalField() = hi*interfaceArea*(T_-T_sat_)/mesh_.V(); 
-	forAll(mesh_.cells(),pI)
-	{
-		threshold_[pI] = ( (alpha1_[pI] > 0.01) && (alpha1_[pI] < 0.99) ) ? 1.0 : 0.0; 
-	}
-	
-
-	//decaying Phase Change Heat per unit volume
-	Q_pc_.internalField() = threshold_*twoPhaseProperties_.rho()*twoPhaseProperties_.cp()*((1.0-exp(-hi*interfaceArea*dT.value()/(mesh_.V()*twoPhaseProperties_.rho()*twoPhaseProperties_.cp())))*(T_-T_sat_)/dT.value());
-	//Q_pc_.internalField() = twoPhaseProperties_.rho()*twoPhaseProperties_.cp()*((1.0-exp(-hi*interfaceArea*dT.value()/(mesh_.V()*twoPhaseProperties_.rho()*twoPhaseProperties_.cp())))*(T_-T_sat_)/dT.value());
-
 	//Unlimited phase change heat
-	//Q_pc_ = InterfaceField_*twoPhaseProperties_.rho()*twoPhaseProperties_.cp()*((T_-T_sat_)/dT);
-	
+	Q_pc_ = InterfaceField_*twoPhaseProperties_.rho()*twoPhaseProperties_.cp()*((T_-T_sat_)/dT);
 
 	//Fluid availability limits
 	//Get cond/evap limits
@@ -241,22 +182,28 @@ Info << "dtUtilizedByTheThermalPhaseChangeModel = " << dT.value() << endl;
 	//Volume-based limiting (i.e. relative phase change rate can't exceed |1| per time step
 	volScalarField PCV_fac = dT*(Q_pc_ / h_lv_)*( (scalar(1.0)/twoPhaseProperties_.rho2()) - (scalar(1.0)/twoPhaseProperties_.rho1()) );
 
-	//Again, don't allow evap on wall	
+	//Volume generation/sink based limited
+	//Again, allow regular evap on wall	
 	volScalarField Q_pc_vol = Q_pc_ * mag( min( max(1.0/(PCV_fac+SMALL), -1.0), (1.0-WallField) ) );
-	//volScalarField Q_pc_vol = Q_pc_ * mag( min( max(1.0/(PCV_fac+SMALL), -1.0), 1.0 ) );
 
 	//Composite limit
 	Q_pc_ = neg(Q_pc_)*max( max( Q_pc_, Q_pc_fluid ), Q_pc_vol) + pos(Q_pc_)*min( min( Q_pc_, Q_pc_fluid ), Q_pc_vol);
+
+	//Under relax phase change rate per user specification
+	Q_pc_ = RelaxFac * Q_pc_;
+
 }
 
 
-bool Foam::thermalPhaseChangeModels::interfacialResistance::read(const dictionary& thermalPhaseChangeProperties)
+bool Foam::thermalPhaseChangeModels::HiLoRelaxed::read(const dictionary& thermalPhaseChangeProperties)
 {
 	thermalPhaseChangeModel::read(thermalPhaseChangeProperties);
 
 	//Read in the cond/evap int. thresholds
 	thermalPhaseChangeProperties_.lookup("CondThresh") >> CondThresh;
 	thermalPhaseChangeProperties_.lookup("EvapThresh") >> EvapThresh;
+	thermalPhaseChangeProperties_.lookup("RelaxFac") >> RelaxFac;
+
 	return true;
 }
 

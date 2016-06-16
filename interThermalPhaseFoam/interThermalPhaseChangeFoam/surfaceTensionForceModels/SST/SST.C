@@ -166,7 +166,7 @@ void Foam::surfaceTensionForceModels::SST::correct()
 	surfaceScalarField Kf = fvc::interpolate(w*Ks)/fvc::interpolate(w);	
 
 	//Step 5: compute interface delta function from sharpened interface field
-	scalar Cpc = 0.5;
+	scalar Cpc = 0.9;
 	volScalarField alpha1_pc = 1.0/(1.0-Cpc) * (min( max(alpha1_,Cpc/2.0), (1.0-Cpc/2.0) ) - Cpc/2.0);
 	surfaceScalarField deltasf = fvc::snGrad(alpha1_pc);
 

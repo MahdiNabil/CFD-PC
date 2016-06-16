@@ -39,12 +39,12 @@ Description
 
 
 SourceFiles
-    interfacialResistance.C
+    HiLoNoPCVAlpha1.C
 
 \*--------------------------------------------------------------------*/
 
-#ifndef interfacialResistance_H
-#define interfacialResistance_H
+#ifndef HiLoNoPCVAlpha1_H
+#define HiLoNoPCVAlpha1_H
 
 #include "thermalPhaseChangeModel.H"
 #include "MeshGraph.H"
@@ -60,7 +60,7 @@ namespace thermalPhaseChangeModels
                               Class HiLoNoPCVAlpha1
 \*--------------------------------------------------------------------*/
 
-class interfacialResistance
+class HiLoNoPCVAlpha1
 :
     public thermalPhaseChangeModel
 {
@@ -85,33 +85,26 @@ class interfacialResistance
 	//- Field for blocking evaporation on wall cells
 	volScalarField WallField;
 
-	//- magnitude of alphaGradient field
-	volScalarField interfaceArea;
+	//- Volume change field (from phase change)
+	volScalarField PCVField;
 
-	//- Thresholding function for the interface 
-	volScalarField threshold_;
+	//- Volumetric production rate of the alpha1 field (from phase change)
+	volScalarField alpha1Field;
 
 	//Scalar parameters for identifying condensation and evaporation int. cell pairs:
 	scalar CondThresh;
 	scalar EvapThresh;
 
-	//Some constants for interfacial heat transfer
-	dimensionedScalar sigmaHat;					// accomodation coefficient
-	dimensionedScalar R_g;							// specific ideal gas constant 
-	double v_lv;						// change in specific volume 
-	double hi;							// interfacial resistance
-	
-
 public:
 
     //- Runtime type information
-    TypeName("interfacialResistance");
+    TypeName("HiLoNoPCVAlpha1");
 
 
     // Constructors
 
 	//- construct from components
-	interfacialResistance
+	HiLoNoPCVAlpha1
 	(
 		const word& name,
 		const dictionary& thermalPhaseChangeProperties,
@@ -122,7 +115,7 @@ public:
 
 
     //- Destructor
-    ~interfacialResistance()
+    ~HiLoNoPCVAlpha1()
     {}
 
 
@@ -146,6 +139,21 @@ public:
 			return InterfaceField_;
 		}
 		
+		//- Gets volume generation (split and applied slightly away from interface)
+		tmp<volScalarField> PCV() const
+		{
+			return PCVField;
+		}
+
+
+		//- Returns the Change in Liquid Volume Fraction due to Phase Change
+		//  This is positive in the case of condensation, or negative
+		//  for evaporation, units (1/s)
+		tmp<volScalarField> alpha1Gen() const
+		{
+			return alpha1Field;
+		}
+
 
         //- Read the transportProperties dictionary and update
         bool read(const dictionary& thermalPhaseChangeProperties);

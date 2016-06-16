@@ -30,13 +30,20 @@ Description
     unstable oscillations.
 
 \*---------------------------------------------------------------------------*/
-
+scalar numESCycles = readLabel(pimple.dict().lookup("nEnergySubCycles")); //This scalar will decide the actual number of EnergySubCycles
 if (adjustTimeStep)
 {
     scalar maxDeltaTFact =
-        min( min( maxCo/(CoNum + SMALL), maxAlphaCo/(alphaCoNum + SMALL) ), maxFourier/(FourierNum + SMALL) );
+        min( maxCo/(CoNum + SMALL), maxAlphaCo/(alphaCoNum + SMALL) );
+	scalar maxDeltaTFactFourier =
+		maxFourier/(FourierNum + SMALL);
 
     scalar deltaTFact = min(min(maxDeltaTFact, 1.0 + 0.1*maxDeltaTFact), 1.2);
+	scalar deltaTFactFourier = min(min(maxDeltaTFactFourier, 1.0 + 0.1*maxDeltaTFactFourier), 1.2);
+	//scalar numESCycles = readLabel(pimple.dict().lookup("nEnergySubCycles")); //This scalar will decide the actual number of EnergySubCycles
+
+	if (deltaTFactFourier < deltaTFact)
+		deltaTFact = deltaTFactFourier;
 
     runTime.setDeltaT
     (
@@ -46,6 +53,9 @@ if (adjustTimeStep)
             maxDeltaT
         )
     );
+
+	scalar 	maxFourierT = min( pow( CellDims.field(), 2 )*maxFourier/( twoPhaseProperties.alpha() + turbulence->nut() ) );
+	numESCycles = ceil( scalar(runTime.deltaTValue())*numESCycles/maxFourierT );
 
     Info<< "deltaT = " <<  runTime.deltaTValue() << endl;
 }

@@ -22,7 +22,7 @@ License
     along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
 
 Class
-	Foam::thermalPhaseChangeModel::HiLoNoPCVAlpha1
+	Foam::thermalPhaseChangeModel::HiLoRelaxedSplit
 
 Description
     This model forces wall and interface cells to the equilibrium state,
@@ -33,18 +33,23 @@ Description
     This model uses different interface thresholds for identifying
 	evaporating and condensing cell pairs.
 
-	This version has phase change heating, but no change in liquid volume 
-        fraction due to phase change and no volumetric source due to phase change. Convenient for cases 
-        where there is an unlimited source of low momentum phase (e.g. film evaporation or condensation)
+	This is similar to the previous HiLoFacePair code, but the phase change
+	rate is numerically relaxed by some user-defined value (should be <= 1,
+	where 0 is no phase change, and 1 is no relaxation). This seems to help
+	with overshooting where the temperature in a cell can go from superheated
+	to subcooled in one time step.
+
+	This version splits the volumetric generation/sinking and applies it away
+	from the interface so as to not spread out the interface or shoot liquid through it
 
 
 SourceFiles
-    interfacialResistance.C
+    HiLoRelaxedSplit.C
 
 \*--------------------------------------------------------------------*/
 
-#ifndef interfacialResistance_H
-#define interfacialResistance_H
+#ifndef HiLoRelaxedSplit_H
+#define HiLoRelaxedSplit_H
 
 #include "thermalPhaseChangeModel.H"
 #include "MeshGraph.H"
@@ -57,10 +62,10 @@ namespace thermalPhaseChangeModels
 {
 
 /*--------------------------------------------------------------------*\
-                              Class HiLoNoPCVAlpha1
+                              Class HiLoRelaxedSplit
 \*--------------------------------------------------------------------*/
 
-class interfacialResistance
+class HiLoRelaxedSplit
 :
     public thermalPhaseChangeModel
 {
@@ -69,6 +74,9 @@ class interfacialResistance
 
 	//- Calculate the phase change heat rate
 	void calcQ_pc();
+
+	//- Calculate the volume generation/sinking field
+	void calcPCV();
 
 	//- This phase change model needs access to the mesh:
 	const fvMesh& mesh_;
@@ -85,33 +93,24 @@ class interfacialResistance
 	//- Field for blocking evaporation on wall cells
 	volScalarField WallField;
 
-	//- magnitude of alphaGradient field
-	volScalarField interfaceArea;
-
-	//- Thresholding function for the interface 
-	volScalarField threshold_;
+	//- Volume change field (from phase change)
+	volScalarField PCVField;
 
 	//Scalar parameters for identifying condensation and evaporation int. cell pairs:
 	scalar CondThresh;
 	scalar EvapThresh;
-
-	//Some constants for interfacial heat transfer
-	dimensionedScalar sigmaHat;					// accomodation coefficient
-	dimensionedScalar R_g;							// specific ideal gas constant 
-	double v_lv;						// change in specific volume 
-	double hi;							// interfacial resistance
-	
+	scalar RelaxFac; //The relaxation factor (0-1)
 
 public:
 
     //- Runtime type information
-    TypeName("interfacialResistance");
+    TypeName("HiLoRelaxedSplit");
 
 
     // Constructors
 
 	//- construct from components
-	interfacialResistance
+	HiLoRelaxedSplit
 	(
 		const word& name,
 		const dictionary& thermalPhaseChangeProperties,
@@ -122,7 +121,7 @@ public:
 
 
     //- Destructor
-    ~interfacialResistance()
+    ~HiLoRelaxedSplit()
     {}
 
 
@@ -138,6 +137,7 @@ public:
         void correct()
 		{
 			calcQ_pc();
+			calcPCV();
 		}
 
 		//- Return interface cells marker field:
@@ -146,6 +146,13 @@ public:
 			return InterfaceField_;
 		}
 		
+		//- Gets volume generation (split and applied slightly away from interface)
+		tmp<volScalarField> PCV() const
+		{
+			return PCVField;
+		}
+
+
 
         //- Read the transportProperties dictionary and update
         bool read(const dictionary& thermalPhaseChangeProperties);

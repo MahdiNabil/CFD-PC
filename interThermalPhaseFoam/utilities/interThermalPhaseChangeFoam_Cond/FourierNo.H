@@ -31,7 +31,7 @@ Description
 
 scalar maxFourier
 (
-    readScalar(runTime.controlDict().lookup("maxFourier"))*readLabel(pimple.dict().lookup("nEnergySubCycles"))
+    readScalar(runTime.controlDict().lookup("maxFourier"))
 );
 
 scalar FourierNum = 0.0;
@@ -43,6 +43,5 @@ meanFourierNum = gAverage( ( twoPhaseProperties.alpha() + turbulence->nut() )*ru
 
 Info<< "Fourier number mean: " << meanFourierNum
     << " max: " << FourierNum << endl;
-Info<< "Allowed maxFourier Number" << maxFourier << endl;
 
 // ************************************************************************* //

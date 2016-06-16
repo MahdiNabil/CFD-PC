@@ -22,27 +22,31 @@ License
     along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
 
 Global
-    FourierNo
+    setDeltaT
 
 Description
-    Calculates Fourier number for conduction
+    Reset the timestep to maintain a constant maximum courant Number.
+    Reduction of time-step is immediate, but increase is damped to avoid
+    unstable oscillations.
 
 \*---------------------------------------------------------------------------*/
 
-scalar maxFourier
-(
-    readScalar(runTime.controlDict().lookup("maxFourier"))*readLabel(pimple.dict().lookup("nEnergySubCycles"))
-);
+if (adjustTimeStep)
+{
+    scalar maxDeltaTFact = maxFourier/(FourierNum + SMALL);
 
-scalar FourierNum = 0.0;
-scalar meanFourierNum = 0.0;
+    scalar deltaTFact = min(min(maxDeltaTFact, 1.0 + 0.1*maxDeltaTFact), 1.2);
 
+    runTime.setDeltaT
+    (
+        min
+        (
+            deltaTFact*runTime.deltaTValue(),
+            maxDeltaT
+        )
+    );
 
-FourierNum = gMax( ( twoPhaseProperties.alpha() + turbulence->nut() )*runTime.deltaTValue() / pow( CellDims.field(), 2 ) );
-meanFourierNum = gAverage( ( twoPhaseProperties.alpha() + turbulence->nut() )*runTime.deltaTValue() / pow( CellDims.field(), 2 ) );
-
-Info<< "Fourier number mean: " << meanFourierNum
-    << " max: " << FourierNum << endl;
-Info<< "Allowed maxFourier Number" << maxFourier << endl;
+    Info<< "deltaT = " <<  runTime.deltaTValue() << endl;
+}
 
 // ************************************************************************* //
