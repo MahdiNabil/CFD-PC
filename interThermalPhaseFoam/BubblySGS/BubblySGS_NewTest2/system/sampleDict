@@ -1,7 +1,7 @@
 /*--------------------------------*- C++ -*----------------------------------*\
 | =========                 |                                                 |
 | \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
-|  \\    /   O peration     | Version:  2.4.0                                 |
+|  \\    /   O peration     | Version:  2.0.0                                 |
 |   \\  /    A nd           | Web:      www.OpenFOAM.org                      |
 |    \\/     M anipulation  |                                                 |
 \*---------------------------------------------------------------------------*/
@@ -9,41 +9,32 @@ FoamFile
 {
     version     2.0;
     format      ascii;
-    class       volVectorField;
-    location    "0";
-    object      Ubeta1;
+    class       dictionary;
+    location    "system";
+    object      sampleDict;
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-dimensions      [0 1 -1 0 0 0 0];
+interpolationScheme cell;
 
-internalField   uniform (-0 0.000938284 -0);
+setFormat       raw;
 
-boundaryField
-{
-    BotWall
+sets
+(
+
+    CLine
     {
-        type            fixedValue;
-        value           uniform (0 0 0);
+        type    midPoint;
+        axis    y;
+        start   ( 0.001 0 		0.00002 );
+        end     ( 0.001 0.002   0.00002 );
+        nPoints 200;
     }
-    FreeStream
-    {
-        type            fixedValue;
-        value           uniform (0 0 0);
-    }
-    FrontNBack
-    {
-        type            empty;
-    }
-    LeftSide
-    {
-        type            symmetryPlane;
-    }
-    RightSide
-    {
-        type            symmetryPlane;
-    }
-}
+
+);
+
+
+fields          ( beta Ubeta nuEff );
 
 
 // ************************************************************************* //

@@ -9,41 +9,48 @@ FoamFile
 {
     version     2.0;
     format      ascii;
-    class       volVectorField;
-    location    "0";
-    object      Ubeta1;
+    class       polyBoundaryMesh;
+    location    "constant/polyMesh";
+    object      boundary;
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-dimensions      [0 1 -1 0 0 0 0];
-
-internalField   uniform (-0 0.000938284 -0);
-
-boundaryField
-{
+5
+(
     BotWall
     {
-        type            fixedValue;
-        value           uniform (0 0 0);
+        type            wall;
+        inGroups        1(wall);
+        nFaces          100;
+        startFace       19800;
     }
     FreeStream
     {
-        type            fixedValue;
-        value           uniform (0 0 0);
+        type            patch;
+        nFaces          100;
+        startFace       19900;
     }
     FrontNBack
     {
         type            empty;
+        inGroups        1(empty);
+        nFaces          20000;
+        startFace       20000;
     }
     LeftSide
     {
         type            symmetryPlane;
+        inGroups        1(symmetryPlane);
+        nFaces          100;
+        startFace       40000;
     }
     RightSide
     {
         type            symmetryPlane;
+        inGroups        1(symmetryPlane);
+        nFaces          100;
+        startFace       40100;
     }
-}
-
+)
 
 // ************************************************************************* //
