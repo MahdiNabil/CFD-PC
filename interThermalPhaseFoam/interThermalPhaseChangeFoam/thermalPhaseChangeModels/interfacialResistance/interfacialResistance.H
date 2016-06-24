@@ -7,40 +7,30 @@
 -------------------------------------------------------------------------------
 License
     This file is part of OpenFOAM.
-
     OpenFOAM is free software: you can redistribute it and/or modify it
     under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
-
     OpenFOAM is distributed in the hope that it will be useful, but WITHOUT
     ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
     FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
     for more details.
-
     You should have received a copy of the GNU General Public License
     along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
-
 Class
 	Foam::thermalPhaseChangeModel::HiLoNoPCVAlpha1
-
 Description
     This model forces wall and interface cells to the equilibrium state,
     causing evaporation or condensation as appropriate. The phase change
     heat term is limited to not produce/sink more than the volume of a 
 	cell in a single time step(like the courantAlpha limit).
-
     This model uses different interface thresholds for identifying
 	evaporating and condensing cell pairs.
-
 	This version has phase change heating, but no change in liquid volume 
         fraction due to phase change and no volumetric source due to phase change. Convenient for cases 
         where there is an unlimited source of low momentum phase (e.g. film evaporation or condensation)
-
-
 SourceFiles
     interfacialResistance.C
-
 \*--------------------------------------------------------------------*/
 
 #ifndef interfacialResistance_H
@@ -87,6 +77,9 @@ class interfacialResistance
 
 	//- magnitude of alphaGradient field
 	volScalarField interfaceArea;
+
+	//- Thresholding function for the interface 
+	volScalarField threshold_;
 
 	//Scalar parameters for identifying condensation and evaporation int. cell pairs:
 	scalar CondThresh;

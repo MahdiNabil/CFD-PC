@@ -7,20 +7,16 @@
 -------------------------------------------------------------------------------
 License
     This file is part of OpenFOAM.
-
     OpenFOAM is free software: you can redistribute it and/or modify it
     under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
-
     OpenFOAM is distributed in the hope that it will be useful, but WITHOUT
     ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
     FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
     for more details.
-
     You should have received a copy of the GNU General Public License
     along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
-
 \*---------------------------------------------------------------------------*/
 
 #include "interfacialResistance.H"
@@ -103,9 +99,22 @@ Foam::thermalPhaseChangeModels::interfacialResistance::interfacialResistance
 		mesh_,
 		dimensionedScalar( "dummy", dimensionSet(0,2,0,0,0,0,0), 0 )
 	),
+	threshold_ //Is initialized to zero
+	(
+        IOobject
+        (
+            "threshold",
+            T_.time().timeName(),
+            mesh_,
+            IOobject::NO_READ,
+            IOobject::NO_WRITE
+        ),
+		mesh_,
+		dimensionedScalar( "dummy", dimensionSet(0,0,0,0,0,0,0), 0 )
+	),
 	R_g( thermalPhaseChangeProperties_.lookup("R_g") ),
 	sigmaHat( thermalPhaseChangeProperties_.lookup("sigmaHat") ),
-	v_lv( (1.0/twoPhaseProperties_.rho2().value()) - (1.0/twoPhaseProperties_.rho1().value()) ),
+	v_lv( (32.0/twoPhaseProperties_.rho2().value()) - (1.0/twoPhaseProperties_.rho1().value()) ),
 	hi( (2.0*sigmaHat.value()/(2.0-sigmaHat.value())) * (h_lv_.value()*h_lv_.value()/(T_sat_.value()*v_lv)) * pow(1.0/(2.0*3.1416*R_g.value()*T_sat_.value()),0.5) )
 
 {
@@ -114,7 +123,7 @@ Foam::thermalPhaseChangeModels::interfacialResistance::interfacialResistance
 	thermalPhaseChangeProperties_.lookup("EvapThresh") >> EvapThresh;
 	//thermalPhaseChangeProperties_.lookup("sigmaHat") >> sigmaHat;
 	//thermalPhaseChangeProperties_.lookup("R_g") >> R_g;
-
+Info << 'a' << endl;
 	//v_lv = (1.0/twoPhaseProperties_.rho2().value()) - (1.0/twoPhaseProperties_.rho1().value());
 	//hi = (2.0*sigmaHat/(2.0-sigmaHat)) * (h_lv_.value()*h_lv_.value()/(T_sat_.value()*v_lv)) * pow(1.0/(2.0*3.1416*R_g*T_sat_.value()),0.5);
 
@@ -183,6 +192,9 @@ void Foam::thermalPhaseChangeModels::interfacialResistance::calcQ_pc()
 	//Reset all Q_pc to 0
 	Q_pc_ = dimensionedScalar( "dummy", dimensionSet(1,-1,-3,0,0,0,0), 0 );
 
+	//Reset all threshold to 0
+	threshold_ = dimensionedScalar( "dummy", dimensionSet(0,0,0,0,0,0,0), 0 );
+
 	//Compute some helpful props:
 	//For some reason dT is dimensionless
 	const dimensionedScalar& dT = alpha1_.time().deltaTValue() * dimensionedScalar( "dummy", dimensionSet(0,0,1,0,0,0,0), 1.0 );
@@ -194,15 +206,19 @@ Info << "interfaceArea1 = " << gSum(interfaceArea.internalField()) << endl;
 Info << "interfaceArea2 = " << gSum(InterfaceField_*interfaceArea.internalField()) << endl;
 Info << "hi = " << hi << endl;
 Info << "vlv = " << v_lv << endl;
+Info << "dtUtilizedByTheThermalPhaseChangeModel = " << dT.value() << endl;
 
 	//limited phase change heat
 	//Q_pc_.internalField() = hi*interfaceArea*(T_-T_sat_)/mesh_.V(); 
+	forAll(mesh_.cells(),pI)
+	{
+		threshold_[pI] = ( (alpha1_[pI] > 0.1) && (alpha1_[pI] < 0.9) ) ? 1.0 : 0.0; 
+	}
+	
 
 	//decaying Phase Change Heat per unit volume
-	Q_pc_.internalField() = twoPhaseProperties_.rho()*twoPhaseProperties_.cp()*((1.0-exp(-hi*interfaceArea*dT.value()/(mesh_.V()*twoPhaseProperties_.rho()*twoPhaseProperties_.cp())))*(T_-T_sat_)/dT.value());
-
-	//Limit Q_pc_ to act in cells near interface
-	Q_pc_ *= pos(alpha1_ - 0.01)*pos(0.99 - alpha1_);
+	Q_pc_.internalField() = threshold_*twoPhaseProperties_.rho()*twoPhaseProperties_.cp()*((1.0-exp(-hi*interfaceArea*dT.value()/(mesh_.V()*twoPhaseProperties_.rho()*twoPhaseProperties_.cp())))*(T_-T_sat_)/dT.value());
+	//Q_pc_.internalField() = twoPhaseProperties_.rho()*twoPhaseProperties_.cp()*((1.0-exp(-hi*interfaceArea*dT.value()/(mesh_.V()*twoPhaseProperties_.rho()*twoPhaseProperties_.cp())))*(T_-T_sat_)/dT.value());
 
 	//Unlimited phase change heat
 	//Q_pc_ = InterfaceField_*twoPhaseProperties_.rho()*twoPhaseProperties_.cp()*((T_-T_sat_)/dT);

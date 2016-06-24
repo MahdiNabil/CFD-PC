@@ -54,12 +54,15 @@ class MicrolayerBoilingVelocityFvPatchVectorField
     public fixedValueFvPatchVectorField
 {
     // Private data
+    IOdictionary transportProperties;
+
 
 public:
 
    //- Runtime type information
    TypeName("MicrolayerBoilingVelocity");
 
+scalarField OldMicrolayerThickness;
 
    // Constructors
 

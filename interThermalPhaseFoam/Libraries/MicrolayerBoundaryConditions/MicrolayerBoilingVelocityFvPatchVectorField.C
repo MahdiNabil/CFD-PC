@@ -28,6 +28,11 @@ License
 #include "addToRunTimeSelectionTable.H"
 #include "fvPatchFieldMapper.H"
 #include "surfaceFields.H"
+#include <stdio.h>
+
+//#include "setRootCase.H"
+//#include "createTime.H"
+//#include "createMesh.H"
 
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
 
@@ -38,7 +43,19 @@ MicrolayerBoilingVelocityFvPatchVectorField
     const DimensionedField<vector, volMesh>& iF
 )
 :
-    fixedValueFvPatchField<vector>(p, iF)//,
+    fixedValueFvPatchField<vector>(p, iF),
+    transportProperties(
+        IOobject
+        (
+            "transportProperties",
+            db().time().constant(),
+            db(),
+            IOobject::MUST_READ,
+            IOobject::NO_WRITE
+        )
+    )
+
+//,
 	//rhoInlet_(0.0)
 {}
 
@@ -52,7 +69,18 @@ MicrolayerBoilingVelocityFvPatchVectorField
     const fvPatchFieldMapper& mapper
 )
 :
-    fixedValueFvPatchField<vector>(ptf, p, iF, mapper)//,
+    fixedValueFvPatchField<vector>(ptf, p, iF, mapper),
+    transportProperties(
+        IOobject
+        (
+            "transportProperties",
+            db().time().constant(),
+            db(),
+            IOobject::MUST_READ,
+            IOobject::NO_WRITE
+        )
+    )
+    //,
 	//rhoInlet_(ptf.rhoInlet_)
 {}
 
@@ -65,7 +93,18 @@ MicrolayerBoilingVelocityFvPatchVectorField
     const dictionary& dict
 )
 :
-    fixedValueFvPatchField<vector>(p, iF)//,
+    fixedValueFvPatchField<vector>(p, iF),
+    transportProperties(
+        IOobject
+        (
+            "transportProperties",
+            db().time().constant(),
+            db(),
+            IOobject::MUST_READ,
+            IOobject::NO_WRITE
+        )
+    )
+    //,
 //    rhoInlet_(dict.lookupOrDefault<scalar>("rhoInlet", -VGREAT))
 {
 	//Initialize the patch field for the first run:	
@@ -121,7 +160,17 @@ MicrolayerBoilingVelocityFvPatchVectorField
     const MicrolayerBoilingVelocityFvPatchVectorField& ptf
 )
 :
-    fixedValueFvPatchField<vector>(ptf)//,
+    fixedValueFvPatchField<vector>(ptf),
+    transportProperties(
+        IOobject
+        (
+            "transportProperties",
+            db().time().constant(),
+            db(),
+            IOobject::MUST_READ,
+            IOobject::NO_WRITE
+        )
+    )//,
 //    rhoInlet_(ptf.rhoInlet_)
 {}
 
@@ -133,47 +182,158 @@ MicrolayerBoilingVelocityFvPatchVectorField
     const DimensionedField<vector, volMesh>& iF
 )
 :
-    fixedValueFvPatchField<vector>(ptf, iF)//,
+    fixedValueFvPatchField<vector>(ptf, iF),
+    transportProperties(
+        IOobject
+        (
+            "transportProperties",
+            db().time().constant(),
+            db(),
+            IOobject::MUST_READ,
+            IOobject::NO_WRITE
+        )
+    )//,
     //rhoInlet_(ptf.rhoInlet_)
 {}
 
 
 // * * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * //
 
+
+
 void Foam::MicrolayerBoilingVelocityFvPatchVectorField::updateCoeffs()
 {
+
     if (updated())
     {
         return;
     }
 
-//    const scalar t = db().time().timeOutputValue();
+    //const scalar t = db().time().timeOutputValue();
 
     // a simpler way of doing this would be nice
     //const scalar avgU = -flowRate_->value(t)/gSum(patch().magSf());
 
-    //tmp<vectorField> n = patch().nf();
-
 	//operator==(n*avgU);
+
+	//Cell face centers on the patch
+	tmp<vectorField> Cfcs = -patch().Cf();
 
 	//Inward pointing normals into the domain
 	tmp<vectorField> n = -patch().nf();
 
+	// Extracting transport value
+	const dimensionedScalar& T_sat = transportProperties.subDict("thermalPhaseChange").lookup("T_sat");
+	const dimensionedScalar& h_lv = transportProperties.subDict("thermalPhaseChange").lookup("h_lv");
+	const dimensionedScalar& R_g = transportProperties.subDict("thermalPhaseChange").lookup("R_g");
+	const dimensionedScalar& ThermConductivityL = transportProperties.subDict("phase1").lookup("lambda");
+	const dimensionedScalar& rho1 = transportProperties.subDict("phase1").lookup("rho");
+	const dimensionedScalar& rho2 = transportProperties.subDict("phase2").lookup("rho");
 
-	//Find out which cell faces are liquid vs. vapor:
-    const fvPatchScalarField& alpha1p = patch().lookupPatchField<volScalarField, scalar>("alpha1");
-
-	const scalar VaporInletVelocity = 0.01;
-
-    const vectorField VaporInletVelocityp
-    (
-		n*VaporInletVelocity*pos(0.01 - alpha1p)
-    );
+	// Extracting scalar fields
+	const fvPatchField<scalar>& alpha1p = patch().lookupPatchField<volScalarField, scalar>("alpha1");
+	const fvPatchField<scalar>& Tp = patch().lookupPatchField<volScalarField, scalar>("T");
 
 
+	// Declare Microlayer Thickness. Using 'Tp' to set size
+	scalarField MicrolayerThickness = (Tp*0);
+
+	// Update Microlayer Thickness from previous timestep (if t != 0)
+	if (db().time().value() != 0)
+	{
+		MicrolayerThickness = OldMicrolayerThickness;
+	}
+
+
+	// Calculate Microlayer Thickness
+	forAll( alpha1p, celli)
+	{		
+		if ((MicrolayerThickness[celli] == 0) && (alpha1p[celli] < 0.01))
+		{		
+			//ASR - radial distance from bubble center [Utaka 2013]		
+			MicrolayerThickness[celli] = mag(Cfcs()[celli])*4.46E-3;	
+		}
+		else if (alpha1p[celli] > 0.09)	//reset neg values if new liquid over patch
+		{
+			MicrolayerThickness[celli] = 0;
+		}
+		//else if ((MicrolayerThickness[celli] < 0) && (alpha1p[celli] < 0.01))  //neg value signifying microlayer already depleted. Do nothing
+		//{}
+		
+	}
+
+	//Calculate heat flux through microlayer
+	scalarField Q_Microlayer(Tp*0);
+	forAll( patch().Cf(), celli)
+	{
+		if (MicrolayerThickness[celli] > 0)
+		{
+			//Guo & El-Genk [1993]
+			Q_Microlayer[celli] = ((Tp[celli] - T_sat.value())/((MicrolayerThickness[celli]/ThermConductivityL.value()) + ((1/(1.0*rho1.value()*h_lv.value()))  * pow(2*3.141593*R_g.value()*pow(T_sat.value(),3),0.5))));
+		}
+
+	}
+	//Microlayer Evaporated per timestep
+	scalarField MicrolayerEvap
+	(
+		//Guo & El-Genk [1993]
+		((Q_Microlayer/(rho1.value()*h_lv.value()))*db().time().deltaTValue())
+	);
+
+	//limit Q max to total Microlayer evap
+	forAll( patch().Cf(), celli)
+	{
+		if ((MicrolayerThickness[celli] > 0) && (MicrolayerEvap[celli] > MicrolayerThickness[celli]))
+		{
+			Q_Microlayer[celli] = (MicrolayerThickness[celli] * (rho1.value()*h_lv.value())) / db().time().deltaTValue();
+		}
+	}
+
+
+	//Update MicrolayerThickness
+	forAll( patch().Cf(), celli)
+	{
+		if (MicrolayerThickness[celli] > 0)
+		{
+			MicrolayerThickness[celli] = (MicrolayerThickness[celli] - MicrolayerEvap[celli]);
+			if (MicrolayerThickness[celli] <= 0)
+			{
+				//In case of exact cancellation, force negative value
+				MicrolayerThickness[celli] = -1;
+			}		
+		}
+	}
+
+	//Calculate vectorfield of gas
+    	const vectorField VaporInletVelocityp
+    	(
+		//n*MicrolayerThickness
+		n*(Q_Microlayer/(rho2.value()*h_lv.value()))
+		//n*(VaporInletVelocity*pos(0.01 - alpha1p))
+    	);
+
+	
+/*
+if (db().time().value() != 0)
+{
+	forAll(VaporInletVelocityp, celli)
+	{
+Info << "alpha1 - " << alpha1p[celli] << " | OldMicroThickness - " << OldMicrolayerThickness[celli]  << " | MicroThickness - " << MicrolayerThickness[celli] << " | LayerEvap - " << MicrolayerEvap[celli] << " | Q - " << Q_Microlayer[celli] << endl;
+Info << "Vapor Velocity - " << mag(VaporInletVelocityp[celli]) << " | Time - " << db().time().timeOutputValue() << endl;
+
+	}
+}
+*/
+
+	
+	//Update OldMicrolayerThickness
+	OldMicrolayerThickness = MicrolayerThickness; 
+	
 	operator==(VaporInletVelocityp);
 
     fixedValueFvPatchVectorField::updateCoeffs();
+
+
 }
 
 

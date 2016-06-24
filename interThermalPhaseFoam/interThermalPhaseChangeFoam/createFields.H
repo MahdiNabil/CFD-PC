@@ -3,6 +3,19 @@ Switch CombinedHSPressure("no");
 runTime.controlDict().readIfPresent("CombinedHSPressure", CombinedHSPressure);
 const scalar CHSP = CombinedHSPressure ? 1.0 : 0;
 
+    IOdictionary transportProperties
+    (
+        IOobject
+        (
+            "transportProperties",
+            runTime.constant(),
+            mesh,
+            IOobject::MUST_READ_IF_MODIFIED,
+            IOobject::NO_WRITE
+        )
+    );
+
+
     Info<< "Reading field p_rgh\n" << endl;
     volScalarField p_rgh
     (
@@ -31,6 +44,22 @@ const scalar CHSP = CombinedHSPressure ? 1.0 : 0;
         mesh
     );
 
+    //Initialize the temperature field
+    Info<< "Reading field T\n" << endl;
+    volScalarField T
+    (
+        IOobject
+        (
+            "T",
+            runTime.timeName(),
+            mesh,
+            IOobject::MUST_READ,
+            IOobject::AUTO_WRITE
+        ),
+        mesh
+    );
+
+
     Info<< "Reading field U\n" << endl;
     volVectorField U
     (
@@ -48,20 +77,7 @@ const scalar CHSP = CombinedHSPressure ? 1.0 : 0;
     #include "createPhi.H"
 
     
-    //Initialize the temperature field
-    Info<< "Reading field T\n" << endl;
-    volScalarField T
-    (
-        IOobject
-        (
-            "T",
-            runTime.timeName(),
-            mesh,
-            IOobject::MUST_READ,
-            IOobject::AUTO_WRITE
-        ),
-        mesh
-    );
+
 
     //Initialize the enthalpy field
     volScalarField H
@@ -139,17 +155,6 @@ const scalar CHSP = CombinedHSPressure ? 1.0 : 0;
         twoPhaseProperties.mu() + rho*turbulence->nut()
     );
 
-    IOdictionary transportProperties
-    (
-        IOobject
-        (
-            "transportProperties",
-            runTime.constant(),
-            mesh,
-            IOobject::MUST_READ_IF_MODIFIED,
-            IOobject::NO_WRITE
-        )
-    );
 
     //Kistler contact angle model needs the sigma vol scalar field to be in the objectRegistry
     // - even though sigma is already in the interface object below
