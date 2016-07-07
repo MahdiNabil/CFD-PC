@@ -29,6 +29,8 @@ License
 #include "fvPatchFieldMapper.H"
 #include "surfaceFields.H"
 #include <stdio.h>
+#include "fvcGrad.H"
+
 
 //#include "setRootCase.H"
 //#include "createTime.H"
@@ -209,6 +211,14 @@ void Foam::MicrolayerBoilingVelocityFvPatchVectorField::updateCoeffs()
         return;
     }
 
+    if (db().time().timeOutputValue() != 0)
+    {
+	if (oldTimeStep == db().time().timeOutputValue())
+	{
+	return;
+	}
+    }
+
     //const scalar t = db().time().timeOutputValue();
 
     // a simpler way of doing this would be nice
@@ -251,7 +261,10 @@ void Foam::MicrolayerBoilingVelocityFvPatchVectorField::updateCoeffs()
 		if ((MicrolayerThickness[celli] == 0) && (alpha1p[celli] < 0.01))
 		{		
 			//ASR - radial distance from bubble center [Utaka 2013]		
-			MicrolayerThickness[celli] = mag(Cfcs()[celli])*4.46E-3;	
+			MicrolayerThickness[celli] = mag(Cfcs()[celli])*4.46E-3;
+
+			//multibubble approx radially-independent initial thickness
+			//MicrolayerThickness[celli] = 4.46E-6;	
 		}
 		else if (alpha1p[celli] > 0.09)	//reset neg values if new liquid over patch
 		{
@@ -289,6 +302,8 @@ void Foam::MicrolayerBoilingVelocityFvPatchVectorField::updateCoeffs()
 		}
 	}
 
+//if (first_iteration)
+//{
 
 	//Update MicrolayerThickness
 	forAll( patch().Cf(), celli)
@@ -298,13 +313,17 @@ void Foam::MicrolayerBoilingVelocityFvPatchVectorField::updateCoeffs()
 			MicrolayerThickness[celli] = (MicrolayerThickness[celli] - MicrolayerEvap[celli]);
 			if (MicrolayerThickness[celli] <= 0)
 			{
-				//In case of exact cancellation, force negative value
+				//force negative value once MC depleted
 				MicrolayerThickness[celli] = -1;
 			}		
 		}
 	}
+//}
 
-	//Calculate vectorfield of gas
+
+
+
+//Calculate vectorfield of gas
     	const vectorField VaporInletVelocityp
     	(
 		//n*MicrolayerThickness
@@ -312,27 +331,31 @@ void Foam::MicrolayerBoilingVelocityFvPatchVectorField::updateCoeffs()
 		//n*(VaporInletVelocity*pos(0.01 - alpha1p))
     	);
 
-	
-/*
+//scalarField gradAlpha1p = fvc::grad(alpha1p);
+
 if (db().time().value() != 0)
 {
-	forAll(VaporInletVelocityp, celli)
-	{
-Info << "alpha1 - " << alpha1p[celli] << " | OldMicroThickness - " << OldMicrolayerThickness[celli]  << " | MicroThickness - " << MicrolayerThickness[celli] << " | LayerEvap - " << MicrolayerEvap[celli] << " | Q - " << Q_Microlayer[celli] << endl;
-Info << "Vapor Velocity - " << mag(VaporInletVelocityp[celli]) << " | Time - " << db().time().timeOutputValue() << endl;
+//	forAll(VaporInletVelocityp, celli)
+	//{
+Info << "###########################################################" << endl;
+Info << "alpha1 - " << alpha1p[1] << " | OldMicroThickness - " << OldMicrolayerThickness[1]  << " | MicroThickness - " << MicrolayerThickness[1] << " | LayerEvap - " << MicrolayerEvap[1] << " | Q - " << Q_Microlayer[1] << endl;
+Info << "Vapor Velocity - " << mag(VaporInletVelocityp[1]) << " | Time - " << db().time().timeOutputValue() << " | DTime - " << db().time().deltaTValue()<< endl;
+Info << "###########################################################" << endl;
 
-	}
+//	}
 }
-*/
+
 
 	
 	//Update OldMicrolayerThickness
-	OldMicrolayerThickness = MicrolayerThickness; 
+	OldMicrolayerThickness = MicrolayerThickness;
+
 	
 	operator==(VaporInletVelocityp);
 
     fixedValueFvPatchVectorField::updateCoeffs();
 
+	oldTimeStep = db().time().timeOutputValue();
 
 }
 

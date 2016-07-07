@@ -212,7 +212,7 @@ Info << "dtUtilizedByTheThermalPhaseChangeModel = " << dT.value() << endl;
 	//Q_pc_.internalField() = hi*interfaceArea*(T_-T_sat_)/mesh_.V(); 
 	forAll(mesh_.cells(),pI)
 	{
-		threshold_[pI] = ( (alpha1_[pI] > 0.1) && (alpha1_[pI] < 0.9) ) ? 1.0 : 0.0; 
+		threshold_[pI] = ( (alpha1_[pI] > 0.05) && (alpha1_[pI] < 0.95) ) ? 1.0 : 0.0; 
 	}
 	
 

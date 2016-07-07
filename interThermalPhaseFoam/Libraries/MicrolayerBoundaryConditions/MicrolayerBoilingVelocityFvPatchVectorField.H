@@ -41,6 +41,7 @@ SourceFiles
 #include "fixedValueFvPatchFields.H"
 #include "DataEntry.H"
 
+
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
 namespace Foam
@@ -63,6 +64,8 @@ public:
    TypeName("MicrolayerBoilingVelocity");
 
 scalarField OldMicrolayerThickness;
+scalar oldTimeStep;
+scalarField Q_Microlayer;
 
    // Constructors
 
@@ -134,8 +137,8 @@ scalarField OldMicrolayerThickness;
 
         //- Write
         virtual void write(Ostream&) const;
-};
 
+};
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
