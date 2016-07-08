@@ -1,11 +1,12 @@
                     GNU GENERAL PUBLIC LICENSE
 
- OpenFOAM(R) is Copyright (C) 2011 OpenFOAM Foundation
- Contact: OpenFOAM Foundation (OpenFOAM.Foundation@gmail.com)
+ interThermalPhaseChangeFoam is Copyright (C) 2015 Alexander S Rattner,
+ Mahdi Nabil, and Sanjay Adhikari.
+ Contact: Alexander Rattner (Alex.Rattner@gmail.com)
 
- You may use, distribute and copy the OpenFOAM CFD Toolbox under the terms
- of GNU General Public License version 3, which is displayed below, or
- (at your option) any later version.
+ You may use, distribute and copy the interThermalPhaseChangeFoam under
+ the terms of GNU General Public License version 3, which is displayed
+ below, or (at your option) any later version.
 
 -------------------------------------------------------------------------
 
