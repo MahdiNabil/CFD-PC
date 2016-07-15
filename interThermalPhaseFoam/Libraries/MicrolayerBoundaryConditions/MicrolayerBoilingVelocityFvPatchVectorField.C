@@ -334,7 +334,7 @@ Info << "Vapor Velocity - " << mag(VaporInletVelocityp[celli]) << " | Time - " <
 	oldTimeStep = db().time().timeOutputValue();
 
 Info << "************************************" << endl;
-Info << "Tot ML_Thickness" << sum(MicrolayerThickness) << endl;
+Info << "Tot ML_Thickness" << gSum(MicrolayerThickness) << endl;
 Info << "************************************" << endl;
 
 }
