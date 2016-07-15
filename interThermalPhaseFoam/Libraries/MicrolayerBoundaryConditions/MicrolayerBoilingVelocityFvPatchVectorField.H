@@ -57,15 +57,15 @@ class MicrolayerBoilingVelocityFvPatchVectorField
     // Private data
     IOdictionary transportProperties;
 
+    scalarField OldMicrolayerThickness;
+    scalar oldTimeStep;
+    bool MicrolayerThicknessInitialized;
+
 
 public:
 
    //- Runtime type information
    TypeName("MicrolayerBoilingVelocity");
-
-scalarField OldMicrolayerThickness;
-scalar oldTimeStep;
-scalarField Q_Microlayer;
 
    // Constructors
 

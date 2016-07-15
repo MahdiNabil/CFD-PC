@@ -32,6 +32,7 @@ License
 #include "fvcGrad.H"
 
 
+
 //#include "setRootCase.H"
 //#include "createTime.H"
 //#include "createMesh.H"
@@ -55,11 +56,11 @@ MicrolayerBoilingVelocityFvPatchVectorField
             IOobject::MUST_READ,
             IOobject::NO_WRITE
         )
-    )
-
-//,
-	//rhoInlet_(0.0)
-{}
+    ),
+    OldMicrolayerThickness(p.size(), pTraits<scalar>::zero)
+{
+    MicrolayerThicknessInitialized = false;
+}
 
 
 Foam::MicrolayerBoilingVelocityFvPatchVectorField::
@@ -81,10 +82,12 @@ MicrolayerBoilingVelocityFvPatchVectorField
             IOobject::MUST_READ,
             IOobject::NO_WRITE
         )
-    )
-    //,
-	//rhoInlet_(ptf.rhoInlet_)
-{}
+    ),
+    OldMicrolayerThickness(ptf.OldMicrolayerThickness, mapper)
+{
+
+    MicrolayerThicknessInitialized = true;
+}
 
 
 Foam::MicrolayerBoilingVelocityFvPatchVectorField::
@@ -105,54 +108,26 @@ MicrolayerBoilingVelocityFvPatchVectorField
             IOobject::MUST_READ,
             IOobject::NO_WRITE
         )
-    )
-    //,
-//    rhoInlet_(dict.lookupOrDefault<scalar>("rhoInlet", -VGREAT))
+    ),
+    OldMicrolayerThickness(p.size(), pTraits<scalar>::zero)
 {
+    //Set initial microlayer thickness from dictionary if it exists
+
+    if (dict.found("MicrolayerThickness"))
+    {
+	//const scalarField tmpMicrolayerThickness("gradient", dict, p.size());
+        //OldMicrolayerThickness = tmpMicrolayerThickness;
+        OldMicrolayerThickness = scalarField("MicrolayerThickness", dict, p.size());
+	MicrolayerThicknessInitialized = true;
+    }
+    else
+    {
+	MicrolayerThicknessInitialized = false;
+    }
+
+
 	//Initialize the patch field for the first run:	
 	updateCoeffs();
-
-/*
-    if (dict.found("volumetricFlowRate"))
-    {
-        volumetric_ = true;
-        flowRate_ = DataEntry<scalar>::New("volumetricFlowRate", dict);
-        rhoName_ = "rho";
-    }
-    else if (dict.found("massFlowRate"))
-    {
-        volumetric_ = false;
-        flowRate_ = DataEntry<scalar>::New("massFlowRate", dict);
-        rhoName_ = word(dict.lookupOrDefault<word>("rho", "rho"));
-    }
-    else
-    {
-        FatalIOErrorIn
-        (
-            "MicrolayerBoilingVelocityFvPatchVectorField::"
-            "MicrolayerBoilingVelocityFvPatchVectorField"
-            "(const fvPatch&, const DimensionedField<vector, volMesh>&,"
-            " const dictionary&)",
-            dict
-        )   << "Please supply either 'volumetricFlowRate' or"
-            << " 'massFlowRate' and 'rho'" << exit(FatalIOError);
-    }
-
-
-    // Value field require if mass based
-    if (dict.found("value"))
-    {
-        fvPatchField<vector>::operator=
-        (
-            vectorField("value", dict, p.size())
-        );
-    }
-    else
-    {
-        evaluate(Pstream::blocking);
-    }
-*/
-
 }
 
 
@@ -172,9 +147,11 @@ MicrolayerBoilingVelocityFvPatchVectorField
             IOobject::MUST_READ,
             IOobject::NO_WRITE
         )
-    )//,
-//    rhoInlet_(ptf.rhoInlet_)
-{}
+    ),
+    OldMicrolayerThickness(ptf.OldMicrolayerThickness)
+{
+    MicrolayerThicknessInitialized = true;
+}
 
 
 Foam::MicrolayerBoilingVelocityFvPatchVectorField::
@@ -194,9 +171,11 @@ MicrolayerBoilingVelocityFvPatchVectorField
             IOobject::MUST_READ,
             IOobject::NO_WRITE
         )
-    )//,
-    //rhoInlet_(ptf.rhoInlet_)
-{}
+    ),
+    OldMicrolayerThickness(ptf.OldMicrolayerThickness)
+{
+    MicrolayerThicknessInitialized = true;
+}
 
 
 // * * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * //
@@ -205,7 +184,6 @@ MicrolayerBoilingVelocityFvPatchVectorField
 
 void Foam::MicrolayerBoilingVelocityFvPatchVectorField::updateCoeffs()
 {
-
     if (updated())
     {
         return;
@@ -218,7 +196,6 @@ void Foam::MicrolayerBoilingVelocityFvPatchVectorField::updateCoeffs()
 	return;
 	}
     }
-
     //const scalar t = db().time().timeOutputValue();
 
     // a simpler way of doing this would be nice
@@ -244,20 +221,24 @@ void Foam::MicrolayerBoilingVelocityFvPatchVectorField::updateCoeffs()
 	const fvPatchField<scalar>& alpha1p = patch().lookupPatchField<volScalarField, scalar>("alpha1");
 	const fvPatchField<scalar>& Tp = patch().lookupPatchField<volScalarField, scalar>("T");
 
-
 	// Declare Microlayer Thickness. Using 'Tp' to set size
-	scalarField MicrolayerThickness = (Tp*0);
+	scalarField MicrolayerThickness = Tp*0;// = (Tp*0);
 
 	// Update Microlayer Thickness from previous timestep (if t != 0)
-	if (db().time().value() != 0)
+	if (MicrolayerThicknessInitialized)
 	{
 		MicrolayerThickness = OldMicrolayerThickness;
 	}
-
+	else
+	{
+		//scalarField MicrolayerThickness = Tp*0;
+		MicrolayerThicknessInitialized = true;
+	}
 
 	// Calculate Microlayer Thickness
 	forAll( alpha1p, celli)
-	{		
+	{	
+
 		if ((MicrolayerThickness[celli] == 0) && (alpha1p[celli] < 0.01))
 		{		
 			//ASR - radial distance from bubble center [Utaka 2013]		
@@ -266,7 +247,7 @@ void Foam::MicrolayerBoilingVelocityFvPatchVectorField::updateCoeffs()
 			//multibubble approx radially-independent initial thickness
 			//MicrolayerThickness[celli] = 4.46E-6;	
 		}
-		else if (alpha1p[celli] > 0.09)	//reset neg values if new liquid over patch
+		else if (alpha1p[celli] > 0.9)	//reset neg values if new liquid over patch
 		{
 			MicrolayerThickness[celli] = 0;
 		}
@@ -282,7 +263,7 @@ void Foam::MicrolayerBoilingVelocityFvPatchVectorField::updateCoeffs()
 		if (MicrolayerThickness[celli] > 0)
 		{
 			//Guo & El-Genk [1993]
-			Q_Microlayer[celli] = ((Tp[celli] - T_sat.value())/((MicrolayerThickness[celli]/ThermConductivityL.value()) + ((1/(1.0*rho1.value()*h_lv.value()))  * pow(2*3.141593*R_g.value()*pow(T_sat.value(),3),0.5))));
+			Q_Microlayer[celli] = ((Tp[celli] - T_sat.value())/((MicrolayerThickness[celli]/ThermConductivityL.value()) + ((1/(1.0*rho2.value()*h_lv.value()))  * pow(2*3.141593*R_g.value()*pow(T_sat.value(),3),0.5))));
 		}
 
 	}
@@ -301,7 +282,6 @@ void Foam::MicrolayerBoilingVelocityFvPatchVectorField::updateCoeffs()
 			Q_Microlayer[celli] = (MicrolayerThickness[celli] * (rho1.value()*h_lv.value())) / db().time().deltaTValue();
 		}
 	}
-
 //if (first_iteration)
 //{
 
@@ -322,7 +302,6 @@ void Foam::MicrolayerBoilingVelocityFvPatchVectorField::updateCoeffs()
 
 
 
-
 //Calculate vectorfield of gas
     	const vectorField VaporInletVelocityp
     	(
@@ -332,21 +311,18 @@ void Foam::MicrolayerBoilingVelocityFvPatchVectorField::updateCoeffs()
     	);
 
 //scalarField gradAlpha1p = fvc::grad(alpha1p);
-
+/*
 if (db().time().value() != 0)
 {
-//	forAll(VaporInletVelocityp, celli)
-	//{
-Info << "###########################################################" << endl;
-Info << "alpha1 - " << alpha1p[1] << " | OldMicroThickness - " << OldMicrolayerThickness[1]  << " | MicroThickness - " << MicrolayerThickness[1] << " | LayerEvap - " << MicrolayerEvap[1] << " | Q - " << Q_Microlayer[1] << endl;
-Info << "Vapor Velocity - " << mag(VaporInletVelocityp[1]) << " | Time - " << db().time().timeOutputValue() << " | DTime - " << db().time().deltaTValue()<< endl;
-Info << "###########################################################" << endl;
+	forAll(VaporInletVelocityp, celli)
+	{
+Info << "alpha1 - " << alpha1p[celli] << " | OldMicroThickness - " << OldMicrolayerThickness[celli]  << " | MicroThickness - " << MicrolayerThickness[celli] << " | LayerEvap - " << MicrolayerEvap[celli] << " | Q - " << Q_Microlayer[celli] << endl;
+Info << "Vapor Velocity - " << mag(VaporInletVelocityp[celli]) << " | Time - " << db().time().timeOutputValue() << " | DTime - " << db().time().deltaTValue()<< endl;
 
-//	}
+	}
 }
+*/
 
-
-	
 	//Update OldMicrolayerThickness
 	OldMicrolayerThickness = MicrolayerThickness;
 
@@ -356,6 +332,10 @@ Info << "###########################################################" << endl;
     fixedValueFvPatchVectorField::updateCoeffs();
 
 	oldTimeStep = db().time().timeOutputValue();
+
+Info << "************************************" << endl;
+Info << "Tot ML_Thickness" << sum(MicrolayerThickness) << endl;
+Info << "************************************" << endl;
 
 }
 
@@ -370,6 +350,7 @@ void Foam::MicrolayerBoilingVelocityFvPatchVectorField::write(Ostream& os) const
 //        writeEntryIfDifferent<scalar>(os, "rhoInlet", -VGREAT, rhoInlet_);
 //    }
     writeEntry("value", os);
+    OldMicrolayerThickness.writeEntry("MicrolayerThickness", os);
 }
 
 
