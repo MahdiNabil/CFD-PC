@@ -115,7 +115,20 @@ Foam::thermalPhaseChangeModels::interfacialResistance::interfacialResistance
 	R_g( thermalPhaseChangeProperties_.lookup("R_g") ),
 	sigmaHat( thermalPhaseChangeProperties_.lookup("sigmaHat") ),
 	v_lv( (32.0/twoPhaseProperties_.rho2().value()) - (1.0/twoPhaseProperties_.rho1().value()) ),
-	hi( (2.0*sigmaHat.value()/(2.0-sigmaHat.value())) * (h_lv_.value()*h_lv_.value()/(T_sat_.value()*v_lv)) * pow(1.0/(2.0*3.1416*R_g.value()*T_sat_.value()),0.5) )
+	hi( (2.0*sigmaHat.value()/(2.0-sigmaHat.value())) * (h_lv_.value()*h_lv_.value()/(T_sat_.value()*v_lv)) * pow(1.0/(2.0*3.1416*R_g.value()*T_sat_.value()),0.5) ),
+	PCVField
+	(
+        IOobject
+        (
+            "PhaseChangeVolume",
+            T_.time().timeName(),
+            mesh_,
+            IOobject::NO_READ,
+            IOobject::AUTO_WRITE
+        ),
+		mesh_,
+		dimensionedScalar( "dummy", dimensionSet(0,0,-1,0,0,0,0), 0 )
+	)
 
 {
 	//Read in the cond/evap int. thresholds
@@ -129,6 +142,8 @@ Info << 'a' << endl;
 
 	correct();
 }
+
+
 
 
 // * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * * //
@@ -244,6 +259,151 @@ Info << "dtUtilizedByTheThermalPhaseChangeModel = " << dT.value() << endl;
 	//Composite limit
 	Q_pc_ = neg(Q_pc_)*max( max( Q_pc_, Q_pc_fluid ), Q_pc_vol) + pos(Q_pc_)*min( min( Q_pc_, Q_pc_fluid ), Q_pc_vol);
 }
+
+
+//
+//////////////////////////////////////////////////////
+
+//- Gets volume generation (split and applied slightly away from interface)
+void Foam::thermalPhaseChangeModels::interfacialResistance::calcPCV()
+{
+	//Get some local references	to helpful fields
+	const volScalarField& Q_pc_ = this->Q_pc();
+	//Direction of interface in each cell
+	const volVectorField gradAlpha = fvc::grad( alpha1_ );
+	dimensionedScalar epsInvLength( "dummy", dimensionSet(0,-1,0,0,0,0,0), SMALL );
+	const volVectorField nAlpha = gradAlpha/( mag(gradAlpha) + epsInvLength );
+	//const surfaceVectorField gradAlphaf = fvc:sngrad( alpha1 );
+	
+	//Init the PCV field:
+	volScalarField LiquidVolGen = (Q_pc_ / h_lv_)*( scalar(-1.0)/twoPhaseProperties_.rho1() );
+	volScalarField VaporVolGen = (Q_pc_ / h_lv_)*( scalar(1.0)/twoPhaseProperties_.rho2() );
+
+	//Scale by mesh volume:
+	LiquidVolGen.internalField() = LiquidVolGen.internalField() * mesh_.V();
+	VaporVolGen.internalField() = VaporVolGen.internalField() * mesh_.V();
+	
+	//Now transport the volumetric generation away from the interface
+	//Scan through all cells and apply rule
+
+	//Some helpful constants
+	label nFaceNeighbors = mesh_.faceNeighbour().size();
+	dimensionedScalar epsQ_pc( "dummy", dimensionSet(0,-1,0,0,0,0,0), SMALL );
+	const labelList& FaceOwners = mesh_.faceOwner();
+	const labelList& FaceNeighbours = mesh_.faceNeighbour();
+	const surfaceVectorField& FaceVectors = mesh_.Sf();
+
+
+
+//Try two passes to move away PCV:
+for (int k = 0; k<4; k++)
+{
+
+	forAll(InterfaceField_, cI)
+	{
+		//First, skip if this cell is not on the interface
+		//if ( InterfaceField_[cI] != 1 )
+		//{  continue;  }
+
+		//Also skip if no phase change is happening here:
+		//if ( (mag( LiquidVolGen[cI] ) <= SMALL) && (mag( VaporVolGen[cI] ) <= SMALL) )
+		//{  continue;  }
+
+
+		//Get list of faces on the cell (that point to other cells)
+		const cell& curCell = mesh_.cells()[cI];
+		labelList curCellFaces;
+		forAll(curCell, fI)
+		{
+			//Only consider faces that point to other cells (> size of faceNeighbor list)
+			if (curCell[fI] < nFaceNeighbors) //This face is shared by other cells, so possibly transport vol Generation across it
+			{  curCellFaces.append( curCell[fI] );  }
+		}
+
+		//Get cell neighbors and face area vectors for each shared face
+		List<vector> curFaceVectors;
+		labelList curFaceNeighbours;
+		forAll(curCellFaces, fI)
+		{
+			label curFaceNeighbour = (cI == FaceOwners[curCellFaces[fI]]) ? FaceNeighbours[curCellFaces[fI]] : FaceOwners[curCellFaces[fI]];
+			curFaceNeighbours.append( curFaceNeighbour );
+			if ( cI < curFaceNeighbour ) //Points away from current cell
+			{
+				curFaceVectors.append( FaceVectors[curCellFaces[fI]] );
+			}
+			else //Points into current cell
+			{
+				curFaceVectors.append( -1.0*FaceVectors[curCellFaces[fI]] );
+			}
+
+
+		}
+
+
+		//Now get relative surface area vectors from each face (i.e. those pointing in each direction sum to 1)
+		scalarList LiquidFaceFractions, VaporFaceFractions;    //Fraction of volume generation to move
+		labelList LiquidFaceTargets, VaporFaceTargets; //Where to move the volume generation to
+		scalar TotalLiquidFacing = 0;
+		scalar TotalVaporFacing = 0;
+
+		forAll(curCellFaces, fI)
+		{
+			//Get relative facing to the interface normal (what fraction of volgen should go through this face:
+			scalar IntFacing = ( curFaceVectors[fI] & gradAlpha[cI] );
+			if      ( IntFacing > 0 ) //Facing the liquid side
+			{
+				LiquidFaceFractions.append( IntFacing );
+				LiquidFaceTargets.append( curFaceNeighbours[fI] );
+				TotalLiquidFacing += IntFacing;
+			}
+			else if ( IntFacing < 0 ) //Facing the vapor side
+			{
+				VaporFaceFractions.append( -1.0*IntFacing );
+				VaporFaceTargets.append( curFaceNeighbours[fI] );
+				TotalVaporFacing -= IntFacing;
+			}
+		}
+
+		//Normalize both face fraction lists
+		forAll( LiquidFaceFractions, fI)
+		{   LiquidFaceFractions[fI] /= TotalLiquidFacing;  }
+		forAll( VaporFaceFractions, fI)
+		{   VaporFaceFractions[fI] /= TotalVaporFacing;  }
+
+		//Finally correct the PCV field - move volumetric generation away from interface cells:
+		dimensionedScalar curLiquidVolGen = LiquidVolGen[cI];
+		dimensionedScalar curVaporVolGen = VaporVolGen[cI];
+		//Apply liquid change:
+		forAll( LiquidFaceFractions, fI)
+		{
+			LiquidVolGen[cI]                    -= curLiquidVolGen.value()*LiquidFaceFractions[fI];
+			LiquidVolGen[LiquidFaceTargets[fI]] += curLiquidVolGen.value()*LiquidFaceFractions[fI];
+			
+		}
+
+		forAll( VaporFaceFractions, fI)
+		{
+			VaporVolGen[cI]                   -= curVaporVolGen.value()*VaporFaceFractions[fI];
+			VaporVolGen[VaporFaceTargets[fI]] += curVaporVolGen.value()*VaporFaceFractions[fI];
+		}
+
+	}
+
+//End try two passes
+}
+
+	//Combine two parts of generation:
+	PCVField = LiquidVolGen + VaporVolGen;
+
+	//Renormalize by cell volume:
+	PCVField.internalField() = PCVField.internalField() / mesh_.V();
+
+}
+
+///////////////////////////////////////////////////
+
+
+
 
 
 bool Foam::thermalPhaseChangeModels::interfacialResistance::read(const dictionary& thermalPhaseChangeProperties)

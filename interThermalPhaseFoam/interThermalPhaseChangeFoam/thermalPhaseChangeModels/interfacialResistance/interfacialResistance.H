@@ -60,6 +60,8 @@ class interfacialResistance
 	//- Calculate the phase change heat rate
 	void calcQ_pc();
 
+
+
 	//- This phase change model needs access to the mesh:
 	const fvMesh& mesh_;
 
@@ -90,8 +92,12 @@ class interfacialResistance
 	dimensionedScalar R_g;							// specific ideal gas constant 
 	double v_lv;						// change in specific volume 
 	double hi;							// interfacial resistance
-	
 
+	//- Volume change field (from phase change)
+	volScalarField PCVField;
+	
+	//- Calculate the volume generation/sinking field
+	void calcPCV();
 public:
 
     //- Runtime type information
@@ -128,12 +134,19 @@ public:
         void correct()
 		{
 			calcQ_pc();
+			calcPCV();
 		}
 
 		//- Return interface cells marker field:
 		tmp<volScalarField> InterfaceField() const
 		{
 			return InterfaceField_;
+		}
+
+	//- Gets volume generation (split and applied slightly away from interface)
+		tmp<volScalarField> PCV() const
+		{
+			return PCVField;
 		}
 		
 

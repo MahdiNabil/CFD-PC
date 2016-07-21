@@ -112,7 +112,7 @@ Foam::thermalPhaseChangeModels::HiLoRelaxedSplit::HiLoRelaxedSplit
 	correct();
 }
 
-
+//
 // * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * * //
 
 void Foam::thermalPhaseChangeModels::HiLoRelaxedSplit::calcQ_pc()
