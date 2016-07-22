@@ -393,7 +393,8 @@ for (int k = 0; k<4; k++)
 }
 
 	//Combine two parts of generation:
-	PCVField = LiquidVolGen + VaporVolGen;
+	//PCVField = LiquidVolGen + VaporVolGen;
+	PCVField = VaporVolGen;
 
 	//Renormalize by cell volume:
 	PCVField.internalField() = PCVField.internalField() / mesh_.V();
