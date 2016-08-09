@@ -2,12 +2,14 @@
 	//Update kEff
 	kEff = twoPhaseProperties.lambdaf() + fvc::interpolate( rho*twoPhaseProperties.cp()*turbulence->nut() );
 
+
+
     surfaceScalarField alphaEffRho
     (
          "alphaEff",
         fvc::interpolate(rho) * ( twoPhaseProperties.alphaf() + fvc::interpolate( turbulence->nut() ) )
-    );
- 
+    ); 
+
 	//Use limited alpha1:
     const volScalarField limAlpha1( min(max(alpha1, scalar(0)), scalar(1)) );
 
@@ -32,9 +34,11 @@
 			- ChillaxFac*( fvm::laplacian(alphaEffRho, H) - fvc::laplacian(alphaEffRho, H) )
 			+ phaseChangeModel->Q_pc()
         );
+
         EEqn.solve();
         //Now reevaluate T for the updated enthalpy fields
         T = T_0 + rho*H/( limAlpha1*rho1*cp1 + (1-limAlpha1)*rho2*cp2 );
+
      }
 
 

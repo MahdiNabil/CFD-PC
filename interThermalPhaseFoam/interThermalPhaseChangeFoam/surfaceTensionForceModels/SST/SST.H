@@ -59,6 +59,11 @@ class SST
 	//- This phase change model needs access to the mesh:
 	const fvMesh& mesh_;
 
+	//Some parameters
+	const scalar Cpc; //Sharpening factor
+	const scalar phi_c_thresholdFactor; //Cut off forces below this factor
+	const scalar filterFactor; //Component of non-interface-normal alpha1 to remove
+
 	//- Surface tension forces on cell faces
 	volScalarField pc;
 	surfaceScalarField Fstffv;
@@ -67,6 +72,8 @@ class SST
     surfaceScalarField fcf_filter;
 	label pcRefCell;
     scalar pcRefValue;
+
+
 
 
 public:
@@ -105,7 +112,7 @@ public:
 		//Return actual capillary pressure
         tmp<volScalarField> pcap() const
 		{
-			return pc;
+			return pc*0.0;
 		}
 
 		//- Calculates and Return phi_c

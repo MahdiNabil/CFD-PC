@@ -49,6 +49,9 @@ Foam::surfaceTensionForceModels::SST::SST
 :
     surfaceTensionForceModel(name, surfaceTensionForceProperties, interface, alpha1),
 	mesh_(alpha1.mesh()),
+	Cpc( surfaceTensionForceProperties.lookupOrDefault<scalar>("Cpc", 0.5) ),
+	phi_c_thresholdFactor( surfaceTensionForceProperties.lookupOrDefault<scalar>("ThresholdFactor", 0.01) ),
+	filterFactor( surfaceTensionForceProperties.lookupOrDefault<scalar>("NormalFilterFactor", 0.9) ),
 	pc
     (
         IOobject
@@ -166,7 +169,6 @@ void Foam::surfaceTensionForceModels::SST::correct()
 	surfaceScalarField Kf = fvc::interpolate(w*Ks)/fvc::interpolate(w);	
 
 	//Step 5: compute interface delta function from sharpened interface field
-	scalar Cpc = 0.5;
 	volScalarField alpha1_pc = 1.0/(1.0-Cpc) * (min( max(alpha1_,Cpc/2.0), (1.0-Cpc/2.0) ) - Cpc/2.0);
 	surfaceScalarField deltasf = fvc::snGrad(alpha1_pc);
 
@@ -175,8 +177,7 @@ void Foam::surfaceTensionForceModels::SST::correct()
 	//surfaceScalarField fcf = -interface.sigma()*Kf*deltasf;
 	fcf = -interface_.sigma()*Kf*deltasf;
 	//Step 7: filter surface tension forces to only be normal to interfaces - not 100% sure if sure be dotted with face normals or interface normals...
-	const scalar filterRelax = 0.9;
-	fcf_filter = (deltasf/(mag(deltasf)+deltaN)) * ( filterRelax*fcf_filter + (1.0-filterRelax)*( fvc::interpolate( fvc::grad(pc) - (fvc::grad(pc) & ns)*ns ) & (mesh_.Sf()/mesh_.magSf()) ) );
+	fcf_filter = (deltasf/(mag(deltasf)+deltaN)) * ( filterFactor*fcf_filter + (1.0-filterFactor)*( fvc::interpolate( fvc::grad(pc) - (fvc::grad(pc) & ns)*ns ) & (mesh_.Sf()/mesh_.magSf()) ) );
 	fcf = fcf - fcf_filter;
 
 	//Step 8: produce fc on cell centers
@@ -194,7 +195,8 @@ void Foam::surfaceTensionForceModels::SST::correct()
 
 	pcEqn.solve();
 
-    Fstffv = fcf  - (fvc::snGrad(pc)) ;
+    //Fstffv = fcf - fvc::snGrad(pc) ;
+	Fstffv = fvc::snGrad(pc);
 }
 
 
@@ -204,7 +206,7 @@ Foam::tmp<Foam::surfaceScalarField> Foam::surfaceTensionForceModels::SST::phi_c(
 
 	//Apply limiting (filtering)
 	const dimensionedScalar dummyFlux("dummyFlux", dimensionSet(0,3,-1,0,0,0,0), 1.0);
-	dimensionedScalar phi_c_thresh( 0.01* gAverage( mag(phi_c_i.field()) ) * dummyFlux );
+	dimensionedScalar phi_c_thresh( phi_c_thresholdFactor * dummyFlux * gSum( mag(phi_c_i.field()) ) / gSum( SMALL + pos( mag(phi_c_i.field()) - SMALL ) ) );
 
 	//Return filtered phi_c
 	return tmp<surfaceScalarField>( phi_c_i - max( min(phi_c_i, phi_c_thresh), -phi_c_thresh ) );
