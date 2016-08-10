@@ -1,0 +1,121 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  1.7.0                                 |
+|   \\  /    A nd           | Web:      www.OpenFOAM.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "system";
+    object      controlDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+application     interThermalPhaseChangeFoam;
+
+startFrom       latestTime;
+
+startTime       0;
+
+stopAt          endTime;
+
+endTime         0.04;
+
+deltaT          2E-7;
+
+writeControl    adjustableRunTime;
+writeInterval   0.001;
+//writeControl    timeStep;
+//writeInterval   20;
+
+
+purgeWrite      0;
+
+writeFormat     ascii;
+
+writePrecision  6;
+
+writeCompression uncompressed;
+
+timeFormat      general;
+
+timePrecision   10;
+
+runTimeModifiable yes;
+
+adjustTimeStep  on;
+
+maxCo           0.1;
+maxAlphaCo      0.1;
+maxFourier      0.4;
+maxDeltaT       5E-5;
+
+// ************************************************************************** //
+//Global vars for funky/groovy
+functions
+(
+	DataSummary //Returns: time (s), dt (s), wall heat flux (W), phase-change heating rate (W), Liquid volume fraction (-),
+	{
+		functionObjectLibs ("libutilityFunctionObjects.so");
+		type coded;
+		redirectType DataSummary;	
+		outputControl timeStep;
+		outputInterval 1;
+		code		
+		#{
+
+			//***********************************************************************
+			//First get t and dt
+			scalar t = mesh().time().value();
+			scalar dt = mesh().time().deltaTValue();
+			//***********************************************************************
+
+			//***********************************************************************
+			//Next, average parasitic current value:
+			const volVectorField& U = mesh().lookupObject<volVectorField>("U");
+			const volScalarField magU = mag(U);
+
+			const scalar U_par_avg = gSum( magU.internalField() * mesh().V() ) / gSum( mesh().V() );
+			//***********************************************************************
+
+			//***********************************************************************
+			//Next, total phase change heating rate
+			const volScalarField& Q_pc = mesh().lookupObject<volScalarField>("PhaseChangeHeat");
+			const scalar Q_pcInt = gSum( -mesh().V() * Q_pc.internalField() );  // [W]
+			//***********************************************************************
+
+			//***********************************************************************
+			//Finally print out results:
+			//Now write out data:
+			if( Pstream::master() == true )
+			{
+				std::ofstream fs;
+				fs.open ("DataSummary.dat", std::fstream::app);
+				fs.precision(8);
+				fs << t << "\t" << dt << "\t" << U_par_avg << "\t" << Q_pcInt << "\n" ;
+				fs.close();
+			}
+			//***********************************************************************
+
+		#}; 
+
+		codeInclude
+		#{
+			#include <fstream>
+		#};
+	}
+);
+
+
+libs ( "libsimpleSwakFunctionObjects.so"
+       "libswakFunctionObjects.so"
+       "libOpenFOAM.so"
+       "libutilityFunctionObjects.so" 
+       "libgroovyBC.so" );
+
+// ************************************************************************* //
+

@@ -1,0 +1,66 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  1.7.0                                 |
+|   \\  /    A nd           | Web:      www.OpenFOAM.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "constant";
+    object      transportProperties;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+twoPhase
+{
+    transportModel  twoPhase;
+    phase1          phase1;
+    phase2          phase2;
+}
+
+phase1
+{
+    transportModel  Newtonian;
+    nu              nu [ 0 2 -1 0 0 0 0 ] 1E-7;
+    rho             rho [ 1 -3 0 0 0 0 0 ] 1000;
+    thermalTransportModel	Fourier;
+    lambda			lambda [1 1 -3 -1 0 0 0] 0.1;
+    cp				cp [ 0 2 -2 -1 0 0 0] 5000;
+}
+
+phase2
+{
+    transportModel  Newtonian;
+    nu              nu [ 0 2 -1 0 0 0 0 ] 1E-7;
+    rho             rho [ 1 -3 0 0 0 0 0 ] 1000;
+    thermalTransportModel	Fourier;
+    lambda			lambda [1 1 -3 -1 0 0 0] 0.1;
+    cp				cp [ 0 2 -2 -1 0 0 0] 5000;
+}
+
+sigma           sigma [ 1 0 -2 0 0 0 0 ] 0.1;
+T_0				T_0 [0 0 0 1 0 0 0] 0;
+
+ImprovedTransportBlending yes;
+
+
+thermalPhaseChange
+{
+	model                HiLoNoPCVAlpha1;
+	h_lv		         h_lv  [0 2 -2 0 0 0 0 ] 100E3;
+	T_sat		         T_sat [0 0 0 1 0 0 0]  0;
+	CondThresh           0.5; //Interface threshold for condensing cell pairs
+	EvapThresh           0.5; //Interface threshold for evaporating cell pairs
+	RelaxFac             1.0; //Under-relax phase change rate in each time step
+}
+
+surfaceTensionForce
+{
+	model               Brackbill;
+}
+
+// ************************************************************************* //
