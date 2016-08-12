@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2013 Alex Rattner
+    \\  /    A nd           | Copyright (C) 2016 Alex Rattner
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -33,7 +33,12 @@ namespace Foam
 namespace thermalPhaseChangeModels
 {
     defineTypeNameAndDebug(HiLoNoPCVAlpha1, 0);
-    addToRunTimeSelectionTable(thermalPhaseChangeModel, HiLoNoPCVAlpha1, dictionary);
+    addToRunTimeSelectionTable
+    (
+        thermalPhaseChangeModel,
+        HiLoNoPCVAlpha1,
+        dictionary
+    );
 }
 }
 
@@ -48,7 +53,14 @@ Foam::thermalPhaseChangeModels::HiLoNoPCVAlpha1::HiLoNoPCVAlpha1
         const volScalarField& alpha1
 )
 :
-    thermalPhaseChangeModel(name, thermalPhaseChangeProperties, twoPhaseProperties, T, alpha1),
+    thermalPhaseChangeModel
+    (
+        name, 
+        thermalPhaseChangeProperties,
+        twoPhaseProperties,
+        T, 
+        alpha1
+    ),
     mesh_(T.mesh()),
     Q_pc_
     (
@@ -90,7 +102,7 @@ Foam::thermalPhaseChangeModels::HiLoNoPCVAlpha1::HiLoNoPCVAlpha1
         mesh_,
         scalar(0)
     ),
-    PCVField //Is initialized to zero, and stays as such...
+    PCVField // Is initialized to zero, and stays as such...
     (
         IOobject
         (
@@ -104,7 +116,7 @@ Foam::thermalPhaseChangeModels::HiLoNoPCVAlpha1::HiLoNoPCVAlpha1
         dimensionedScalar( "dummy", dimensionSet(0,0,-1,0,0,0,0), 0 )
     ),
 
-    alpha1Field //Is initialized to zero, and stays as such...
+    alpha1Field // Is initialized to zero, and stays as such...
     (
         IOobject
         (
@@ -119,7 +131,7 @@ Foam::thermalPhaseChangeModels::HiLoNoPCVAlpha1::HiLoNoPCVAlpha1
     )
 
 {
-    //Read in the cond/evap int. thresholds
+    // Read in the cond/evap int. thresholds
     thermalPhaseChangeProperties_.lookup("CondThresh") >> CondThresh;
     thermalPhaseChangeProperties_.lookup("EvapThresh") >> EvapThresh;
 
@@ -131,43 +143,67 @@ Foam::thermalPhaseChangeModels::HiLoNoPCVAlpha1::HiLoNoPCVAlpha1
 
 void Foam::thermalPhaseChangeModels::HiLoNoPCVAlpha1::calcQ_pc()
 {
-    //Get the sets of interface cell face pairs for evaporation/condensation
-    std::vector<MeshGraph::CellFacePair> CondIntCellFacePairs, EvapIntCellFacePairs;
+    // Get the sets of interface cell face pairs for evaporation/condensation
+    std::vector<MeshGraph::CellFacePair> CondIntCellFacePairs;
+    std::vector<MeshGraph::CellFacePair> EvapIntCellFacePairs;
 
 
     //Find internal interface cell pairs using graph traversal
     InterfaceMeshGraph.Reset();
-    InterfaceMeshGraph.GetInterfaceCellFacePairs(CondIntCellFacePairs, CondThresh);
+    InterfaceMeshGraph.GetInterfaceCellFacePairs(
+        CondIntCellFacePairs, 
+        CondThresh
+    );
+    
     InterfaceMeshGraph.Reset();
-    InterfaceMeshGraph.GetInterfaceCellFacePairs(EvapIntCellFacePairs, EvapThresh);
+    InterfaceMeshGraph.GetInterfaceCellFacePairs
+    (
+        EvapIntCellFacePairs,
+        EvapThresh
+    );
 
-    //Compute the interpolated T field to see which face pairs are actually evaporating/condensing:
+    // Compute the interpolated T field to see which face pairs are actually
+    // evaporating/condensing:
     surfaceScalarField Tf = fvc::interpolate(T_);
 
-    //Reset interface field, then interpolate
+    // Reset interface field, then interpolate
     InterfaceField_ = 0;
 
-    //Loop through cond cells:
-    for (std::vector<MeshGraph::CellFacePair>::iterator it = CondIntCellFacePairs.begin(); it != CondIntCellFacePairs.end(); it++)
+    // Loop through cond cells:
+    for
+    (
+        std::vector<MeshGraph::CellFacePair>::iterator it =
+            CondIntCellFacePairs.begin();
+        it != CondIntCellFacePairs.end(); 
+        it++
+    )
     {
-        //Check that temp is below T_sat for condensation
+        // Check that temp is below T_sat for condensation
         if ( Tf[(*it).f] <= T_sat_.value() )
-        {   InterfaceField_[(*it).c1] = 1;  InterfaceField_[(*it).c2] = 1;  }
+        {
+            InterfaceField_[(*it).c1] = 1;
+            InterfaceField_[(*it).c2] = 1;
+        }
     }
 
-    //Loop through evap cells:
-    for (std::vector<MeshGraph::CellFacePair>::iterator it = EvapIntCellFacePairs.begin(); it != EvapIntCellFacePairs.end(); it++)
+    // Loop through evap cells:
+    for
+    (
+        std::vector<MeshGraph::CellFacePair>::iterator it =
+            EvapIntCellFacePairs.begin();
+        it != EvapIntCellFacePairs.end();
+        it++
+    )
     {
-        //Check that temp is above T_sat for evaporation
+        // Check that temp is above T_sat for evaporation
         if ( Tf[(*it).f] >= T_sat_.value() )
-        {   InterfaceField_[(*it).c1] = 1;  InterfaceField_[(*it).c2] = 1;  }
+        {   
+            InterfaceField_[(*it).c1] = 1;
+            InterfaceField_[(*it).c2] = 1;
+        }
     }
 
-    //Spit out internal interface cells count
-    //Info<< "Internal interface cells: " << gSum(InterfaceField_) << endl;
-
-
-    //Now add wall cells to the interfaceField:
+    // Now add wall cells to the interfaceField:
     labelList WallCells;
     forAll( mesh_.boundary(), pI )
     {
@@ -181,44 +217,54 @@ void Foam::thermalPhaseChangeModels::HiLoNoPCVAlpha1::calcQ_pc()
         InterfaceField_[WallCells[cI]] = 1;
     }
 
-    //List total int. cells
-    //Info<< "Total interface cells: " << gSum(InterfaceField_) << endl;
-
-    //Reset all Q_pc to 0
+    // Reset all Q_pc to 0
     Q_pc_ = dimensionedScalar( "dummy", dimensionSet(1,-1,-3,0,0,0,0), 0 );
 
-    //Compute some helpful props:
-    //For some reason dT is dimensionless
-    const dimensionedScalar& dT = alpha1_.time().deltaTValue() * dimensionedScalar( "dummy", dimensionSet(0,0,1,0,0,0,0), 1.0 );
+    // Compute some helpful props:
+    // For some reason dT is dimensionless
+    const dimensionedScalar& dT =
+          alpha1_.time().deltaTValue()
+        * dimensionedScalar( "dummy", dimensionSet(0,0,1,0,0,0,0), 1.0 );
     const dimensionedScalar& rho1 = twoPhaseProperties_.rho1();
     const dimensionedScalar& rho2 = twoPhaseProperties_.rho2();
 
-    //Unlimited phase change heat
-    Q_pc_ = InterfaceField_*twoPhaseProperties_.rho()*twoPhaseProperties_.cp()*((T_-T_sat_)/dT);
+    // Unlimited phase change heat
+    Q_pc_ =
+         InterfaceField_
+        *twoPhaseProperties_.rho()
+        *twoPhaseProperties_.cp()
+        *((T_ - T_sat_)/dT);
 
-    //Fluid availability limits
-    //Get cond/evap limits
-    volScalarField LimCond = (1.0-alpha1_)*( rho2*h_lv_ / dT );
-    //No evaporation on wall cells!
-    volScalarField LimEvap = (1.0-WallField)*alpha1_*rho1*h_lv_ / dT;
-    //volScalarField LimEvap = alpha1_*rho1*h_lv_ / dT;
+    // Fluid availability limits
+    // Get cond/evap limits
+    volScalarField LimCond = (1.0 - alpha1_)*(rho2*h_lv_/dT);
+    // No evaporation on wall cells!
+    volScalarField LimEvap = (1.0 - WallField)*alpha1_*rho1*h_lv_/dT;
 
-    //Apply fluid limiting
-    volScalarField Q_pc_fluid = neg(Q_pc_)*max(Q_pc_, -LimCond) + pos(Q_pc_)*min(Q_pc_, LimEvap) ;
+    // Apply fluid limiting
+    volScalarField Q_pc_fluid =
+          neg(Q_pc_)*max(Q_pc_, -LimCond)
+        + pos(Q_pc_)*min(Q_pc_, LimEvap) ;
 
-    //Volume-based limiting (i.e. relative phase change rate can't exceed |1| per time step
-    volScalarField PCV_fac = dT*(Q_pc_ / h_lv_)*( (scalar(1.0)/twoPhaseProperties_.rho2()) - (scalar(1.0)/twoPhaseProperties_.rho1()) );
+    // Volume-based limiting (i.e. relative phase change rate can't exceed |1|
+    // per time step
+    volScalarField PCV_fac =
+        dT*(Q_pc_ / h_lv_)*(   (scalar(1.0)/twoPhaseProperties_.rho2())
+                             - (scalar(1.0)/twoPhaseProperties_.rho1()) );
 
     //Again, don't allow evap on wall   
-    volScalarField Q_pc_vol = Q_pc_ * mag( min( max(1.0/(PCV_fac+SMALL), -1.0), (1.0-WallField) ) );
-    //volScalarField Q_pc_vol = Q_pc_ * mag( min( max(1.0/(PCV_fac+SMALL), -1.0), 1.0 ) );
+    volScalarField Q_pc_vol =
+        Q_pc_ * mag( min( max(1.0/(PCV_fac+SMALL), -1.0), (1.0-WallField) ) );
 
     //Composite limit
-    Q_pc_ = neg(Q_pc_)*max( max( Q_pc_, Q_pc_fluid ), Q_pc_vol) + pos(Q_pc_)*min( min( Q_pc_, Q_pc_fluid ), Q_pc_vol);
+    Q_pc_ =
+          neg(Q_pc_)*max( max( Q_pc_, Q_pc_fluid ), Q_pc_vol)
+        + pos(Q_pc_)*min( min( Q_pc_, Q_pc_fluid ), Q_pc_vol);
 }
 
 
-bool Foam::thermalPhaseChangeModels::HiLoNoPCVAlpha1::read(const dictionary& thermalPhaseChangeProperties)
+bool Foam::thermalPhaseChangeModels::HiLoNoPCVAlpha1::
+read(const dictionary& thermalPhaseChangeProperties)
 {
     thermalPhaseChangeModel::read(thermalPhaseChangeProperties);
 

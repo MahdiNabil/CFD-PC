@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2012 Alex Rattner
+    \\  /    A nd           | Copyright (C) 2016 Alex Rattner
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -25,7 +25,11 @@ Class
     Foam::surfaceTensionForceModel::SST
 
 Description
-    Sharp surface tension force model, from Raeini (2012)
+    Sharp surface tension force model, from Raeini, A. Q., Blunt, M. J., & 
+    Bijeljic, B. (2012). Modelling two-phase flow in porous media at the pore 
+    scale using the volume-of-fluid method. Journal of Computational Physics, 
+    231(17), 5653-5668.
+
 
 SourceFiles
     SST.C
@@ -46,7 +50,7 @@ namespace surfaceTensionForceModels
 {
 
 /*--------------------------------------------------------------------*\
-                              Class LimitedInterfaceEquilibrium
+                             Class SST
 \*--------------------------------------------------------------------*/
 
 class SST
@@ -56,13 +60,15 @@ class SST
 
 // Private Member Functions
 
-    //- This phase change model needs access to the mesh:
+    // This phase change model needs access to the mesh:
     const fvMesh& mesh_;
 
     //Some parameters
     const scalar Cpc; //Sharpening factor
-    const scalar phi_c_thresholdFactor; //Cut off forces below this factor
-    const scalar filterFactor; //Component of non-interface-normal alpha1 to remove
+    //Cut off forces below this factor
+    const scalar phi_c_thresholdFactor;
+    //Component of non-interface-normal alpha1 to remove
+    const scalar filterFactor; 
 
     //- Surface tension forces on cell faces
     volScalarField pc;
@@ -109,7 +115,7 @@ public:
             return Fstffv;
         }
 
-        //Return actual capillary pressure
+        //- Return actual capillary pressure
         tmp<volScalarField> pcap() const
         {
             return pc*0.0;

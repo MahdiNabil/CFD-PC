@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2013 Alex Rattner
+    \\  /    A nd           | Copyright (C) 2016 Alex Rattner
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -59,7 +59,7 @@ namespace thermalPhaseChangeModels
 {
 
 /*--------------------------------------------------------------------*\
-                              Class HiLoRelaxed
+                            Class HiLoRelaxed
 \*--------------------------------------------------------------------*/
 
 class HiLoRelaxed
@@ -87,7 +87,8 @@ class HiLoRelaxed
     //- Field for blocking evaporation on wall cells
     volScalarField WallField;
 
-    //Scalar parameters for identifying condensation and evaporation int. cell pairs:
+    // Scalar parameters for identifying condensation and evaporation int. 
+    // cell pairs:
     scalar CondThresh;
     scalar EvapThresh;
     scalar RelaxFac; //The relaxation factor (0-1)

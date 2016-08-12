@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2012 Alex Rattner
+    \\  /    A nd           | Copyright (C) 2016 Alex Rattner
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -45,7 +45,7 @@ namespace Foam
 class MeshGraph
 {
     public:
-        //Struct for sharing interface cell-face pairs:
+        //- Struct for sharing interface cell-face pairs:
         struct CellFacePair
         {
             label   f;        //Index of the face           
@@ -53,18 +53,33 @@ class MeshGraph
             scalar  v1, v2;   //Values of the cells sharing the face
         };
 
-        //Construct from existing mesh
+        //- Construct from existing mesh
         MeshGraph( const fvMesh& Min, const volScalarField& Fin );
-        //Default destructor
+        
+        //- Default destructor
         ~MeshGraph();
-        //Resets the graph values / interface states
+        
+        //- Resets the graph values / interface states
         void Reset();
-        //Traverses graph and finds interface cells (those containing the intVal)
+        
+        //- Traverses graph and finds interface cells (those containing the
+        //  intVal)
         void GetInterfaceCells( labelList& IntCells, const scalar& intVal);
-        //Like above, but returns cells on both sides of the interface
-        void GetDoubleInterfaceCells( labelList& IntCells, const scalar& intVal);
-        //Another double layer method, but it actually returns the cells & data that are on the double layer:
-        void GetInterfaceCellFacePairs( std::vector<CellFacePair>& IntCellFacePairs, const scalar& intVal);
+        
+        //- Like above, but returns cells on both sides of the interface
+        void GetDoubleInterfaceCells
+        (
+            labelList& IntCells,
+            const scalar& intVal
+        );
+        
+        //- Another double layer method, but it actually returns the cells &
+        //  data that are on the double layer:
+        void GetInterfaceCellFacePairs
+        (
+            std::vector<CellFacePair>& IntCellFacePairs, 
+            const scalar& intVal
+        );
 
 
     private:

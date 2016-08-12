@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2015 Alex Rattner and Mahdi Nabil
+    \\  /    A nd           | Copyright (C) 2016 Alex Rattner and Mahdi Nabil
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -26,8 +26,9 @@ Class
 
 Description
     This model implements the empirical rate parameter phase change
-    formulation of Yang et al., 2008, Numerical and experimental
-    investigation of two phase flow during boiling in a coiled tube.
+    formulation of Yang, Z., Peng, X. F., & Ye, P. (2008). Numerical and
+    experimental investigation of two phase flow during boiling in a coiled
+    tube. International Journal of Heat and Mass Transfer, 51(5), 1003-1016.
 
 
 SourceFiles
@@ -49,7 +50,7 @@ namespace thermalPhaseChangeModels
 {
 
 /*--------------------------------------------------------------------*\
-                              Class LimitedInterfaceEquilibrium
+                              Class Yang
 \*--------------------------------------------------------------------*/
 
 class Yang

@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2012 Alex Rattner
+    \\  /    A nd           | Copyright (C) 2016 Alex Rattner
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -47,7 +47,13 @@ Foam::surfaceTensionForceModels::Brackbill::Brackbill
     const volScalarField& alpha1
 )
 :
-    surfaceTensionForceModel(name, surfaceTensionForceProperties, interface, alpha1),
+    surfaceTensionForceModel
+    (
+        name, 
+        surfaceTensionForceProperties,
+        interface, 
+        alpha1
+    ),
     mesh_(alpha1.mesh()),
     Fstffv
     (
@@ -75,7 +81,8 @@ void Foam::surfaceTensionForceModels::Brackbill::correct()
 
 }
 
-bool Foam::surfaceTensionForceModels::Brackbill::read(const dictionary& surfaceTensionForceProperties)
+bool Foam::surfaceTensionForceModels::Brackbill::
+read(const dictionary& surfaceTensionForceProperties)
 {
     surfaceTensionForceModel::read(surfaceTensionForceProperties);
 

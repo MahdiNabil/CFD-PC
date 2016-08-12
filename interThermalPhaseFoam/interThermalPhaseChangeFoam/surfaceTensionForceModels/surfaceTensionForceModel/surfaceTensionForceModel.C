@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2012 Alex Rattner
+    \\  /    A nd           | Copyright (C) 2016 Alex Rattner
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -84,13 +84,18 @@ Foam::tmp<Foam::volScalarField> Foam::surfaceTensionForceModel::pcap() const
 }
 
 
-Foam::tmp<Foam::surfaceScalarField> Foam::surfaceTensionForceModel::phi_c(const surfaceScalarField& rAUf_) const
+Foam::tmp<Foam::surfaceScalarField> 
+Foam::surfaceTensionForceModel::phi_c(const surfaceScalarField& rAUf_) const
 {
-    return tmp<surfaceScalarField>( this->Fstff() * rAUf_ * alpha1_.mesh().magSf() );
+    return 
+    tmp<surfaceScalarField>( this->Fstff() * rAUf_ * alpha1_.mesh().magSf() );
 }
 
 
-bool Foam::surfaceTensionForceModel::read(const dictionary& surfaceTensionForceProperties)
+bool Foam::surfaceTensionForceModel::read
+(
+    const dictionary& surfaceTensionForceProperties
+)
 {
     surfaceTensionForceProperties_ = surfaceTensionForceProperties;
     

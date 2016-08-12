@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2013 Alex Rattner
+    \\  /    A nd           | Copyright (C) 2016 Alex Rattner
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -40,7 +40,8 @@ Description
     to subcooled in one time step.
 
     This version splits the volumetric generation/sinking and applies it away
-    from the interface so as to not spread out the interface or shoot liquid through it
+    from the interface so as to not spread out the interface or shoot liquid 
+    through it
 
 
 SourceFiles
@@ -62,7 +63,7 @@ namespace thermalPhaseChangeModels
 {
 
 /*--------------------------------------------------------------------*\
-                              Class HiLoRelaxedSplit
+                        Class HiLoRelaxedSplit
 \*--------------------------------------------------------------------*/
 
 class HiLoRelaxedSplit
@@ -96,7 +97,8 @@ class HiLoRelaxedSplit
     //- Volume change field (from phase change)
     volScalarField PCVField;
 
-    //Scalar parameters for identifying condensation and evaporation int. cell pairs:
+    // Scalar parameters for identifying condensation and evaporation int.
+    // cell pairs:
     scalar CondThresh;
     scalar EvapThresh;
     scalar RelaxFac; //The relaxation factor (0-1)
@@ -146,7 +148,8 @@ public:
             return InterfaceField_;
         }
         
-        //- Gets volume generation (split and applied slightly away from interface)
+        //- Gets volume generation (split and applied slightly away from 
+        //  interface)
         tmp<volScalarField> PCV() const
         {
             return PCVField;

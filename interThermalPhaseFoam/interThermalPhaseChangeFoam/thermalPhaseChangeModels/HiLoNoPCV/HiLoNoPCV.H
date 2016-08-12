@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2013 Alex Rattner
+    \\  /    A nd           | Copyright (C) 2016 Alex Rattner
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -67,28 +67,29 @@ class HiLoNoPCV
 
 // Private Member Functions
 
-    //- Calculate the phase change heat rate
+    // Calculate the phase change heat rate
     void calcQ_pc();
 
-    //- This phase change model needs access to the mesh:
+    // This phase change model needs access to the mesh:
     const fvMesh& mesh_;
 
-    //- Phase change heat
+    // Phase change heat
     volScalarField Q_pc_;
 
-    //- Graph of mesh grid, used for finding interface cells
+    // Graph of mesh grid, used for finding interface cells
     MeshGraph InterfaceMeshGraph;
 
-    //- Field for tracking Interface cells
+    // Field for tracking Interface cells
     volScalarField InterfaceField_;
 
-    //- Field for blocking evaporation on wall cells
+    // Field for blocking evaporation on wall cells
     volScalarField WallField;
 
-    //- Volume change field (from phase change)
+    // Volume change field (from phase change)
     volScalarField PCVField;
 
-    //Scalar parameters for identifying condensation and evaporation int. cell pairs:
+    // Scalar parameters for identifying condensation and evaporation int.
+    // cell pairs:
     scalar CondThresh;
     scalar EvapThresh;
 
@@ -136,7 +137,8 @@ public:
             return InterfaceField_;
         }
         
-        //- Gets volume generation (split and applied slightly away from interface)
+        //- Gets volume generation (split and applied slightly away from 
+        //  interface)
         tmp<volScalarField> PCV() const
         {
             return PCVField;

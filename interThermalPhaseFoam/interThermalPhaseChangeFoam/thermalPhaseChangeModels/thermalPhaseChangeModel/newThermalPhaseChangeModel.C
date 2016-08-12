@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2012 Alex Rattner
+    \\  /    A nd           | Copyright (C) 2016 Alex Rattner
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -56,7 +56,17 @@ Foam::thermalPhaseChangeModel::New
             << exit(FatalError);
     }
 
-    return autoPtr<thermalPhaseChangeModel>(cstrIter()(name, thermalPhaseChangeProperties, twoPhaseProperties, T, alpha1));
+    return autoPtr<thermalPhaseChangeModel>
+    (
+        cstrIter()
+        (
+            name,
+            thermalPhaseChangeProperties,
+            twoPhaseProperties,
+            T,
+            alpha1
+        )
+    );
 }
 
 

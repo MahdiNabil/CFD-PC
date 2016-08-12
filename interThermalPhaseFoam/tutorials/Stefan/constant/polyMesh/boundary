@@ -21,35 +21,35 @@ FoamFile
     {
         type            wall;
         inGroups        1(wall);
-        nFaces          5;
-        startFace       895;
+        nFaces          1;
+        startFace       99;
     }
     FreeStream
     {
         type            patch;
-        nFaces          5;
-        startFace       900;
+        nFaces          1;
+        startFace       100;
     }
     FrontNBack
     {
         type            empty;
         inGroups        1(empty);
-        nFaces          1000;
-        startFace       905;
+        nFaces          200;
+        startFace       101;
     }
     LeftSide
     {
         type            symmetryPlane;
         inGroups        1(symmetryPlane);
         nFaces          100;
-        startFace       1905;
+        startFace       301;
     }
     RightSide
     {
         type            symmetryPlane;
         inGroups        1(symmetryPlane);
         nFaces          100;
-        startFace       2005;
+        startFace       401;
     }
 )
 

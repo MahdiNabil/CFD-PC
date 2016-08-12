@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2013 Alex Rattner
+    \\  /    A nd           | Copyright (C) 2016 Alex Rattner
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -34,8 +34,9 @@ Description
     evaporating and condensing cell pairs.
 
     This version has phase change heating, but no change in liquid volume 
-        fraction due to phase change and no volumetric source due to phase change. Convenient for cases 
-        where there is an unlimited source of low momentum phase (e.g. film evaporation or condensation)
+    fraction due to phase change and no volumetric source due to phase
+    change. Convenient for cases where there is an unlimited source of low
+    momentum phase (e.g. film evaporation or condensation)
 
 
 SourceFiles
@@ -91,7 +92,8 @@ class HiLoNoPCVAlpha1
     //- Volumetric production rate of the alpha1 field (from phase change)
     volScalarField alpha1Field;
 
-    //Scalar parameters for identifying condensation and evaporation int. cell pairs:
+    //- Scalar parameters for identifying condensation and evaporation int.
+    //  cell pairs:
     scalar CondThresh;
     scalar EvapThresh;
 
@@ -139,7 +141,8 @@ public:
             return InterfaceField_;
         }
         
-        //- Gets volume generation (split and applied slightly away from interface)
+        //- Gets volume generation (split and applied slightly away from
+        //  interface)
         tmp<volScalarField> PCV() const
         {
             return PCVField;

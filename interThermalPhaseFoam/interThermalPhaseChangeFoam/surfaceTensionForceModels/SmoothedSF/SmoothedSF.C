@@ -33,7 +33,12 @@ namespace Foam
 namespace surfaceTensionForceModels
 {
     defineTypeNameAndDebug(SmoothedSF, 0);
-    addToRunTimeSelectionTable(surfaceTensionForceModel, SmoothedSF, dictionary);
+    addToRunTimeSelectionTable
+    (
+        surfaceTensionForceModel,
+        SmoothedSF,
+        dictionary
+    );
 }
 }
 
@@ -47,7 +52,13 @@ Foam::surfaceTensionForceModels::SmoothedSF::SmoothedSF
     const volScalarField& alpha1
 )
 :
-    surfaceTensionForceModel(name, surfaceTensionForceProperties, interface, alpha1),
+    surfaceTensionForceModel
+    (
+        name,
+        surfaceTensionForceProperties,
+        interface,
+        alpha1
+    ),    
     mesh_(alpha1.mesh()),
     Fstffv
     (
@@ -85,7 +96,8 @@ void Foam::surfaceTensionForceModels::SmoothedSF::correct()
 
 }
 
-bool Foam::surfaceTensionForceModels::SmoothedSF::read(const dictionary& surfaceTensionForceProperties)
+bool Foam::surfaceTensionForceModels::SmoothedSF::
+read(const dictionary& surfaceTensionForceProperties)
 {
     surfaceTensionForceModel::read(surfaceTensionForceProperties);
 

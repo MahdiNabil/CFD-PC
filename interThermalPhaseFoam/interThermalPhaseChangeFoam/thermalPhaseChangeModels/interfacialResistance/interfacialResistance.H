@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2013 Alex Rattner
+    \\  /    A nd           | Copyright (C) 2016 Alex Rattner, Sanjay Adhikari
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -22,21 +22,11 @@ License
     along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
 
 Class
-    Foam::thermalPhaseChangeModel::HiLoNoPCVAlpha1
+    Foam::thermalPhaseChangeModel::interfacialResistance
 
 Description
-    This model forces wall and interface cells to the equilibrium state,
-    causing evaporation or condensation as appropriate. The phase change
-    heat term is limited to not produce/sink more than the volume of a 
-    cell in a single time step(like the courantAlpha limit).
-
-    This model uses different interface thresholds for identifying
-    evaporating and condensing cell pairs.
-
-    This version has phase change heating, but no change in liquid volume 
-        fraction due to phase change and no volumetric source due to phase change. Convenient for cases 
-        where there is an unlimited source of low momentum phase (e.g. film evaporation or condensation)
-
+    This model evaluates the phase change rate based on the interfacial
+    resistance applied over the diffuse interface
 
 SourceFiles
     interfacialResistance.C
@@ -57,7 +47,7 @@ namespace thermalPhaseChangeModels
 {
 
 /*--------------------------------------------------------------------*\
-                              Class HiLoNoPCVAlpha1
+                              Class interfacialResistance
 \*--------------------------------------------------------------------*/
 
 class interfacialResistance
@@ -88,15 +78,11 @@ class interfacialResistance
     //- magnitude of alphaGradient field
     volScalarField interfaceArea;
 
-    //Scalar parameters for identifying condensation and evaporation int. cell pairs:
-    scalar CondThresh;
-    scalar EvapThresh;
-
     //Some constants for interfacial heat transfer
-    dimensionedScalar sigmaHat;                 // accomodation coefficient
-    dimensionedScalar R_g;                          // specific ideal gas constant 
-    double v_lv;                        // change in specific volume 
-    double hi;                          // interfacial resistance
+    dimensionedScalar R_g;       // specific ideal gas constant 
+    dimensionedScalar sigmaHat;  // accomodation coefficient
+    double v_lv;                 // change in specific volume 
+    double hi;                   // interfacial resistance
     
 
 public:

@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2012 Alex Rattner
+    \\  /    A nd           | Copyright (C) 2016 Alex Rattner
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -26,7 +26,7 @@ Class
 
 Description
     Default surface tension force model, from Brackbill (1992)
-    Adding some smoothing?
+    Adding some smoothing
 
 SourceFiles
     SmoothedSF.C
@@ -47,7 +47,7 @@ namespace surfaceTensionForceModels
 {
 
 /*--------------------------------------------------------------------*\
-                              Class LimitedInterfaceEquilibrium
+                            Class SmoothedSF
 \*--------------------------------------------------------------------*/
 
 class SmoothedSF

@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2012 Alex Rattner
+    \\  /    A nd           | Copyright (C) 2016 Alex Rattner
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -76,7 +76,10 @@ Foam::tmp<Foam::volScalarField> Foam::thermalPhaseChangeModel::PCV() const
     if (sw_PCV)
     {
         tmp<volScalarField> Q_pc = this->Q_pc();
-        return tmp<volScalarField> ( (Q_pc / h_lv_)*( (scalar(1.0)/twoPhaseProperties_.rho2()) - (scalar(1.0)/twoPhaseProperties_.rho1()) ) );
+        return tmp<volScalarField> 
+        ( 
+            (Q_pc/h_lv_)*(   (scalar(1.0)/twoPhaseProperties_.rho2()) 
+                           - (scalar(1.0)/twoPhaseProperties_.rho1()) ) );
     }
     else
     {
@@ -104,7 +107,9 @@ Foam::tmp<Foam::volScalarField> Foam::thermalPhaseChangeModel::alpha1Gen() const
     if (sw_alpha1Gen)
     {
         tmp<volScalarField> Q_pc = this->Q_pc();
-        return tmp<volScalarField>( -Q_pc / (twoPhaseProperties_.rho1()  * h_lv_) );
+        
+        return tmp<volScalarField>
+        ( -Q_pc/(twoPhaseProperties_.rho1()*h_lv_) );
     }
     else
     {
@@ -128,7 +133,8 @@ Foam::tmp<Foam::volScalarField> Foam::thermalPhaseChangeModel::alpha1Gen() const
 }
 
 
-bool Foam::thermalPhaseChangeModel::read(const dictionary& thermalPhaseChangeProperties)
+bool Foam::thermalPhaseChangeModel::
+read(const dictionary& thermalPhaseChangeProperties)
 {
     thermalPhaseChangeProperties_ = thermalPhaseChangeProperties;
     //Update these properties when the dictionary is re-read
@@ -136,8 +142,15 @@ bool Foam::thermalPhaseChangeModel::read(const dictionary& thermalPhaseChangePro
     thermalPhaseChangeProperties_.lookup("T_sat") >> T_sat_;
     //Update toggles for alpha1Gen, PCV
 
-    thermalPhaseChangeProperties.readIfPresent("DilatationSource", sw_PCV); //turn on volume change due to phase change
-    thermalPhaseChangeProperties.readIfPresent("PhaseFractionSource", sw_alpha1Gen); //turn on phase volume fraction change
+    //turn on volume change due to phase change
+    thermalPhaseChangeProperties.readIfPresent("DilatationSource", sw_PCV);
+
+    //turn on phase volume fraction change
+    thermalPhaseChangeProperties.readIfPresent
+    (
+        "PhaseFractionSource",
+        sw_alpha1Gen
+    );
 
     return true;
 }

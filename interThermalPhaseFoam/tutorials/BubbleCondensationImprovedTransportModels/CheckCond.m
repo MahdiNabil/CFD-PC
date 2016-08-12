@@ -17,14 +17,14 @@ cp_L      = 2000;                    %J/kg-K
 mu_L      = 5.0E-6 * rho_L;          %kg/m-s
 mu_G      = 5.0E-4;                  %kg/m-s
 Pr_L      = mu_L*cp_L/k_L;           %-, Liquid Prandtl number
-U_domain  = 0.033;                   %m/s
+U_domain  = 0;                       %m/s
 
 
 %Read in data from file:
 D         = load('Bubble_Condensation.dat');
 %Trim the first 0.02 s to block out startup effects
-%ind       = find(D(:,1) > 0.075, 1, 'first');
-%D         = D(ind:end,:);
+ind       = find(D(:,1) > 0.05, 1, 'first');
+D         = D(ind:end,:);
 %Get out data entries
 t         = D(:,1);                    %s
 Q         = D(:,2);                    %W

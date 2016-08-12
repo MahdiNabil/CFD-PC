@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2012 Alex Rattner
+    \\  /    A nd           | Copyright (C) 2016 Alex Rattner
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -33,7 +33,12 @@ namespace Foam
 namespace thermalPhaseChangeModels
 {
     defineTypeNameAndDebug(noPhaseChange, 0);
-    addToRunTimeSelectionTable(thermalPhaseChangeModel, noPhaseChange, dictionary);
+    addToRunTimeSelectionTable
+    (
+        thermalPhaseChangeModel, 
+        noPhaseChange, 
+        dictionary
+    );
 }
 }
 
@@ -48,7 +53,14 @@ Foam::thermalPhaseChangeModels::noPhaseChange::noPhaseChange
         const volScalarField& alpha1
 )
 :
-    thermalPhaseChangeModel(name, thermalPhaseChangeProperties, twoPhaseProperties, T, alpha1),
+    thermalPhaseChangeModel
+    (
+        name, 
+        thermalPhaseChangeProperties, 
+        twoPhaseProperties, 
+        T, 
+        alpha1
+    ),
     mesh_(T.mesh()),
     Q_pc_
     (
@@ -72,7 +84,8 @@ Foam::thermalPhaseChangeModels::noPhaseChange::noPhaseChange
 
 
 
-bool Foam::thermalPhaseChangeModels::noPhaseChange::read(const dictionary& thermalPhaseChangeProperties)
+bool Foam::thermalPhaseChangeModels::noPhaseChange::
+read(const dictionary& thermalPhaseChangeProperties)
 {
     thermalPhaseChangeModel::read(thermalPhaseChangeProperties);
 

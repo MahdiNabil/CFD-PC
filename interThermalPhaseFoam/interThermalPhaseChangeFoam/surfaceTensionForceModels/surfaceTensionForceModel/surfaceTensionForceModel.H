@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2012 Alex Rattner
+    \\  /    A nd           | Copyright (C) 2016 Alex Rattner
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -25,7 +25,8 @@ Class
     Foam::surfaceTensionForceModel
 
 Description
-
+    Parent class for general surface tension force models in VOF solver.
+    
 SourceFiles
     surfaceTensionForceModel.C
     newSurfaceTensionForceModel.C
@@ -52,7 +53,7 @@ namespace Foam
 {
 
 /*---------------------------------------------------------------------------*\
-                Class surfaceTensionForceModel Declaration
+                  Class surfaceTensionForceModel Declaration
 \*---------------------------------------------------------------------------*/
 
 class surfaceTensionForceModel
@@ -143,7 +144,8 @@ public:
         virtual tmp<volScalarField> pcap() const;
 
         //  Returns the capillary flux
-        virtual tmp<surfaceScalarField> phi_c(const surfaceScalarField& rAUf_) const;
+        virtual tmp<surfaceScalarField> 
+        phi_c(const surfaceScalarField& rAUf_) const;
 
         //- Read the thermalPhaseChange dictionary and update
         virtual bool read(const dictionary& surfaceTensionForceProperties) = 0;

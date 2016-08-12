@@ -47,7 +47,7 @@ sigma                           sigma [ 1 0 -2 0 0 0 0 ] 0.005;
 T_0				T_0 [0 0 0 1 0 0 0] 100;
 
 
-ImprovedTransportBlending yes;
+ImprovedTransportBlending no;
 
 thermalPhaseChange
 {

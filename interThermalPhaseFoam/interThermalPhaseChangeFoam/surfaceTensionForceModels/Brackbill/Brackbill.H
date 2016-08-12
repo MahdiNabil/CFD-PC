@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2012 Alex Rattner
+    \\  /    A nd           | Copyright (C) 2016 Alex Rattner
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -25,7 +25,9 @@ Class
     Foam::surfaceTensionForceModel::Brackbill
 
 Description
-    Default surface tension force model, from Brackbill (1992)
+    Default surface tension force model, from Brackbill, J. U., Kothe, D. B.,
+    & Zemach, C. (1992). A continuum method for modeling surface tension.
+    Journal of computational physics, 100(2), 335-354.
 
 SourceFiles
     Brackbill.C
@@ -46,7 +48,7 @@ namespace surfaceTensionForceModels
 {
 
 /*--------------------------------------------------------------------*\
-                              Class LimitedInterfaceEquilibrium
+                             class Brackbill
 \*--------------------------------------------------------------------*/
 
 class Brackbill
