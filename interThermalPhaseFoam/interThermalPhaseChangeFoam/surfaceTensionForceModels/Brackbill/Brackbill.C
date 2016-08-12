@@ -41,15 +41,15 @@ namespace surfaceTensionForceModels
 
 Foam::surfaceTensionForceModels::Brackbill::Brackbill
 (
-	const word& name,
-	const dictionary& surfaceTensionForceProperties,
-	const interfaceProperties& interface,
-	const volScalarField& alpha1
+    const word& name,
+    const dictionary& surfaceTensionForceProperties,
+    const interfaceProperties& interface,
+    const volScalarField& alpha1
 )
 :
     surfaceTensionForceModel(name, surfaceTensionForceProperties, interface, alpha1),
-	mesh_(alpha1.mesh()),
-	Fstffv
+    mesh_(alpha1.mesh()),
+    Fstffv
     (
         IOobject
         (
@@ -59,11 +59,11 @@ Foam::surfaceTensionForceModels::Brackbill::Brackbill
             IOobject::NO_READ,
             IOobject::NO_WRITE
         ),
-		mesh_,
-		dimensionedScalar( "dummy", dimensionSet(1,-2,-2,0,0,0,0), 0 )
+        mesh_,
+        dimensionedScalar( "dummy", dimensionSet(1,-2,-2,0,0,0,0), 0 )
     )
 {
-	correct();
+    correct();
 }
 
 
@@ -71,15 +71,15 @@ Foam::surfaceTensionForceModels::Brackbill::Brackbill
 
 void Foam::surfaceTensionForceModels::Brackbill::correct()
 {
-	Fstffv = fvc::interpolate(interface_.sigmaK())*fvc::snGrad(alpha1_);
+    Fstffv = fvc::interpolate(interface_.sigmaK())*fvc::snGrad(alpha1_);
 
 }
 
 bool Foam::surfaceTensionForceModels::Brackbill::read(const dictionary& surfaceTensionForceProperties)
 {
-	surfaceTensionForceModel::read(surfaceTensionForceProperties);
+    surfaceTensionForceModel::read(surfaceTensionForceProperties);
 
-	return true;
+    return true;
 }
 
 

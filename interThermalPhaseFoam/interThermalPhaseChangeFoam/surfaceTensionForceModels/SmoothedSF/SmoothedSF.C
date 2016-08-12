@@ -41,15 +41,15 @@ namespace surfaceTensionForceModels
 
 Foam::surfaceTensionForceModels::SmoothedSF::SmoothedSF
 (
-	const word& name,
-	const dictionary& surfaceTensionForceProperties,
-	const interfaceProperties& interface,
-	const volScalarField& alpha1
+    const word& name,
+    const dictionary& surfaceTensionForceProperties,
+    const interfaceProperties& interface,
+    const volScalarField& alpha1
 )
 :
     surfaceTensionForceModel(name, surfaceTensionForceProperties, interface, alpha1),
-	mesh_(alpha1.mesh()),
-	Fstffv
+    mesh_(alpha1.mesh()),
+    Fstffv
     (
         IOobject
         (
@@ -59,11 +59,11 @@ Foam::surfaceTensionForceModels::SmoothedSF::SmoothedSF
             IOobject::NO_READ,
             IOobject::NO_WRITE
         ),
-		mesh_,
-		dimensionedScalar( "dummy", dimensionSet(1,-2,-2,0,0,0,0), 0 )
+        mesh_,
+        dimensionedScalar( "dummy", dimensionSet(1,-2,-2,0,0,0,0), 0 )
     )
 {
-	correct();
+    correct();
 }
 
 
@@ -71,25 +71,25 @@ Foam::surfaceTensionForceModels::SmoothedSF::SmoothedSF
 
 void Foam::surfaceTensionForceModels::SmoothedSF::correct()
 {
-	
-	//Smoothed fields
-	volScalarField sigmaK_sm = interface_.sigmaK();
-	volScalarField alpha1_sm = alpha1_;
+    
+    //Smoothed fields
+    volScalarField sigmaK_sm = interface_.sigmaK();
+    volScalarField alpha1_sm = alpha1_;
 
-	//Smoothing operations
-	sigmaK_sm = fvc::average( fvc::interpolate(sigmaK_sm) );
-	alpha1_sm = fvc::average( fvc::interpolate(alpha1_sm) );
+    //Smoothing operations
+    sigmaK_sm = fvc::average( fvc::interpolate(sigmaK_sm) );
+    alpha1_sm = fvc::average( fvc::interpolate(alpha1_sm) );
 
 
-	Fstffv = fvc::interpolate( sigmaK_sm )*fvc::snGrad(alpha1_sm);
+    Fstffv = fvc::interpolate( sigmaK_sm )*fvc::snGrad(alpha1_sm);
 
 }
 
 bool Foam::surfaceTensionForceModels::SmoothedSF::read(const dictionary& surfaceTensionForceProperties)
 {
-	surfaceTensionForceModel::read(surfaceTensionForceProperties);
+    surfaceTensionForceModel::read(surfaceTensionForceProperties);
 
-	return true;
+    return true;
 }
 
 

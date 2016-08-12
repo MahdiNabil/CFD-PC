@@ -186,31 +186,31 @@ const scalar CHSP = CombinedHSPressure ? 1.0 : 0;
     interfaceProperties interface(alpha1, U, twoPhaseProperties);
 
 
-	//This dictionary contains important props for phase change:
+    //This dictionary contains important props for phase change:
     const dictionary& thermalPhaseChangeProperties
     (
         transportProperties.subDict("thermalPhaseChange")
     );
 
-	//This dictionary contains important props for phase change:
+    //This dictionary contains important props for phase change:
     const dictionary& surfaceTensionForceProperties
     (
         transportProperties.subDict("surfaceTensionForce")
     );
 
 
-	//Initialize the phase change model:
-	autoPtr<thermalPhaseChangeModel> phaseChangeModel
-	(
-		thermalPhaseChangeModel::New( thermalPhaseChangeProperties.lookup("model"), thermalPhaseChangeProperties, twoPhaseProperties, T, alpha1 )
-	);
+    //Initialize the phase change model:
+    autoPtr<thermalPhaseChangeModel> phaseChangeModel
+    (
+        thermalPhaseChangeModel::New( thermalPhaseChangeProperties.lookup("model"), thermalPhaseChangeProperties, twoPhaseProperties, T, alpha1 )
+    );
 
-	//Initialize the surface tension force model:
-	autoPtr<surfaceTensionForceModel> stfModel
-	(
-		surfaceTensionForceModel::New( surfaceTensionForceProperties.lookup("model"), surfaceTensionForceProperties, interface, alpha1 )
-	);
-	
+    //Initialize the surface tension force model:
+    autoPtr<surfaceTensionForceModel> stfModel
+    (
+        surfaceTensionForceModel::New( surfaceTensionForceProperties.lookup("model"), surfaceTensionForceProperties, interface, alpha1 )
+    );
+    
 
     #include "readGravitationalAcceleration.H"
 
@@ -219,7 +219,7 @@ const scalar CHSP = CombinedHSPressure ? 1.0 : 0;
     surfaceScalarField ghf("ghf", g & mesh.Cf());
 
     //Total Pressure Field:
-	volScalarField p
+    volScalarField p
     (
         IOobject
         (
@@ -244,22 +244,22 @@ const scalar CHSP = CombinedHSPressure ? 1.0 : 0;
     );
 
 
-	if (p_rgh.needReference())
-	{
-	    p += dimensionedScalar
-	    (
-	        "p",
-	        p.dimensions(),
-	        pRefValue - getRefCellValue(p, pRefCell)
-	    );
-	    p_rgh = p - (1.0-CHSP)*rho*gh - stfModel->pcap(); 
-	}
+    if (p_rgh.needReference())
+    {
+        p += dimensionedScalar
+        (
+            "p",
+            p.dimensions(),
+            pRefValue - getRefCellValue(p, pRefCell)
+        );
+        p_rgh = p - (1.0-CHSP)*rho*gh - stfModel->pcap(); 
+    }
 
     fv::IOoptionList fvOptions(mesh);
 
-	//Create kEff here so it can be accessed globally
-	surfaceScalarField kEff
-	(
+    //Create kEff here so it can be accessed globally
+    surfaceScalarField kEff
+    (
         IOobject
         (
             "kEff",
@@ -268,7 +268,7 @@ const scalar CHSP = CombinedHSPressure ? 1.0 : 0;
             IOobject::NO_READ,
             IOobject::NO_WRITE
         ),
-		fvc::interpolate( twoPhaseProperties.lambda() )
-		+ fvc::interpolate( rho*twoPhaseProperties.cp()*turbulence->nut() )
-	);
+        fvc::interpolate( twoPhaseProperties.lambda() )
+        + fvc::interpolate( rho*twoPhaseProperties.cp()*turbulence->nut() )
+    );
 

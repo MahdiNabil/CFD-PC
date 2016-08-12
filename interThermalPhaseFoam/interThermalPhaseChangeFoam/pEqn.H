@@ -19,8 +19,8 @@ const scalar CHSP = CombinedHSPressure ? 1.0 : 0;
 
     adjustPhi(phiU, U, p_rgh);
 
-	//Calculate the flux from surface tension:
-	surfaceScalarField phi_c
+    //Calculate the flux from surface tension:
+    surfaceScalarField phi_c
     (
         IOobject
         (
@@ -35,10 +35,10 @@ const scalar CHSP = CombinedHSPressure ? 1.0 : 0;
     );
 
 
-	phi_c   = stfModel->phi_c( rAUf );		
+    phi_c   = stfModel->phi_c( rAUf );      
 
-	//Calculate the flux from gravitational forces
-	surfaceScalarField phi_rgh
+    //Calculate the flux from gravitational forces
+    surfaceScalarField phi_rgh
     (
         IOobject
         (
@@ -52,12 +52,12 @@ const scalar CHSP = CombinedHSPressure ? 1.0 : 0;
         dimensionedScalar("flux", dimLength*dimLength*dimLength/dimTime, 0)
     );
 
-	if (!CombinedHSPressure)
-	{
-		phi_rgh =  -ghf*fvc::snGrad(rho) * rAUf*mesh.magSf();
-	}
+    if (!CombinedHSPressure)
+    {
+        phi_rgh =  -ghf*fvc::snGrad(rho) * rAUf*mesh.magSf();
+    }
 
-	phi = phiU + stfModel->phi_c( rAUf ) + phi_rgh;
+    phi = phiU + stfModel->phi_c( rAUf ) + phi_rgh;
 
 
    // Update the fixedFluxPressure BCs to ensure flux consistency
@@ -73,7 +73,7 @@ const scalar CHSP = CombinedHSPressure ? 1.0 : 0;
     while (pimple.correctNonOrthogonal())
     {
 
-	//No need to correct p_rgh for phase change - already incorporated into div(phi) 
+    //No need to correct p_rgh for phase change - already incorporated into div(phi) 
         fvScalarMatrix p_rghEqn
         (
             fvm::laplacian(rAUf, p_rgh) == fvc::div(phi) - phaseChangeModel->PCV()
@@ -83,7 +83,7 @@ const scalar CHSP = CombinedHSPressure ? 1.0 : 0;
 
         p_rghEqn.solve(mesh.solver(p_rgh.select(pimple.finalInnerIter())));
 
-	//This is -= (unlike phaseChangeFoam) because the sign of the governing equations is changed.
+    //This is -= (unlike phaseChangeFoam) because the sign of the governing equations is changed.
         if (pimple.finalNonOrthogonalIter())
         {
             phi -= p_rghEqn.flux();
@@ -91,24 +91,24 @@ const scalar CHSP = CombinedHSPressure ? 1.0 : 0;
 
     }
 
-	// Added Condition for Modified Surface Tension Case 
-	U += rAU*fvc::reconstruct((phi - phiU)/rAUf);
+    // Added Condition for Modified Surface Tension Case 
+    U += rAU*fvc::reconstruct((phi - phiU)/rAUf);
 
     U.correctBoundaryConditions();
 
     #include "continuityErrs.H"
-	p == p_rgh + (1.0-CHSP)*rho*gh + stfModel->pcap();    //Add in surface tension
+    p == p_rgh + (1.0-CHSP)*rho*gh + stfModel->pcap();    //Add in surface tension
 
-	if (p_rgh.needReference())
-	{
-	    p += dimensionedScalar
-	    (
-	       "p",
-	        p.dimensions(),
-	        pRefValue - getRefCellValue(p, pRefCell)
-	    );
-	    p_rgh = p - (1.0-CHSP)*rho*gh - stfModel->pcap(); //Add in surface tension
-	}
+    if (p_rgh.needReference())
+    {
+        p += dimensionedScalar
+        (
+           "p",
+            p.dimensions(),
+            pRefValue - getRefCellValue(p, pRefCell)
+        );
+        p_rgh = p - (1.0-CHSP)*rho*gh - stfModel->pcap(); //Add in surface tension
+    }
 
 }
 

@@ -22,20 +22,20 @@ License
     along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
 
 Class
-	Foam::thermalPhaseChangeModel::HiLoNoPCV
+    Foam::thermalPhaseChangeModel::HiLoNoPCV
 
 Description
     This model forces wall and interface cells to the equilibrium state,
     causing evaporation or condensation as appropriate. The phase change
     heat term is limited to not produce/sink more than the volume of a 
-	cell in a single time step(like the courantAlpha limit).
+    cell in a single time step(like the courantAlpha limit).
 
     This model uses different interface thresholds for identifying
-	evaporating and condensing cell pairs.
+    evaporating and condensing cell pairs.
 
-	This version has phase change heating and phase fraction change, but no
-	volumetric source. Convenient for cases where there is an unlimited
-	source of low momentum phase (e.g. film evaporation or condensation)
+    This version has phase change heating and phase fraction change, but no
+    volumetric source. Convenient for cases where there is an unlimited
+    source of low momentum phase (e.g. film evaporation or condensation)
 
 
 SourceFiles
@@ -67,30 +67,30 @@ class HiLoNoPCV
 
 // Private Member Functions
 
-	//- Calculate the phase change heat rate
-	void calcQ_pc();
+    //- Calculate the phase change heat rate
+    void calcQ_pc();
 
-	//- This phase change model needs access to the mesh:
-	const fvMesh& mesh_;
+    //- This phase change model needs access to the mesh:
+    const fvMesh& mesh_;
 
-	//- Phase change heat
-	volScalarField Q_pc_;
+    //- Phase change heat
+    volScalarField Q_pc_;
 
-	//- Graph of mesh grid, used for finding interface cells
-	MeshGraph InterfaceMeshGraph;
+    //- Graph of mesh grid, used for finding interface cells
+    MeshGraph InterfaceMeshGraph;
 
-	//- Field for tracking Interface cells
+    //- Field for tracking Interface cells
     volScalarField InterfaceField_;
 
-	//- Field for blocking evaporation on wall cells
-	volScalarField WallField;
+    //- Field for blocking evaporation on wall cells
+    volScalarField WallField;
 
-	//- Volume change field (from phase change)
-	volScalarField PCVField;
+    //- Volume change field (from phase change)
+    volScalarField PCVField;
 
-	//Scalar parameters for identifying condensation and evaporation int. cell pairs:
-	scalar CondThresh;
-	scalar EvapThresh;
+    //Scalar parameters for identifying condensation and evaporation int. cell pairs:
+    scalar CondThresh;
+    scalar EvapThresh;
 
 public:
 
@@ -100,15 +100,15 @@ public:
 
     // Constructors
 
-	//- construct from components
-	HiLoNoPCV
-	(
-		const word& name,
-		const dictionary& thermalPhaseChangeProperties,
-		const twoPhaseThermalMixture& twoPhaseProperties,
-		const volScalarField& T,
-		const volScalarField& alpha1
-	);
+    //- construct from components
+    HiLoNoPCV
+    (
+        const word& name,
+        const dictionary& thermalPhaseChangeProperties,
+        const twoPhaseThermalMixture& twoPhaseProperties,
+        const volScalarField& T,
+        const volScalarField& alpha1
+    );
 
 
     //- Destructor
@@ -119,28 +119,28 @@ public:
     // Member Functions
 
         //- Return phase change heat
-		tmp<volScalarField> Q_pc() const
-		{
-			return Q_pc_;
-		}
+        tmp<volScalarField> Q_pc() const
+        {
+            return Q_pc_;
+        }
 
         //- Correct the thermalPhaseChange model
         void correct()
-		{
-			calcQ_pc();
-		}
+        {
+            calcQ_pc();
+        }
 
-		//- Return interface cells marker field:
-		tmp<volScalarField> InterfaceField() const
-		{
-			return InterfaceField_;
-		}
-		
-		//- Gets volume generation (split and applied slightly away from interface)
-		tmp<volScalarField> PCV() const
-		{
-			return PCVField;
-		}
+        //- Return interface cells marker field:
+        tmp<volScalarField> InterfaceField() const
+        {
+            return InterfaceField_;
+        }
+        
+        //- Gets volume generation (split and applied slightly away from interface)
+        tmp<volScalarField> PCV() const
+        {
+            return PCVField;
+        }
 
 
 

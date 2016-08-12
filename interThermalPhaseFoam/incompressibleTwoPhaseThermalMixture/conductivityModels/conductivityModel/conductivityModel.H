@@ -26,7 +26,7 @@ Namespace
 
 Description
     A namespace for various incompressible conductivityModel implementations.
-	Basically a RAS-made clone of viscosityModel
+    Basically a RAS-made clone of viscosityModel
 
 Class
     Foam::conductivityModel
@@ -38,7 +38,7 @@ Description
 
         mag(symm(grad(U)))
 
-	but will probably never be used
+    but will probably never be used
 
 
 SourceFiles

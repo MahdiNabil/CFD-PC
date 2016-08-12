@@ -41,15 +41,15 @@ namespace thermalPhaseChangeModels
 
 Foam::thermalPhaseChangeModels::Yang::Yang
 (
-		const word& name,
-		const dictionary& thermalPhaseChangeProperties,
-		const twoPhaseThermalMixture& twoPhaseProperties,
-		const volScalarField& T,
-		const volScalarField& alpha1
+        const word& name,
+        const dictionary& thermalPhaseChangeProperties,
+        const twoPhaseThermalMixture& twoPhaseProperties,
+        const volScalarField& T,
+        const volScalarField& alpha1
 )
 :
     thermalPhaseChangeModel(name, thermalPhaseChangeProperties, twoPhaseProperties, T, alpha1),
-	Q_pc_
+    Q_pc_
     (
         IOobject
         (
@@ -59,16 +59,16 @@ Foam::thermalPhaseChangeModels::Yang::Yang
             IOobject::NO_READ,
             IOobject::AUTO_WRITE
         ),
-		T.mesh(),
-		dimensionedScalar( "dummy", dimensionSet(1,-1,-3,0,0,0,0), 0 )
+        T.mesh(),
+        dimensionedScalar( "dummy", dimensionSet(1,-1,-3,0,0,0,0), 0 )
     )
 {
 
-	// reading rl and rv
-    thermalPhaseChangeProperties_.lookup("rl") >> rl;	
-    thermalPhaseChangeProperties_.lookup("rv") >> rv;	
+    // reading rl and rv
+    thermalPhaseChangeProperties_.lookup("rl") >> rl;   
+    thermalPhaseChangeProperties_.lookup("rv") >> rv;   
 
-	correct();
+    correct();
 }
 
 
@@ -77,18 +77,18 @@ Foam::thermalPhaseChangeModels::Yang::Yang
 void Foam::thermalPhaseChangeModels::Yang::calcQ_pc()
 {
     const dimensionedScalar& rhol = twoPhaseProperties_.rho1();
-	const dimensionedScalar& rhov = twoPhaseProperties_.rho2();
+    const dimensionedScalar& rhov = twoPhaseProperties_.rho2();
 
-	Q_pc_ = pos(T_-T_sat_)*h_lv_*rl*alpha1_*rhol*((T_-T_sat_)/T_sat_) + neg(T_-T_sat_)*h_lv_*rv*(1.0-alpha1_)*rhov*((T_-T_sat_)/T_sat_);
+    Q_pc_ = pos(T_-T_sat_)*h_lv_*rl*alpha1_*rhol*((T_-T_sat_)/T_sat_) + neg(T_-T_sat_)*h_lv_*rv*(1.0-alpha1_)*rhov*((T_-T_sat_)/T_sat_);
 }
 
 
 bool Foam::thermalPhaseChangeModels::Yang::read(const dictionary& thermalPhaseChangeProperties)
 {
-	thermalPhaseChangeModel::read(thermalPhaseChangeProperties);
-	thermalPhaseChangeProperties_.lookup("rl") >> rl;	
+    thermalPhaseChangeModel::read(thermalPhaseChangeProperties);
+    thermalPhaseChangeProperties_.lookup("rl") >> rl;   
     thermalPhaseChangeProperties_.lookup("rv") >> rv;
-	return true;
+    return true;
 }
 
 

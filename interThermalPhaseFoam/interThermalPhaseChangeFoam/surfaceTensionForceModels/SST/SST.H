@@ -22,10 +22,10 @@ License
     along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
 
 Class
-	Foam::surfaceTensionForceModel::SST
+    Foam::surfaceTensionForceModel::SST
 
 Description
-	Sharp surface tension force model, from Raeini (2012)
+    Sharp surface tension force model, from Raeini (2012)
 
 SourceFiles
     SST.C
@@ -56,21 +56,21 @@ class SST
 
 // Private Member Functions
 
-	//- This phase change model needs access to the mesh:
-	const fvMesh& mesh_;
+    //- This phase change model needs access to the mesh:
+    const fvMesh& mesh_;
 
-	//Some parameters
-	const scalar Cpc; //Sharpening factor
-	const scalar phi_c_thresholdFactor; //Cut off forces below this factor
-	const scalar filterFactor; //Component of non-interface-normal alpha1 to remove
+    //Some parameters
+    const scalar Cpc; //Sharpening factor
+    const scalar phi_c_thresholdFactor; //Cut off forces below this factor
+    const scalar filterFactor; //Component of non-interface-normal alpha1 to remove
 
-	//- Surface tension forces on cell faces
-	volScalarField pc;
-	surfaceScalarField Fstffv;
-	volVectorField fc;
+    //- Surface tension forces on cell faces
+    volScalarField pc;
+    surfaceScalarField Fstffv;
+    volVectorField fc;
     surfaceScalarField fcf;
     surfaceScalarField fcf_filter;
-	label pcRefCell;
+    label pcRefCell;
     scalar pcRefValue;
 
 
@@ -83,14 +83,14 @@ public:
 
     // Constructors
 
-	//- construct from components
-	SST
-	(
-		const word& name,
-		const dictionary& surfaceTensionForceProperties,
-		const interfaceProperties& interface,
-		const volScalarField& alpha1
-	);
+    //- construct from components
+    SST
+    (
+        const word& name,
+        const dictionary& surfaceTensionForceProperties,
+        const interfaceProperties& interface,
+        const volScalarField& alpha1
+    );
 
 
     //- Destructor
@@ -102,21 +102,21 @@ public:
 
         //- Correct the surface tension model
         void correct();
-		
+        
         //- Returns surface tension force
         tmp<surfaceScalarField> Fstff() const
-		{
-			return Fstffv;
-		}
+        {
+            return Fstffv;
+        }
 
-		//Return actual capillary pressure
+        //Return actual capillary pressure
         tmp<volScalarField> pcap() const
-		{
-			return pc*0.0;
-		}
+        {
+            return pc*0.0;
+        }
 
-		//- Calculates and Return phi_c
-		tmp<surfaceScalarField> phi_c(const surfaceScalarField& rAUf_) const;
+        //- Calculates and Return phi_c
+        tmp<surfaceScalarField> phi_c(const surfaceScalarField& rAUf_) const;
 
         //- Read the transportProperties dictionary and update
         bool read(const dictionary& surfaceTensionForceProperties);

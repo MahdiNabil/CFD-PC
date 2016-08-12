@@ -41,16 +41,16 @@ namespace thermalPhaseChangeModels
 
 Foam::thermalPhaseChangeModels::noPhaseChange::noPhaseChange
 (
-		const word& name,
-		const dictionary& thermalPhaseChangeProperties,
-		const twoPhaseThermalMixture& twoPhaseProperties,
-		const volScalarField& T,
-		const volScalarField& alpha1
+        const word& name,
+        const dictionary& thermalPhaseChangeProperties,
+        const twoPhaseThermalMixture& twoPhaseProperties,
+        const volScalarField& T,
+        const volScalarField& alpha1
 )
 :
     thermalPhaseChangeModel(name, thermalPhaseChangeProperties, twoPhaseProperties, T, alpha1),
-	mesh_(T.mesh()),
-	Q_pc_
+    mesh_(T.mesh()),
+    Q_pc_
     (
         IOobject
         (
@@ -60,11 +60,11 @@ Foam::thermalPhaseChangeModels::noPhaseChange::noPhaseChange
             IOobject::NO_READ,
             IOobject::AUTO_WRITE
         ),
-		mesh_,
-		dimensionedScalar( "dummy", dimensionSet(1,-1,-3,0,0,0,0), 0 )
+        mesh_,
+        dimensionedScalar( "dummy", dimensionSet(1,-1,-3,0,0,0,0), 0 )
     )
 {
-	correct();
+    correct();
 }
 
 
@@ -74,9 +74,9 @@ Foam::thermalPhaseChangeModels::noPhaseChange::noPhaseChange
 
 bool Foam::thermalPhaseChangeModels::noPhaseChange::read(const dictionary& thermalPhaseChangeProperties)
 {
-	thermalPhaseChangeModel::read(thermalPhaseChangeProperties);
+    thermalPhaseChangeModel::read(thermalPhaseChangeProperties);
 
-	return true;
+    return true;
 }
 
 

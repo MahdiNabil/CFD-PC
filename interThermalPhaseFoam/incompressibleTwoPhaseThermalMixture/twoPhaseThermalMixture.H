@@ -60,52 +60,52 @@ class twoPhaseThermalMixture
 protected:
 
     // Protected data
-	word phase1Name_;
-	word phase2Name_;
+    word phase1Name_;
+    word phase2Name_;
 
-	autoPtr<viscosityModel> nuModel1_;
-	autoPtr<viscosityModel> nuModel2_;
+    autoPtr<viscosityModel> nuModel1_;
+    autoPtr<viscosityModel> nuModel2_;
 
-	//Added by ASR
-	autoPtr<conductivityModel> lambdaModel1_;
-	autoPtr<conductivityModel> lambdaModel2_;
+    //Added by ASR
+    autoPtr<conductivityModel> lambdaModel1_;
+    autoPtr<conductivityModel> lambdaModel2_;
 
-	dimensionedScalar rho1_;
-	dimensionedScalar rho2_;
+    dimensionedScalar rho1_;
+    dimensionedScalar rho2_;
 
-	//Added by ASR
-	dimensionedScalar cp1_;
-	dimensionedScalar cp2_;
+    //Added by ASR
+    dimensionedScalar cp1_;
+    dimensionedScalar cp2_;
 
-	const volVectorField& U_;
-	const surfaceScalarField& phi_;
+    const volVectorField& U_;
+    const surfaceScalarField& phi_;
 
-	const volScalarField& alpha1_;
-	volScalarField nu_;
+    const volScalarField& alpha1_;
+    volScalarField nu_;
 
-	//Added by ASR
-	volScalarField lambda_;
-	volScalarField cp_;
-	volScalarField rho_;
-	//Added by ASR
+    //Added by ASR
+    volScalarField lambda_;
+    volScalarField cp_;
+    volScalarField rho_;
+    //Added by ASR
         const fvMesh& mesh_;
 
-	//Whether or not to use improved transport property blending models
-	Switch ImprovedTransportBlending;
+    //Whether or not to use improved transport property blending models
+    Switch ImprovedTransportBlending;
 
     // Private Member Functions
 
-	//- Calculate and return the laminar viscosity
-	void calcNu();
+    //- Calculate and return the laminar viscosity
+    void calcNu();
 
-	//- ASR Calculate and return the laminar conductivity
-	void calcLambda();
+    //- ASR Calculate and return the laminar conductivity
+    void calcLambda();
 
-	//- ASR Calculate specific heat
-	void calcCp();
+    //- ASR Calculate specific heat
+    void calcCp();
 
-	//- ASR Calculate local density
-	void calcRho();
+    //- ASR Calculate local density
+    void calcRho();
 
 public:
 
@@ -189,20 +189,20 @@ public:
         //- Return the dynamic laminar viscosity
         tmp<volScalarField> mu() const;
 
-	//- RAS Return the conductivity
-	tmp<volScalarField> lambda() const;
+    //- RAS Return the conductivity
+    tmp<volScalarField> lambda() const;
 
         //- Return the face-interpolated dynamic laminar viscosity
         tmp<surfaceScalarField> muf() const;
 
-	//- RAS Return the face-interpolated dynamic laminar conductivity
-	tmp<surfaceScalarField> lambdaf() const;
+    //- RAS Return the face-interpolated dynamic laminar conductivity
+    tmp<surfaceScalarField> lambdaf() const;
 
-	//- Return the kinematic laminar viscosity
-	tmp<volScalarField> nu() const
-	{
-		return nu_;
-	}
+    //- Return the kinematic laminar viscosity
+    tmp<volScalarField> nu() const
+    {
+        return nu_;
+    }
 
         tmp<scalarField> nu(const label patchi) const
         {
@@ -212,28 +212,28 @@ public:
         //- Return the face-interpolated kinematic laminar viscosity
         tmp<surfaceScalarField> nuf() const;
 
-	//- ASR Return the specific heats
-	tmp<volScalarField> cp() const;
+    //- ASR Return the specific heats
+    tmp<volScalarField> cp() const;
 
-	//- ASR Return the specific heats at faces
-	tmp<surfaceScalarField> cpf() const;
+    //- ASR Return the specific heats at faces
+    tmp<surfaceScalarField> cpf() const;
 
-	//- ASR for calculating thermal diffusivity
-	tmp<volScalarField> alpha() const;
+    //- ASR for calculating thermal diffusivity
+    tmp<volScalarField> alpha() const;
 
-	//- ASR for calculating alpha at faces
-	tmp<surfaceScalarField> alphaf() const;
+    //- ASR for calculating alpha at faces
+    tmp<surfaceScalarField> alphaf() const;
 
-	//- ASR return the density
-	tmp<volScalarField> rho() const;
+    //- ASR return the density
+    tmp<volScalarField> rho() const;
 
         //- ASR Correct the laminar viscosity and conductivity
         virtual void correct()
         {
-		calcNu();
-		calcLambda();
-		calcCp();
-		calcRho();
+        calcNu();
+        calcLambda();
+        calcCp();
+        calcRho();
         }
 
         //- Read base transportProperties dictionary

@@ -22,11 +22,11 @@ License
     along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
 
 Class
-	Foam::surfaceTensionForceModel::SmoothedSF
+    Foam::surfaceTensionForceModel::SmoothedSF
 
 Description
-	Default surface tension force model, from Brackbill (1992)
-	Adding some smoothing?
+    Default surface tension force model, from Brackbill (1992)
+    Adding some smoothing?
 
 SourceFiles
     SmoothedSF.C
@@ -57,11 +57,11 @@ class SmoothedSF
 
 // Private Member Functions
 
-	//- This phase change model needs access to the mesh:
-	const fvMesh& mesh_;
+    //- This phase change model needs access to the mesh:
+    const fvMesh& mesh_;
 
-	//- Surface tension forces on cell faces
-	surfaceScalarField Fstffv;
+    //- Surface tension forces on cell faces
+    surfaceScalarField Fstffv;
 
 public:
 
@@ -71,14 +71,14 @@ public:
 
     // Constructors
 
-	//- construct from components
-	SmoothedSF
-	(
-		const word& name,
-		const dictionary& surfaceTensionForceProperties,
-		const interfaceProperties& interface,
-		const volScalarField& alpha1
-	);
+    //- construct from components
+    SmoothedSF
+    (
+        const word& name,
+        const dictionary& surfaceTensionForceProperties,
+        const interfaceProperties& interface,
+        const volScalarField& alpha1
+    );
 
 
 
@@ -91,12 +91,12 @@ public:
 
         //- Correct the surface tension model
         void correct();
-		
+        
         //- Returns surface tension force
         tmp<surfaceScalarField> Fstff() const
-		{
-			return Fstffv;
-		}
+        {
+            return Fstffv;
+        }
 
 
         //- Read the transportProperties dictionary and update

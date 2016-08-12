@@ -1,6 +1,6 @@
 
-	//Update kEff
-	kEff = twoPhaseProperties.lambdaf() + fvc::interpolate( rho*twoPhaseProperties.cp()*turbulence->nut() );
+    //Update kEff
+    kEff = twoPhaseProperties.lambdaf() + fvc::interpolate( rho*twoPhaseProperties.cp()*turbulence->nut() );
 
 
 
@@ -10,15 +10,15 @@
         fvc::interpolate(rho) * ( twoPhaseProperties.alphaf() + fvc::interpolate( turbulence->nut() ) )
     ); 
 
-	//Use limited alpha1:
+    //Use limited alpha1:
     const volScalarField limAlpha1( min(max(alpha1, scalar(0)), scalar(1)) );
 
-	//Latent heat accounted for in source term
-	T.correctBoundaryConditions();
-	H = ( (T - T_0)*(limAlpha1*rho1*cp1 + (1-limAlpha1)*rho2*cp2) )/rho;
+    //Latent heat accounted for in source term
+    T.correctBoundaryConditions();
+    H = ( (T - T_0)*(limAlpha1*rho1*cp1 + (1-limAlpha1)*rho2*cp2) )/rho;
 
-	//Scalar factor for artificial diffusion in the energy equation
-	scalar ChillaxFac = 1.0;
+    //Scalar factor for artificial diffusion in the energy equation
+    scalar ChillaxFac = 1.0;
 
     //Energy-temperature loop
     label nEnergyLoops(readLabel(pimple.dict().lookup("nEnergyLoops")));
@@ -31,8 +31,8 @@
             fvm::ddt(rho, H)
             + fvm::div(rhoPhi, H)
             - fvc::laplacian(kEff, T)
-			- ChillaxFac*( fvm::laplacian(alphaEffRho, H) - fvc::laplacian(alphaEffRho, H) )
-			+ phaseChangeModel->Q_pc()
+            - ChillaxFac*( fvm::laplacian(alphaEffRho, H) - fvc::laplacian(alphaEffRho, H) )
+            + phaseChangeModel->Q_pc()
         );
 
         EEqn.solve();

@@ -30,14 +30,14 @@ License
 Foam::autoPtr<Foam::thermalPhaseChangeModel>
 Foam::thermalPhaseChangeModel::New
 (
-	const word& name,
-	const dictionary& thermalPhaseChangeProperties,
-	const twoPhaseThermalMixture& twoPhaseProperties,
-	const volScalarField& T,
-	const volScalarField& alpha1
+    const word& name,
+    const dictionary& thermalPhaseChangeProperties,
+    const twoPhaseThermalMixture& twoPhaseProperties,
+    const volScalarField& T,
+    const volScalarField& alpha1
 )
 {
-	const word modelType(thermalPhaseChangeProperties.lookup("model"));
+    const word modelType(thermalPhaseChangeProperties.lookup("model"));
 
     Info<< "Selecting phase change model: " << modelType << endl;
 

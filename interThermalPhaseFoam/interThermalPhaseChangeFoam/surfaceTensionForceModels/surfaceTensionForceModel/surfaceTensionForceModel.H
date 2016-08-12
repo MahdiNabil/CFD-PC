@@ -64,11 +64,11 @@ class surfaceTensionForceModel
 protected:
 
     // Protected data
-		word name_;
+        word name_;
         dictionary surfaceTensionForceProperties_;
-		//Thermal mixture props
-		const interfaceProperties& interface_;
-		const volScalarField& alpha1_;
+        //Thermal mixture props
+        const interfaceProperties& interface_;
+        const volScalarField& alpha1_;
 
     // Private Member Functions
 
@@ -93,10 +93,10 @@ public:
             surfaceTensionForceModel,
             dictionary,
             (
-				const word& name,
-				const dictionary& surfaceTensionForceProperties,
-				const interfaceProperties& interface,
-				const volScalarField& alpha1
+                const word& name,
+                const dictionary& surfaceTensionForceProperties,
+                const interfaceProperties& interface,
+                const volScalarField& alpha1
             ),
             (name, surfaceTensionForceProperties, interface, alpha1)
         );
@@ -107,10 +107,10 @@ public:
         //- Return a reference to the selected phaseChange model
         static autoPtr<surfaceTensionForceModel> New
         (
-			const word& name,
-			const dictionary& surfaceTensionForceProperties,
-			const interfaceProperties& interface,
-			const volScalarField& alpha1
+            const word& name,
+            const dictionary& surfaceTensionForceProperties,
+            const interfaceProperties& interface,
+            const volScalarField& alpha1
         );
 
 
@@ -119,10 +119,10 @@ public:
         //- Construct from components
         surfaceTensionForceModel
         (
-			const word& name,
-			const dictionary& surfaceTensionForceProperties,
-			const interfaceProperties& interface,
-			const volScalarField& alpha1
+            const word& name,
+            const dictionary& surfaceTensionForceProperties,
+            const interfaceProperties& interface,
+            const volScalarField& alpha1
         );
 
 
@@ -132,17 +132,17 @@ public:
 
 
     // Member Functions
-		
-		//- Returns the surface tension force on cell faces
-		virtual tmp<surfaceScalarField> Fstff() const = 0;
+        
+        //- Returns the surface tension force on cell faces
+        virtual tmp<surfaceScalarField> Fstff() const = 0;
 
         //- Correct the surface tension force model
         virtual void correct() = 0;
         
-  		//  Returns the capillary pressure
+        //  Returns the capillary pressure
         virtual tmp<volScalarField> pcap() const;
 
-  		//  Returns the capillary flux
+        //  Returns the capillary flux
         virtual tmp<surfaceScalarField> phi_c(const surfaceScalarField& rAUf_) const;
 
         //- Read the thermalPhaseChange dictionary and update

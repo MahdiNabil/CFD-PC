@@ -11,7 +11,7 @@
         (
             fvc::flux
             (
-				phi,
+                phi,
                 alpha1,
                 alphaScheme
             )
@@ -23,7 +23,7 @@
             )
         );
 
-		//Linear source term
+        //Linear source term
         volScalarField Sp
         (
             IOobject
@@ -32,12 +32,12 @@
                 runTime.timeName(),
                 mesh
             ),
-			//0*divU
-			divU
+            //0*divU
+            divU
         );
 
-		//alpha1 source term due to condensation and divergence of velocity
-		volScalarField Su
+        //alpha1 source term due to condensation and divergence of velocity
+        volScalarField Su
         (
             IOobject
             (
@@ -45,12 +45,12 @@
                 runTime.timeName(),
                 mesh
             ),
-			phaseChangeModel->alpha1Gen()
+            phaseChangeModel->alpha1Gen()
         );
 
 
-		//MULES::implicitSolve
-		MULES::explicitSolve
+        //MULES::implicitSolve
+        MULES::explicitSolve
         (
             geometricOneField(),
             alpha1,

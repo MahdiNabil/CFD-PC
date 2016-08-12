@@ -22,7 +22,7 @@ License
     along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
 
 Class
-	Foam::thermalPhaseChangeModel::Yang
+    Foam::thermalPhaseChangeModel::Yang
 
 Description
     This model implements the empirical rate parameter phase change
@@ -59,15 +59,15 @@ class Yang
 
 // Private Member Functions
 
-	//- Calculate and return the phase change heat rate
-	void calcQ_pc();
+    //- Calculate and return the phase change heat rate
+    void calcQ_pc();
 
-	//- Phase change heat
-	volScalarField Q_pc_;
+    //- Phase change heat
+    volScalarField Q_pc_;
 
-	// declaring rl and rv
-	dimensionedScalar rl;
-	dimensionedScalar rv;
+    // declaring rl and rv
+    dimensionedScalar rl;
+    dimensionedScalar rv;
 
 public:
 
@@ -77,15 +77,15 @@ public:
 
     // Constructors
 
-	//- construct from components
-	Yang
-	(
-		const word& name,
-		const dictionary& thermalPhaseChangeProperties,
-		const twoPhaseThermalMixture& twoPhaseProperties,
-		const volScalarField& T,
-		const volScalarField& alpha1
-	);
+    //- construct from components
+    Yang
+    (
+        const word& name,
+        const dictionary& thermalPhaseChangeProperties,
+        const twoPhaseThermalMixture& twoPhaseProperties,
+        const volScalarField& T,
+        const volScalarField& alpha1
+    );
 
 
     //- Destructor
@@ -96,16 +96,16 @@ public:
     // Member Functions
 
         //- Return phase change heat
-		tmp<volScalarField> Q_pc() const
-		{
-			return Q_pc_;
-		}
+        tmp<volScalarField> Q_pc() const
+        {
+            return Q_pc_;
+        }
 
         //- Correct the thermalPhaseChange model
         void correct()
-		{
-			calcQ_pc();
-		}
+        {
+            calcQ_pc();
+        }
 
         //- Read the transportProperties dictionary and update
         bool read(const dictionary& thermalPhaseChangeProperties);

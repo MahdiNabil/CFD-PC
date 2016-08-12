@@ -22,10 +22,10 @@ License
     along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
 
 Class
-	Foam::surfaceTensionForceModel::Brackbill
+    Foam::surfaceTensionForceModel::Brackbill
 
 Description
-	Default surface tension force model, from Brackbill (1992)
+    Default surface tension force model, from Brackbill (1992)
 
 SourceFiles
     Brackbill.C
@@ -56,11 +56,11 @@ class Brackbill
 
 // Private Member Functions
 
-	//- This phase change model needs access to the mesh:
-	const fvMesh& mesh_;
+    //- This phase change model needs access to the mesh:
+    const fvMesh& mesh_;
 
-	//- Surface tension forces on cell faces
-	surfaceScalarField Fstffv;
+    //- Surface tension forces on cell faces
+    surfaceScalarField Fstffv;
 
 public:
 
@@ -70,14 +70,14 @@ public:
 
     // Constructors
 
-	//- construct from components
-	Brackbill
-	(
-		const word& name,
-		const dictionary& surfaceTensionForceProperties,
-		const interfaceProperties& interface,
-		const volScalarField& alpha1
-	);
+    //- construct from components
+    Brackbill
+    (
+        const word& name,
+        const dictionary& surfaceTensionForceProperties,
+        const interfaceProperties& interface,
+        const volScalarField& alpha1
+    );
 
 
 
@@ -90,12 +90,12 @@ public:
 
         //- Correct the surface tension model
         void correct();
-		
+        
         //- Returns surface tension force
         tmp<surfaceScalarField> Fstff() const
-		{
-			return Fstffv;
-		}
+        {
+            return Fstffv;
+        }
 
 
         //- Read the transportProperties dictionary and update

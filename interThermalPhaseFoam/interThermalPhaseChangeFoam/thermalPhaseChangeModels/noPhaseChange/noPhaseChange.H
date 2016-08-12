@@ -22,10 +22,10 @@ License
     along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
 
 Class
-	Foam::thermalPhaseChangeModel::noPhaseChange
+    Foam::thermalPhaseChangeModel::noPhaseChange
 
 Description
-	Dummy model for no phase change. Just set none as the model type.
+    Dummy model for no phase change. Just set none as the model type.
 
 SourceFiles
     noPhaseChange.C
@@ -55,11 +55,11 @@ class noPhaseChange
 
 // Private Member Functions
 
-	//- This phase change model needs access to the mesh:
-	const fvMesh& mesh_;
+    //- This phase change model needs access to the mesh:
+    const fvMesh& mesh_;
 
-	//- Phase change heat
-	volScalarField Q_pc_;
+    //- Phase change heat
+    volScalarField Q_pc_;
 
 public:
 
@@ -69,15 +69,15 @@ public:
 
     // Constructors
 
-	//- construct from components
-	noPhaseChange
-	(
-		const word& name,
-		const dictionary& thermalPhaseChangeProperties,
-		const twoPhaseThermalMixture& twoPhaseProperties,
-		const volScalarField& T,
-		const volScalarField& alpha1
-	);
+    //- construct from components
+    noPhaseChange
+    (
+        const word& name,
+        const dictionary& thermalPhaseChangeProperties,
+        const twoPhaseThermalMixture& twoPhaseProperties,
+        const volScalarField& T,
+        const volScalarField& alpha1
+    );
 
 
 
@@ -90,15 +90,15 @@ public:
 
         //- Correct the thermalPhaseChange model
         void correct()
-		{
+        {
 
-		}
-		
+        }
+        
         //- Return phase change heat
-		tmp<volScalarField> Q_pc() const
-		{
-			return Q_pc_;
-		}
+        tmp<volScalarField> Q_pc() const
+        {
+            return Q_pc_;
+        }
 
 
         //- Read the transportProperties dictionary and update

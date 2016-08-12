@@ -135,7 +135,7 @@ scalar RiddersRoot::root
                 // Never get here
                 FatalErrorIn
                 ( "Foam::scalar Foam::RiddersRoot<Func>::root" )
-		<< "Foam::scalar Foam::RiddersRoot<Func>::root\n"
+        << "Foam::scalar Foam::RiddersRoot<Func>::root\n"
                 << "(\n"
                 << "    const scalar x0,\n"
                 << "    const scalar x1\n"

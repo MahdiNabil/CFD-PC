@@ -62,20 +62,20 @@ class thermalPhaseChangeModel
 
 protected:
 
-	// Protected data
-	word name_;
+    // Protected data
+    word name_;
         dictionary thermalPhaseChangeProperties_;
-	//Thermal mixture props
-	const twoPhaseThermalMixture& twoPhaseProperties_;
-	//Pointers to important fields
-	const volScalarField& T_;
-	const volScalarField& alpha1_;
-	//Get these properties from the thermalPhaseChange dictionary		
-	dimensionedScalar T_sat_;
-	dimensionedScalar h_lv_;
-	// Switch to turn off and on the alpha1 and v_pc source terms
-	Switch sw_PCV;
-	Switch sw_alpha1Gen;
+    //Thermal mixture props
+    const twoPhaseThermalMixture& twoPhaseProperties_;
+    //Pointers to important fields
+    const volScalarField& T_;
+    const volScalarField& alpha1_;
+    //Get these properties from the thermalPhaseChange dictionary       
+    dimensionedScalar T_sat_;
+    dimensionedScalar h_lv_;
+    // Switch to turn off and on the alpha1 and v_pc source terms
+    Switch sw_PCV;
+    Switch sw_alpha1Gen;
 
 
     // Private Member Functions
@@ -101,11 +101,11 @@ public:
             thermalPhaseChangeModel,
             dictionary,
             (
-				const word& name,
-				const dictionary& thermalPhaseChangeProperties,
-				const twoPhaseThermalMixture& twoPhaseProperties,
-				const volScalarField& T,
-				const volScalarField& alpha1
+                const word& name,
+                const dictionary& thermalPhaseChangeProperties,
+                const twoPhaseThermalMixture& twoPhaseProperties,
+                const volScalarField& T,
+                const volScalarField& alpha1
             ),
             (name, thermalPhaseChangeProperties, twoPhaseProperties, T, alpha1)
         );
@@ -116,11 +116,11 @@ public:
         //- Return a reference to the selected phaseChange model
         static autoPtr<thermalPhaseChangeModel> New
         (
-			const word& name,
-			const dictionary& thermalPhaseChangeProperties,
-			const twoPhaseThermalMixture& twoPhaseProperties,
-			const volScalarField& T,
-			const volScalarField& alpha1
+            const word& name,
+            const dictionary& thermalPhaseChangeProperties,
+            const twoPhaseThermalMixture& twoPhaseProperties,
+            const volScalarField& T,
+            const volScalarField& alpha1
         );
 
 
@@ -129,11 +129,11 @@ public:
         //- Construct from components
         thermalPhaseChangeModel
         (
-			const word& name,
-			const dictionary& thermalPhaseChangeProperties,
-			const twoPhaseThermalMixture& twoPhaseProperties,
-			const volScalarField& T,
-			const volScalarField& alpha1
+            const word& name,
+            const dictionary& thermalPhaseChangeProperties,
+            const twoPhaseThermalMixture& twoPhaseProperties,
+            const volScalarField& T,
+            const volScalarField& alpha1
         );
 
 
@@ -143,20 +143,20 @@ public:
 
 
     // Member Functions
-		
-		//- Return the volumetric rate of phase change heat - i.e. the heat source/sink
-		//  rate per unit volume due to phase change. Evaporation is positive, and
-		//  condensation is negative, units (W/m^3)
-		virtual tmp<volScalarField> Q_pc() const = 0;
+        
+        //- Return the volumetric rate of phase change heat - i.e. the heat source/sink
+        //  rate per unit volume due to phase change. Evaporation is positive, and
+        //  condensation is negative, units (W/m^3)
+        virtual tmp<volScalarField> Q_pc() const = 0;
 
         //- Return Volumetric generation rate of volume due to phase change
-		//  i.e. how much fluid volume is generated due to evaporation
-		//  or destroyed due to condensation, units (1/s)
+        //  i.e. how much fluid volume is generated due to evaporation
+        //  or destroyed due to condensation, units (1/s)
         virtual tmp<volScalarField> PCV() const;
 
         //- Return volumetric production rate of the alpha1 field due to phase change
-		//  This is positive in the case of condensation, or negative
-		//  for evaporation, units (1/s)
+        //  This is positive in the case of condensation, or negative
+        //  for evaporation, units (1/s)
         virtual tmp<volScalarField> alpha1Gen() const;
 
         //- Correct the thermalPhaseChange model

@@ -92,20 +92,20 @@ int main(int argc, char *argv[])
 
         Info<< "Time = " << runTime.timeName() << nl << endl;
 
-		//Update turbulence and two phase properties
+        //Update turbulence and two phase properties
         twoPhaseProperties.correct();
 
         //Update fields for Kistler model
         muEffKistler = twoPhaseProperties.mu() + rho*turbulence->nut();
 
         //Update phase change rates:
-		phaseChangeModel->correct();
+        phaseChangeModel->correct();
 
-		//Solve for alpha1
+        //Solve for alpha1
         #include "alphaEqnSubCycle.H"
 
-		//Update the surface tension force model
-		stfModel->correct();
+        //Update the surface tension force model
+        stfModel->correct();
 
         // --- Pressure-velocity PIMPLE corrector loop
         while (pimple.loop())
@@ -124,11 +124,11 @@ int main(int argc, char *argv[])
             }
         }
 
-		Info<< "****" << endl;
-		Info<< "****Pressure range: " << gMax(p) - gMin(p) << " Pa" << endl;
-		Info<< "****Max velocity: " << gMax( mag(U.internalField()) ) << " m/s" << endl;
-		Info<< "****Phase change energy: " << gSum( phaseChangeModel->Q_pc()*mesh.V() ) << " W" << endl;
-		Info<< "****Volume change: " << gSum( phaseChangeModel->PCV() * mesh.V() ) << " m^3/s" << endl;
+        Info<< "****" << endl;
+        Info<< "****Pressure range: " << gMax(p) - gMin(p) << " Pa" << endl;
+        Info<< "****Max velocity: " << gMax( mag(U.internalField()) ) << " m/s" << endl;
+        Info<< "****Phase change energy: " << gSum( phaseChangeModel->Q_pc()*mesh.V() ) << " W" << endl;
+        Info<< "****Volume change: " << gSum( phaseChangeModel->PCV() * mesh.V() ) << " m^3/s" << endl;
 
         //For now, the energy equation is only 1-way coupled with the momentum/pressure equations,
         //so it can be solved explicitly, and separately here

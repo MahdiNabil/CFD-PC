@@ -21,7 +21,7 @@ License
     You should have received a copy of the GNU General Public License
     along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
 
-	//Added by RAS for thermal transport, basically a clone of the viscosity model
+    //Added by RAS for thermal transport, basically a clone of the viscosity model
 
 \*---------------------------------------------------------------------------*/
 

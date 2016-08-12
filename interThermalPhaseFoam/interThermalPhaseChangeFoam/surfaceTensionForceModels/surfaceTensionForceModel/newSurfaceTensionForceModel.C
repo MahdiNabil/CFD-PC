@@ -30,13 +30,13 @@ License
 Foam::autoPtr<Foam::surfaceTensionForceModel>
 Foam::surfaceTensionForceModel::New
 (
-	const word& name,
-	const dictionary& surfaceTensionForceProperties,
-	const interfaceProperties& interface,
-	const volScalarField& alpha1
+    const word& name,
+    const dictionary& surfaceTensionForceProperties,
+    const interfaceProperties& interface,
+    const volScalarField& alpha1
 )
 {
-	const word modelType(surfaceTensionForceProperties.lookup("model"));
+    const word modelType(surfaceTensionForceProperties.lookup("model"));
 
     Info<< "Selecting surface tension force model: " << modelType << endl;
 
