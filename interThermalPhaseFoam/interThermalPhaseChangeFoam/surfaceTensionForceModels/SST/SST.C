@@ -131,7 +131,6 @@ Foam::surfaceTensionForceModels::SST::SST
         pcRefCell,
         pcRefValue
     );
-Info<< "PRefCell " << pcRefCell << endl;
 	pcRefValue = 0;
 
 	correct();
@@ -191,7 +190,10 @@ void Foam::surfaceTensionForceModels::SST::correct()
 
 	//Get reference to pc
 	//Reference point should be located outside of the film thickness (condensate) in order to have stable pressure solution runtime
-	pcEqn.setReference(pcRefCell, getRefCellValue(pc, pcRefCell));
+	if (pc.needReference())
+	{
+		pcEqn.setReference(pcRefCell, getRefCellValue(pc, pcRefCell));
+	}
 
 	pcEqn.solve();
 

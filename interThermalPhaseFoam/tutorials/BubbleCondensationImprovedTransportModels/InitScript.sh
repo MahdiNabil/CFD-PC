@@ -22,7 +22,7 @@ mkdir -p 0
 cp -r A/* 0/
 mv 0/alpha1.org 0/alpha1
 setFields
-decomposePar -force
+#decomposePar -force
 rm -r Bubble_Condensation.dat
-mpirun -np 4 interThermalPhaseChangeFoam -parallel
-
+#mpirun -np 4 interThermalPhaseChangeFoam -parallel
+interThermalPhaseChangeFoam
