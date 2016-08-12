@@ -3,7 +3,8 @@
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     |
     \\  /    A nd           | Copyright (C) 2015, Alex Rattner and Mahdi Nabil
-     \\/     M anipulation  | Multiscale Thermal Fluids and Energy (MTFE) Laboratory, PSU 
+     \\/     M anipulation  | Multiscale Thermal Fluids and Energy (MTFE)
+                            | Laboratory, PSU 
 -------------------------------------------------------------------------------
 License
     This file is part of OpenFOAM.
@@ -34,7 +35,8 @@ Description
 if (adjustTimeStep)
 {
     scalar maxDeltaTFact =
-        min( min( maxCo/(CoNum + SMALL), maxAlphaCo/(alphaCoNum + SMALL) ), maxFourier/(FourierNum + SMALL) );
+        min( min( maxCo/(CoNum + SMALL), maxAlphaCo/(alphaCoNum + SMALL) ),
+             maxFourier/(FourierNum + SMALL) );
 
     scalar deltaTFact = min(min(maxDeltaTFact, 1.0 + 0.1*maxDeltaTFact), 1.2);
 

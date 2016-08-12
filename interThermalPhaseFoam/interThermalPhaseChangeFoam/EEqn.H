@@ -1,13 +1,16 @@
 
     //Update kEff
-    kEff = twoPhaseProperties.lambdaf() + fvc::interpolate( rho*twoPhaseProperties.cp()*turbulence->nut() );
+    kEff = 
+          twoPhaseProperties.lambdaf()
+        + fvc::interpolate( rho*twoPhaseProperties.cp()*turbulence->nut() );
 
 
 
     surfaceScalarField alphaEffRho
     (
          "alphaEff",
-        fvc::interpolate(rho) * ( twoPhaseProperties.alphaf() + fvc::interpolate( turbulence->nut() ) )
+        fvc::interpolate(rho)*(   twoPhaseProperties.alphaf()
+                                + fvc::interpolate( turbulence->nut() ) )
     ); 
 
     //Use limited alpha1:
@@ -15,7 +18,7 @@
 
     //Latent heat accounted for in source term
     T.correctBoundaryConditions();
-    H = ( (T - T_0)*(limAlpha1*rho1*cp1 + (1-limAlpha1)*rho2*cp2) )/rho;
+    H = ( (T - T_0)*(limAlpha1*rho1*cp1 + (1.0 - limAlpha1)*rho2*cp2) )/rho;
 
     //Scalar factor for artificial diffusion in the energy equation
     scalar ChillaxFac = 1.0;
@@ -31,13 +34,14 @@
             fvm::ddt(rho, H)
             + fvm::div(rhoPhi, H)
             - fvc::laplacian(kEff, T)
-            - ChillaxFac*( fvm::laplacian(alphaEffRho, H) - fvc::laplacian(alphaEffRho, H) )
+            - ChillaxFac*(   fvm::laplacian(alphaEffRho, H)
+                           - fvc::laplacian(alphaEffRho, H) )
             + phaseChangeModel->Q_pc()
         );
 
         EEqn.solve();
         //Now reevaluate T for the updated enthalpy fields
-        T = T_0 + rho*H/( limAlpha1*rho1*cp1 + (1-limAlpha1)*rho2*cp2 );
+        T = T_0 + rho*H/(limAlpha1*rho1*cp1 + (1.0 - limAlpha1)*rho2*cp2);
 
      }
 

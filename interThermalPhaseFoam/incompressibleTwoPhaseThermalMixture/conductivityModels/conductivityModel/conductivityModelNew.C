@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2016 Alex Rattner
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -37,9 +37,13 @@ Foam::autoPtr<Foam::conductivityModel> Foam::conductivityModel::New
     const surfaceScalarField& phi
 )
 {
-    const word modelType(conductivityProperties.lookup("thermalTransportModel")); //changed from transportModel for laminar fluids
+    const word modelType
+    (
+        conductivityProperties.lookup("thermalTransportModel")
+    ); //changed from transportModel for laminar fluids
 
-    Info<< "Selecting incompressible thermal transport model " << modelType << endl;
+    Info<< "Selecting incompressible thermal transport model " 
+        << modelType << endl;
 
     dictionaryConstructorTable::iterator cstrIter =
         dictionaryConstructorTablePtr_->find(modelType);

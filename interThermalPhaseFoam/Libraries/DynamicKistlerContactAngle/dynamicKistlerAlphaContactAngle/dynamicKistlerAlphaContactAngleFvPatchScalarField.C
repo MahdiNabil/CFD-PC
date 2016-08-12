@@ -38,10 +38,10 @@ namespace Foam
 // * * * * * * * * * * * * * * * Static Member Data  * * * * * * * * * * * * //
 
 const scalar dynamicKistlerAlphaContactAngleFvPatchScalarField::convertToDeg =
-             180.0/constant::mathematical::pi;
+    180.0/constant::mathematical::pi;
 
 const scalar dynamicKistlerAlphaContactAngleFvPatchScalarField::convertToRad =
-             constant::mathematical::pi/180.0;
+    constant::mathematical::pi/180.0;
 
 const scalar dynamicKistlerAlphaContactAngleFvPatchScalarField::theta0 = 90.0;
 
@@ -140,10 +140,10 @@ tmp<scalarField> dynamicKistlerAlphaContactAngleFvPatchScalarField::theta
         FatalErrorIn
         (
             "dynamicKistlerAlphaContactAngleFvPatchScalarField"
-        )   << " muEffKistler or sigma set inconsitently, muEffKistler = " << muName_
-            << ", sigmaKistler = " << sigmaName_ << '.' << nl
+        )   << " muEffKistler or sigma set inconsitently, muEffKistler = "
+            << muName_ << ", sigmaKistler = " << sigmaName_ << '.' << nl
             << "    Set both muEffKistler and sigmaKistler according to the "
-           "definition of dynamicKistlerAlphaContactAngle"
+            << "definition of dynamicKistlerAlphaContactAngle"
             << "\n    on patch " << this->patch().name()
             << " of field " << this->dimensionedInternalField().name()
             << " in file " << this->dimensionedInternalField().objectPath()
@@ -153,11 +153,11 @@ tmp<scalarField> dynamicKistlerAlphaContactAngleFvPatchScalarField::theta
 
     //RATTNER to change, we probably want to switch mu to muEff
     const fvPatchField<scalar>& mup =
-    patch().lookupPatchField<volScalarField, scalar>(muName_);
+        patch().lookupPatchField<volScalarField, scalar>(muName_);
 
 
     const fvPatchField<scalar>& sigmap =
-    patch().lookupPatchField<volScalarField, scalar>(sigmaName_);
+        patch().lookupPatchField<volScalarField, scalar>(sigmaName_);
 
     vectorField nf = patch().nf();
 
@@ -179,17 +179,20 @@ tmp<scalarField> dynamicKistlerAlphaContactAngleFvPatchScalarField::theta
     scalarField Ca = mup*mag(uwall)/sigmap;
 
     //eb - Instantiate function object InverseHoffmanFunction for thetaA and thetaR
-    dynamicKistlerAlphaContactAngleFvPatchScalarField::InverseHoffmanFunction InvHoffFuncThetaA
+    dynamicKistlerAlphaContactAngleFvPatchScalarField::InverseHoffmanFunction
+    InvHoffFuncThetaA
     (
         convertToRad*thetaA_
     );
 
-    dynamicKistlerAlphaContactAngleFvPatchScalarField::InverseHoffmanFunction InvHoffFuncThetaR
+    dynamicKistlerAlphaContactAngleFvPatchScalarField::InverseHoffmanFunction
+    InvHoffFuncThetaR
     (
         convertToRad*thetaR_
     );
 
-    //eb - Calculate InverseHoffmanFunction for thetaA and thetaR using RiddersRoot
+    //eb - Calculate InverseHoffmanFunction for thetaA and thetaR using
+    // RiddersRoot
     RiddersRoot RRInvHoffFuncThetaA(InvHoffFuncThetaA, 1.e-10);
     scalar InvHoffFuncThetaAroot = RRInvHoffFuncThetaA.root(0,65);
 
@@ -199,34 +202,23 @@ tmp<scalarField> dynamicKistlerAlphaContactAngleFvPatchScalarField::theta
     //eb - Calculate and return the value of contact angle on patch faces,
     //     a general approach: the product of Uwall and nWall is negative
     //     for advancing and positiv for receding motion.
-    //     thetaDp is initialized to 90 degrees corresponding to no wall adhesion
+    //     thetaDp is initialized to 90 degrees corresponding to no wall
+    //     adhesion
     scalarField thetaDp(patch().size(), convertToRad*theta0);
     forAll(uwall, pfacei)
     {
         if(uwall[pfacei] < 0.0)
         {
-            thetaDp[pfacei] = HoffmanFunction(Ca[pfacei] + InvHoffFuncThetaAroot);
+            thetaDp[pfacei] = HoffmanFunction(   Ca[pfacei]
+                                               + InvHoffFuncThetaAroot);
         }
         else if (uwall[pfacei] > 0.0)
         {
-            thetaDp[pfacei] = HoffmanFunction(Ca[pfacei] + InvHoffFuncThetaRroot);
+            thetaDp[pfacei] = HoffmanFunction(   Ca[pfacei]
+                                               + InvHoffFuncThetaRroot);
         }
     }
-/*
-//////////////////// eb - Print out some data ////////////////////////
-    Info << "pfacei: " << tab  << "nf: "<< tab << "Uwall: " << tab
-         << "nHat: " << tab << "nWall: " << tab << "uwall: " << tab
-         << "mup: " << tab<< "sigmap: " << tab << "Ca: " << tab << "thetaD: " << endl;
-
-    forAll(uwall, pfacei)
-    {
-        Info << "[" << pfacei << "]" << tab << nf[pfacei] << tab << Uwall[pfacei] << tab
-             << nHat[pfacei] << tab << nWall[pfacei] << tab << uwall[pfacei] << tab
-             << mup[pfacei] << tab << sigmap[pfacei] << tab << Ca [pfacei]<< tab
-             << convertToDeg*thetaDp[pfacei] << endl;
-    }
-//////////////////////////////////////////////////////////////////////
-*/
+    
     return convertToDeg*thetaDp;
 }
 
@@ -253,7 +245,11 @@ void dynamicKistlerAlphaContactAngleFvPatchScalarField::write(Ostream& os) const
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-makePatchTypeField(fvPatchScalarField, dynamicKistlerAlphaContactAngleFvPatchScalarField);
+makePatchTypeField
+(
+    fvPatchScalarField,
+    dynamicKistlerAlphaContactAngleFvPatchScalarField
+);
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 

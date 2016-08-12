@@ -151,8 +151,9 @@ const scalar CHSP = CombinedHSPressure ? 1.0 : 0;
         )
     );
 
-    //Kistler contact angle model needs the sigma vol scalar field to be in the objectRegistry
-    // - even though sigma is already in the interface object below
+    // Kistler contact angle model needs the sigma vol scalar field to be in the
+    // objectRegistry - even though sigma is already in the interface object
+    // below
     volScalarField sigma
     (
         IOobject
@@ -202,13 +203,26 @@ const scalar CHSP = CombinedHSPressure ? 1.0 : 0;
     //Initialize the phase change model:
     autoPtr<thermalPhaseChangeModel> phaseChangeModel
     (
-        thermalPhaseChangeModel::New( thermalPhaseChangeProperties.lookup("model"), thermalPhaseChangeProperties, twoPhaseProperties, T, alpha1 )
+        thermalPhaseChangeModel::New
+        (
+            thermalPhaseChangeProperties.lookup("model"),
+            thermalPhaseChangeProperties,
+            twoPhaseProperties,
+            T,
+            alpha1
+        )
     );
 
     //Initialize the surface tension force model:
     autoPtr<surfaceTensionForceModel> stfModel
     (
-        surfaceTensionForceModel::New( surfaceTensionForceProperties.lookup("model"), surfaceTensionForceProperties, interface, alpha1 )
+        surfaceTensionForceModel::New
+        (
+            surfaceTensionForceProperties.lookup("model"),
+            surfaceTensionForceProperties,
+            interface,
+            alpha1
+        )
     );
     
 

@@ -51,7 +51,7 @@ namespace Foam
 {
 
 /*---------------------------------------------------------------------------*\
-                           Class dynamicAlphaContactAngleFvPatch Declaration
+                  Class dynamicAlphaContactAngleFvPatch Declaration
 \*---------------------------------------------------------------------------*/
 
 class dynamicKistlerAlphaContactAngleFvPatchScalarField
@@ -98,7 +98,8 @@ public:
             {
                 return
                   pow(fHI,0.706)
-                - pow((1+1.31*pow(fHI,0.99)),0.706)*(1.0/5.16)*atanh((1-cos(thetaE_))/2);
+                -   pow((1+1.31*pow(fHI,0.99)),0.706)
+                   *(1.0/5.16)*atanh((1-cos(thetaE_))/2);
             }
     };
 

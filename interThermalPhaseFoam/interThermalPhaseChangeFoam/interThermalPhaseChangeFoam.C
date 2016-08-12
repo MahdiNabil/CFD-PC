@@ -2,8 +2,9 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2015, Alex Rattner and Mahdi Nabil
-     \\/     M anipulation  | Multiscale Thermal Fluids and Energy (MTFE) Laboratory, PSU 
+    \\  /    A nd           | Copyright (C) 2016, Alex Rattner and Mahdi Nabil
+     \\/     M anipulation  | Multiscale Thermal Fluids and Energy (MTFE)
+                            | Laboratory, PSU 
 -------------------------------------------------------------------------------
 License
     This file is part of OpenFOAM.
@@ -37,9 +38,6 @@ Description
     Turbulence modelling is generic, i.e. laminar, RAS or LES may be selected.
 
     For a two-fluid approach see twoPhaseEulerFoam.
-
-    Support for the Kistler (1993) dynamic contact angle model based on earlier
-    work by Edin Berberovic (2008)
 
 \*---------------------------------------------------------------------------*/
 
@@ -125,13 +123,18 @@ int main(int argc, char *argv[])
         }
 
         Info<< "****" << endl;
-        Info<< "****Pressure range: " << gMax(p) - gMin(p) << " Pa" << endl;
-        Info<< "****Max velocity: " << gMax( mag(U.internalField()) ) << " m/s" << endl;
-        Info<< "****Phase change energy: " << gSum( phaseChangeModel->Q_pc()*mesh.V() ) << " W" << endl;
-        Info<< "****Volume change: " << gSum( phaseChangeModel->PCV() * mesh.V() ) << " m^3/s" << endl;
+        Info<< "****Pressure range: " << gMax(p) - gMin(p)
+            << " Pa" << endl;
+        Info<< "****Max velocity: " << gMax( mag(U.internalField()) )
+            << " m/s" << endl;
+        Info<< "****Phase change energy: "
+            << gSum( phaseChangeModel->Q_pc()*mesh.V() ) << " W" << endl;
+        Info<< "****Volume change: "
+            << gSum( phaseChangeModel->PCV() * mesh.V() ) << " m^3/s" << endl;
 
-        //For now, the energy equation is only 1-way coupled with the momentum/pressure equations,
-        //so it can be solved explicitly, and separately here
+        // For now, the energy equation is only 1-way coupled with the
+        // momentum/pressure equations, so it can be solved explicitly, and
+        // separately here
         #include "EEqn.H"
 
         runTime.write();

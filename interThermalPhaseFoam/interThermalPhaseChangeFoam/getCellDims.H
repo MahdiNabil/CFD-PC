@@ -3,7 +3,8 @@
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     |
     \\  /    A nd           | Copyright (C) 2015, Alex Rattner and Mahdi Nabil
-     \\/     M anipulation  | Multiscale Thermal Fluids and Energy (MTFE) Laboratory, PSU 
+     \\/     M anipulation  | Multiscale Thermal Fluids and Energy (MTFE)
+                            | Laboratory, PSU 
 -------------------------------------------------------------------------------
 License
     This file is part of OpenFOAM.
@@ -44,7 +45,8 @@ volScalarField CellDims
 );
 
 
-//Like above, but longest cell dimensions - useful for checking interface location
+// Like above, but longest cell dimensions - useful for checking interface
+// location
 volScalarField MaxCellDims
 (
     IOobject
@@ -61,24 +63,28 @@ volScalarField MaxCellDims
 
 const cellList& cells = mesh.cells();
 
-forAll(cells, c) //over all cells
+forAll(cells, c) // over all cells
 {
-     scalar Dim = GREAT;
-     scalar MaxDim = SMALL;
+    scalar Dim = GREAT;
+    scalar MaxDim = SMALL;
 
-     const labelList& curEdges = mesh.cellEdges()[c];
+    const labelList& curEdges = mesh.cellEdges()[c];
 
-     //Now go through cell edges and get min
-     forAll (curEdges, e)
-     {
-          scalar len = mesh.edges()[ curEdges[e] ].mag( mesh.points() );
-          if (len < Dim)
-          {  Dim = len;  }
-          if (len > MaxDim)
-          {  MaxDim = Dim;  }
-     }
-     CellDims[c] = Dim;
-     MaxCellDims[c] = MaxDim;
+    // Now go through cell edges and get min
+    forAll (curEdges, e)
+    {
+        scalar len = mesh.edges()[ curEdges[e] ].mag( mesh.points() );
+        if (len < Dim)
+        {  
+            Dim = len;
+        }
+        if (len > MaxDim)
+        {
+            MaxDim = Dim;
+        }
+    }
+    CellDims[c] = Dim;
+    MaxCellDims[c] = MaxDim;
 }
 
 Info<< "Minimum cell dimension: " <<  gMin(CellDims) << endl;

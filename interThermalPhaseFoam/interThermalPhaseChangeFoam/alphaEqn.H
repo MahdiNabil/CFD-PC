@@ -32,7 +32,6 @@
                 runTime.timeName(),
                 mesh
             ),
-            //0*divU
             divU
         );
 
@@ -48,8 +47,6 @@
             phaseChangeModel->alpha1Gen()
         );
 
-
-        //MULES::implicitSolve
         MULES::explicitSolve
         (
             geometricOneField(),

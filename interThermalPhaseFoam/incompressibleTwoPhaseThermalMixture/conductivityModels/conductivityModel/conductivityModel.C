@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2016 Alex Rattner
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -21,7 +21,7 @@ License
     You should have received a copy of the GNU General Public License
     along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
 
-    //Added by RAS for thermal transport, basically a clone of the viscosity model
+    Added by RAS for thermal transport, basically a clone of the viscosity model
 
 \*---------------------------------------------------------------------------*/
 
@@ -57,7 +57,7 @@ Foam::conductivityModel::conductivityModel
 
 // * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * * //
 
-//I don't think this will ever be used, but W/E
+//- I don't think this will ever be used, but W/E
 Foam::tmp<Foam::volScalarField> Foam::conductivityModel::strainRate() const
 {
     return sqrt(2.0)*mag(symm(fvc::grad(U_)));

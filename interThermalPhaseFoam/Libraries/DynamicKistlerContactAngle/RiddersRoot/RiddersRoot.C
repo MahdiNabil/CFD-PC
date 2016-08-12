@@ -135,7 +135,7 @@ scalar RiddersRoot::root
                 // Never get here
                 FatalErrorIn
                 ( "Foam::scalar Foam::RiddersRoot<Func>::root" )
-        << "Foam::scalar Foam::RiddersRoot<Func>::root\n"
+                << "Foam::scalar Foam::RiddersRoot<Func>::root\n"
                 << "(\n"
                 << "    const scalar x0,\n"
                 << "    const scalar x1\n"
@@ -171,7 +171,8 @@ scalar RiddersRoot::root
         FatalErrorIn
         ( "Foam::scalar Foam::RiddersRoot<Func>::root" )
         <<  "Foam::scalar Foam::RiddersRoot<Func>::root\n"
-        <<  "(\n/home/arattner3/OpenFOAM/OpenFOAM-2.0.x/src/transportModels/twoPhaseInterfaceProperties/alphaContactAngle/RiddersRoot"
+        <<  "(\n/home/arattner3/OpenFOAM/OpenFOAM-2.4.0/src/transportModels/"
+        <<  "twoPhaseInterfaceProperties/alphaContactAngle/RiddersRoot"
         <<  "    const scalar x0,\n"
         <<  "    const scalar x1\n"
         <<  ") const"

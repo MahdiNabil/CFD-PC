@@ -54,7 +54,7 @@ const scalar CHSP = CombinedHSPressure ? 1.0 : 0;
 
     if (!CombinedHSPressure)
     {
-        phi_rgh =  -ghf*fvc::snGrad(rho) * rAUf*mesh.magSf();
+        phi_rgh =  -ghf*fvc::snGrad(rho)*rAUf*mesh.magSf();
     }
 
     phi = phiU + stfModel->phi_c( rAUf ) + phi_rgh;
@@ -73,17 +73,21 @@ const scalar CHSP = CombinedHSPressure ? 1.0 : 0;
     while (pimple.correctNonOrthogonal())
     {
 
-    //No need to correct p_rgh for phase change - already incorporated into div(phi) 
+    // No need to correct p_rgh for phase change
+    // - already incorporated into div(phi) 
         fvScalarMatrix p_rghEqn
         (
-            fvm::laplacian(rAUf, p_rgh) == fvc::div(phi) - phaseChangeModel->PCV()
+            fvm::laplacian(rAUf, p_rgh)
+            == 
+            fvc::div(phi) - phaseChangeModel->PCV()
         );
 
         p_rghEqn.setReference(pRefCell, getRefCellValue(p_rgh, pRefCell));
 
         p_rghEqn.solve(mesh.solver(p_rgh.select(pimple.finalInnerIter())));
 
-    //This is -= (unlike phaseChangeFoam) because the sign of the governing equations is changed.
+    // This is -= (unlike phaseChangeFoam) because the sign of the governing
+    // equations is changed.
         if (pimple.finalNonOrthogonalIter())
         {
             phi -= p_rghEqn.flux();
@@ -97,7 +101,8 @@ const scalar CHSP = CombinedHSPressure ? 1.0 : 0;
     U.correctBoundaryConditions();
 
     #include "continuityErrs.H"
-    p == p_rgh + (1.0-CHSP)*rho*gh + stfModel->pcap();    //Add in surface tension
+    //Add in surface tension
+    p == p_rgh + (1.0-CHSP)*rho*gh + stfModel->pcap();
 
     if (p_rgh.needReference())
     {
@@ -107,7 +112,8 @@ const scalar CHSP = CombinedHSPressure ? 1.0 : 0;
             p.dimensions(),
             pRefValue - getRefCellValue(p, pRefCell)
         );
-        p_rgh = p - (1.0-CHSP)*rho*gh - stfModel->pcap(); //Add in surface tension
+        //Add in surface tension
+        p_rgh = p - (1.0-CHSP)*rho*gh - stfModel->pcap();
     }
 
 }
