@@ -79,8 +79,8 @@ functions
 			//***********************************************************************
 			//Get top and bottom half phase change heating rates
 			const scalar y_C = 0.001;
-			const scalar Q_top = gSum( -mesh().V() * Q_pc.internalField() * pos( mesh().C().internalField().component(1) - y_C ) );
-			const scalar Q_bot = gSum( -mesh().V() * Q_pc.internalField() * neg( mesh().C().internalField().component(1) - y_C ) );
+//			const scalar Q_top = gSum( -mesh().V() * Q_pc.internalField() * pos( mesh().C().internalField().component(1) - y_C ) );
+//			const scalar Q_bot = gSum( -mesh().V() * Q_pc.internalField() * neg( mesh().C().internalField().component(1) - y_C ) );
 			
 
 
@@ -97,14 +97,14 @@ functions
 			//***********************************************************************
 			//Now get bubble velocity
 			const volVectorField& U = mesh().lookupObject<volVectorField>("U");
-			//const vector U_Vapor = gSum( (1.0-alpha1.internalField()) * U.internalField() * mesh().V() );
+			const vector U_Vapor = gSum( (1.0-alpha1.internalField()) * U.internalField() * mesh().V() );
 
-			//const scalar Uy_Vapor = U_Vapor[1]/V_Vapor;
+			const scalar Uy_Vapor = U_Vapor[1]/V_Vapor;
 			//Updated bubble velocity
-			const fvBoundaryMesh& bMesh = mesh().boundary();
-			const label TopPatchID  = bMesh.findPatchID("Top");
-			const vector UpU( U.boundaryField()[TopPatchID][0] );
-			const scalar Uy_Vapor = -UpU[1];
+			//const fvBoundaryMesh& bMesh = mesh().boundary();
+			//const label TopPatchID  = bMesh.findPatchID("Top");
+			//const vector UpU( U.boundaryField()[TopPatchID][0] );
+			//const scalar Uy_Vapor = -UpU[1];
 
 			//***********************************************************************
 
@@ -117,7 +117,7 @@ functions
 				std::ofstream fs;
 				fs.open ("Bubble_Condensation.dat", std::fstream::app);
 				fs.precision(8);
-				fs << t << "\t" << Q_pcInt << "\t" << VoidFrac << "\t" << Uy_Vapor << "\t" << Q_bot << "\t" << Q_top << "\n" ;
+				fs << t << "\t" << Q_pcInt << "\t" << VoidFrac << "\t" << Uy_Vapor << "\n" ;
 				fs.close();
 			}
 
@@ -154,20 +154,19 @@ functions
 			const scalar BubCenterY = BubVolC[1] / BubVol;
 			const scalar BubU       = BubVolU[1] / BubVol;
 			Info<< "Bub Y: " << BubCenterY << "     Bub V: " << BubU << endl;
-
-
-			//Try dangerously tweaking the BC + U-field here
-			vector UpU( U_nc.boundaryField()[TopPatchID][0] );
-			UpU[1] -= 0.1*BubU;
+			
 			const dimensionedVector U_correct("U_correct", dimLength/dimTime, vector(0, -0.1*BubU, 0) );
 			U_nc += U_correct;
 
-			fixedValueFvPatchVectorField& UInBC = refCast<fixedValueFvPatchVectorField>( U_nc.boundaryField()[TopPatchID] );
-			forAll(UInBC, j)
-			{
-				UInBC[j] = UpU;
+            //Update the inlet velocity field, which better be a fixedValuefield
+            if( isA<fixedValueFvPatchVectorField>( U_nc.boundaryField()[TopPatchID] ) )
+            {
+			    fixedValueFvPatchVectorField& UInBC = refCast<fixedValueFvPatchVectorField>( U_nc.boundaryField()[TopPatchID] );
+			    forAll(UInBC, j)
+			    {
+				    UInBC[j] += U_correct.value();
+			    }
 			}
-			
 
 		#}; 
 
@@ -176,7 +175,6 @@ functions
 
 		#};
 	}
-
 
 
 );
