@@ -75,7 +75,20 @@ Foam::thermalPhaseChangeModels::HiLoNoPCVAlpha1::HiLoNoPCVAlpha1
         mesh_,
         dimensionedScalar( "dummy", dimensionSet(1,-1,-3,0,0,0,0), 0 )
     ),
-    InterfaceMeshGraph( mesh_, alpha1 ),
+    alpha1sm
+    (
+         IOobject
+        (
+            "alpha1sm",
+            T_.time().timeName(),
+            mesh_,
+            IOobject::NO_READ,
+            IOobject::NO_WRITE
+        ),
+        mesh_,
+        scalar(0)  
+    ),
+    InterfaceMeshGraph( mesh_, alpha1sm ),
     InterfaceField_
     (
         IOobject
@@ -146,6 +159,11 @@ void Foam::thermalPhaseChangeModels::HiLoNoPCVAlpha1::calcQ_pc()
     // Get the sets of interface cell face pairs for evaporation/condensation
     std::vector<MeshGraph::CellFacePair> CondIntCellFacePairs;
     std::vector<MeshGraph::CellFacePair> EvapIntCellFacePairs;
+
+    //Smooth alpha1 field
+    alpha1sm = fvc::average(fvc::interpolate(alpha1_));
+    alpha1sm = fvc::average(fvc::interpolate(alpha1sm));
+    alpha1sm = fvc::average(fvc::interpolate(alpha1sm));
 
 
     //Find internal interface cell pairs using graph traversal

@@ -77,6 +77,9 @@ class HiLoNoPCVAlpha1
     //- Phase change heat
     volScalarField Q_pc_;
 
+    //- Try alpha1 smoothing to improve interface face pair detection?
+    volScalarField alpha1sm;
+
     //- Graph of mesh grid, used for finding interface cells
     MeshGraph InterfaceMeshGraph;
 
