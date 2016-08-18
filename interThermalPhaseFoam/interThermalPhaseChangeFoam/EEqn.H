@@ -21,7 +21,7 @@
     H = ( (T - T_0)*(limAlpha1*rho1*cp1 + (1.0 - limAlpha1)*rho2*cp2) )/rho;
 
     //Scalar factor for artificial diffusion in the energy equation
-    scalar ChillaxFac = 1.0;
+    const scalar RelaxFac = 1.0;
 
     //Energy-temperature loop
     label nEnergyLoops(readLabel(pimple.dict().lookup("nEnergyLoops")));
@@ -34,7 +34,7 @@
             fvm::ddt(rho, H)
             + fvm::div(rhoPhi, H)
             - fvc::laplacian(kEff, T)
-            - ChillaxFac*(   fvm::laplacian(alphaEffRho, H)
+            - RelaxFac*(   fvm::laplacian(alphaEffRho, H)
                            - fvc::laplacian(alphaEffRho, H) )
             + phaseChangeModel->Q_pc()
         );
