@@ -1,7 +1,7 @@
 # interThermalPhaseChangeFoam
 CFD simulation platform for liquid-vapor thermal phase change flows 
 
-Copyright 2015: Alexander S Rattner, Mahdi Nabil, Sanjay S. Adhikari
+Copyright 2016: Alexander S Rattner, Mahdi Nabil, Sanjay S. Adhikari
 
 [Multiscale Thermal Fluids and Energy (MTFE) Laboratory](http://sites.psu.edu/mtfe/)
 
@@ -27,7 +27,7 @@ Navigate to a working folder in a shell terminal, clone the git code repository,
 ```
 $ git clone https://github.com/MahdiNabil/CFD-PC.git CFD-PC
 $ cd CFD-PC/interThermalPhaseFoam
-$ git checkout tags/v2.4.0.4
+$ git checkout tags/v2.4.0.5
 $ source Allwmake.sh
 ```
 
@@ -97,11 +97,11 @@ Two sample tutorial cases, i.e. Horizontal film condensation and Smooth Nusselt 
 
 ## Phase Change Models
 A number of  phase change models are included with the solver, and are described below:
-* **HiLoRelaxed** – An improved version of the model of Rattner and Garimella (2014) that determines the phase change heat sources so that interface cells recover the saturation temperature at each time step. This model performs a graph scan over mesh cells, and applies phase change on the two-cell thick interface layer about user-specified threshold values of α1. Different high and low threshold values for condensation and evaporation, respectively, can be specified, which has been found to reduce numerical smearing of the interface. Numerical under-relaxation of the phase change rate is supported, which can improve numerical stability.
-* **HiLoRelaxedSplit** – A modified version of the above model, which splits the liquid and vapor portions of the dilatation rate, and applies them on the respective sides of the interface (Rattner, 2015). This approach yields better conservation of the two phases, and reduces smearing of the interface during evaporation.
-* **HiLoNoPCV** – A modified version of HiLoRelaxed that sets the dilatation rate to 0. This model can yield accurate results with reduced CFL time step constraints for cases without significant vapor-phase effects on phase change (e.g., falling film condensation in a quiescent vapor medium).
-* **HiLoNoPCVAlpha1** – A modified version of HiLoNoPCV that sets both the dilatation rate and phase fraction source term to 0. This model can also yield accurate results with reduced CFL time step constraints for cases without significant vapor-phase effects on phase change 
-* **Yang** – An implementation of the empirical rate parameter model of Yang et al. (2008).
+* **InterfaceEquilibrium** – An improved version of the model of Rattner and Garimella (2014) that determines the phase change heat sources so that interface cells recover the saturation temperature at each time step. This model performs a graph scan over mesh cells, and applies phase change on the two-cell thick interface layer about user-specified threshold values of α1. Different high and low threshold values for condensation and evaporation, respectively, can be specified, which has been found to reduce numerical smearing of the interface. Numerical under-relaxation of the phase change rate is supported, which can improve numerical stability.
+* **InterfaceEquilibrium_SplitDilatation** – A modified version of the above model, which splits the liquid and vapor portions of the dilatation rate, and applies them on the respective sides of the interface (Rattner, 2015). This approach yields better conservation of the two phases, and reduces smearing of the interface during evaporation.
+* **InterfaceEquilibrium_NoDilatation** – A modified version of InterfaceEquilibrium that sets the dilatation rate to 0. This model can yield accurate results with reduced CFL time step constraints for cases without significant vapor-phase effects on phase change (e.g., falling film condensation in a quiescent vapor medium).
+* **HiLoNoPCVAlpha1** – A modified version of InterfaceEquilibrium that sets both the dilatation rate and phase fraction source term to 0. This model can also yield accurate results with reduced CFL time step constraints for cases without significant vapor-phase effects on phase change 
+* **EmpiricalRateParameter** – An implementation of the empirical rate parameter model of Yang et al. (2008).
 
 ## Example applications
 * Progression of dropwise condensation for a moderate surface tension fluid
