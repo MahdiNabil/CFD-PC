@@ -22,7 +22,7 @@ License
     along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
 
 Class
-    Foam::thermalPhaseChangeModel::HiLoRelaxed
+    Foam::thermalPhaseChangeModel::InterfaceEquilibrium
 
 Description
     This model forces wall and interface cells to the equilibrium state,
@@ -41,12 +41,12 @@ Description
 
 
 SourceFiles
-    HiLoRelaxed.C
+    InterfaceEquilibrium.C
 
 \*--------------------------------------------------------------------*/
 
-#ifndef HiLoRelaxed_H
-#define HiLoRelaxed_H
+#ifndef InterfaceEquilibrium_H
+#define InterfaceEquilibrium_H
 
 #include "thermalPhaseChangeModel.H"
 #include "MeshGraph.H"
@@ -59,10 +59,10 @@ namespace thermalPhaseChangeModels
 {
 
 /*--------------------------------------------------------------------*\
-                            Class HiLoRelaxed
+                            Class InterfaceEquilibrium
 \*--------------------------------------------------------------------*/
 
-class HiLoRelaxed
+class InterfaceEquilibrium
 :
     public thermalPhaseChangeModel
 {
@@ -96,13 +96,13 @@ class HiLoRelaxed
 public:
 
     //- Runtime type information
-    TypeName("HiLoRelaxed");
+    TypeName("InterfaceEquilibrium");
 
 
     // Constructors
 
     //- construct from components
-    HiLoRelaxed
+    InterfaceEquilibrium
     (
         const word& name,
         const dictionary& thermalPhaseChangeProperties,
@@ -113,7 +113,7 @@ public:
 
 
     //- Destructor
-    ~HiLoRelaxed()
+    ~InterfaceEquilibrium()
     {}
 
 

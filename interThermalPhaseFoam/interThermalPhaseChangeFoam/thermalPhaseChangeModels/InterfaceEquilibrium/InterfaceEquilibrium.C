@@ -23,7 +23,7 @@ License
 
 \*---------------------------------------------------------------------------*/
 
-#include "HiLoRelaxed.H"
+#include "InterfaceEquilibrium.H"
 #include "addToRunTimeSelectionTable.H"
 
 // * * * * * * * * * * * * * * Static Data Members * * * * * * * * * * * * * //
@@ -32,11 +32,11 @@ namespace Foam
 {
 namespace thermalPhaseChangeModels
 {
-    defineTypeNameAndDebug(HiLoRelaxed, 0);
+    defineTypeNameAndDebug(InterfaceEquilibrium, 0);
     addToRunTimeSelectionTable
     (
         thermalPhaseChangeModel, 
-        HiLoRelaxed, 
+        InterfaceEquilibrium, 
         dictionary
     );
 }
@@ -44,7 +44,7 @@ namespace thermalPhaseChangeModels
 
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
 
-Foam::thermalPhaseChangeModels::HiLoRelaxed::HiLoRelaxed
+Foam::thermalPhaseChangeModels::InterfaceEquilibrium::InterfaceEquilibrium
 (
         const word& name,
         const dictionary& thermalPhaseChangeProperties,
@@ -113,7 +113,7 @@ Foam::thermalPhaseChangeModels::HiLoRelaxed::HiLoRelaxed
 
 // * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * * //
 
-void Foam::thermalPhaseChangeModels::HiLoRelaxed::calcQ_pc()
+void Foam::thermalPhaseChangeModels::InterfaceEquilibrium::calcQ_pc()
 {
     // Get the sets of interface cell face pairs for evaporation/condensation
     std::vector<MeshGraph::CellFacePair> CondIntCellFacePairs;
@@ -244,7 +244,7 @@ void Foam::thermalPhaseChangeModels::HiLoRelaxed::calcQ_pc()
 }
 
 
-bool Foam::thermalPhaseChangeModels::HiLoRelaxed::
+bool Foam::thermalPhaseChangeModels::InterfaceEquilibrium::
 read(const dictionary& thermalPhaseChangeProperties)
 {
     thermalPhaseChangeModel::read(thermalPhaseChangeProperties);

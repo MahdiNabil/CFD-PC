@@ -23,7 +23,7 @@ License
 
 \*---------------------------------------------------------------------------*/
 
-#include "Yang.H"
+#include "EmpiricalRateParameter.H"
 #include "addToRunTimeSelectionTable.H"
 
 // * * * * * * * * * * * * * * Static Data Members * * * * * * * * * * * * * //
@@ -32,14 +32,19 @@ namespace Foam
 {
 namespace thermalPhaseChangeModels
 {
-    defineTypeNameAndDebug(Yang, 0);
-    addToRunTimeSelectionTable(thermalPhaseChangeModel, Yang, dictionary);
+    defineTypeNameAndDebug(EmpiricalRateParameter, 0);
+    addToRunTimeSelectionTable
+    (
+        thermalPhaseChangeModel,
+        EmpiricalRateParameter,
+        dictionary
+    );
 }
 }
 
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
 
-Foam::thermalPhaseChangeModels::Yang::Yang
+Foam::thermalPhaseChangeModels::EmpiricalRateParameter::EmpiricalRateParameter
 (
         const word& name,
         const dictionary& thermalPhaseChangeProperties,
@@ -81,7 +86,7 @@ Foam::thermalPhaseChangeModels::Yang::Yang
 
 // * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * * //
 
-void Foam::thermalPhaseChangeModels::Yang::calcQ_pc()
+void Foam::thermalPhaseChangeModels::EmpiricalRateParameter::calcQ_pc()
 {
     const dimensionedScalar& rhol = twoPhaseProperties_.rho1();
     const dimensionedScalar& rhov = twoPhaseProperties_.rho2();
@@ -92,7 +97,7 @@ void Foam::thermalPhaseChangeModels::Yang::calcQ_pc()
 }
 
 
-bool Foam::thermalPhaseChangeModels::Yang::
+bool Foam::thermalPhaseChangeModels::EmpiricalRateParameter::
 read(const dictionary& thermalPhaseChangeProperties)
 {
     thermalPhaseChangeModel::read(thermalPhaseChangeProperties);

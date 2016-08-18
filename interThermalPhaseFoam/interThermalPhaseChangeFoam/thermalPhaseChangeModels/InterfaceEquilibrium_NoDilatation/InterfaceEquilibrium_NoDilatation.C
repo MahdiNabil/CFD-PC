@@ -23,7 +23,7 @@ License
 
 \*---------------------------------------------------------------------------*/
 
-#include "HiLoNoPCV.H"
+#include "InterfaceEquilibrium_NoDilatation.H"
 #include "addToRunTimeSelectionTable.H"
 
 // * * * * * * * * * * * * * * Static Data Members * * * * * * * * * * * * * //
@@ -32,14 +32,20 @@ namespace Foam
 {
 namespace thermalPhaseChangeModels
 {
-    defineTypeNameAndDebug(HiLoNoPCV, 0);
-    addToRunTimeSelectionTable(thermalPhaseChangeModel, HiLoNoPCV, dictionary);
+    defineTypeNameAndDebug(InterfaceEquilibrium_NoDilatation, 0);
+    addToRunTimeSelectionTable
+    (
+        thermalPhaseChangeModel,
+        InterfaceEquilibrium_NoDilatation,
+        dictionary
+    );
 }
 }
 
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
 
-Foam::thermalPhaseChangeModels::HiLoNoPCV::HiLoNoPCV
+Foam::thermalPhaseChangeModels::InterfaceEquilibrium_NoDilatation::
+InterfaceEquilibrium_NoDilatation
 (
         const word& name,
         const dictionary& thermalPhaseChangeProperties,
@@ -121,7 +127,7 @@ Foam::thermalPhaseChangeModels::HiLoNoPCV::HiLoNoPCV
 
 // * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * * //
 
-void Foam::thermalPhaseChangeModels::HiLoNoPCV::calcQ_pc()
+void Foam::thermalPhaseChangeModels::InterfaceEquilibrium_NoDilatation::calcQ_pc()
 {
     // Get the sets of interface cell face pairs for evaporation/condensation
     std::vector<MeshGraph::CellFacePair> CondIntCellFacePairs;
@@ -242,7 +248,7 @@ void Foam::thermalPhaseChangeModels::HiLoNoPCV::calcQ_pc()
 }
 
 
-bool Foam::thermalPhaseChangeModels::HiLoNoPCV::
+bool Foam::thermalPhaseChangeModels::InterfaceEquilibrium_NoDilatation::
 read(const dictionary& thermalPhaseChangeProperties)
 {
     thermalPhaseChangeModel::read(thermalPhaseChangeProperties);

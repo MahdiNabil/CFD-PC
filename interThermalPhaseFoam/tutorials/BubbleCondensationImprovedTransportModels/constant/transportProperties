@@ -51,7 +51,7 @@ ImprovedTransportBlending yes;
 
 thermalPhaseChange
 {
-	model                HiLoNoPCVAlpha1;
+	model                InterfaceEquilibrium_SplitDilatation;
 	h_lv		         h_lv  [0 2 -2 0 0 0 0 ] 2000E3;
 	T_sat		         T_sat [0 0 0 1 0 0 0]  100;
 	CondThresh           0.95; //Interface threshold for condensing cell pairs

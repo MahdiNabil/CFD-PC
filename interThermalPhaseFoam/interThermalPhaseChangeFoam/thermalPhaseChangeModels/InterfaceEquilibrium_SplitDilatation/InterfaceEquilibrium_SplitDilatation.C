@@ -23,7 +23,7 @@ License
 
 \*---------------------------------------------------------------------------*/
 
-#include "HiLoRelaxedSplit.H"
+#include "InterfaceEquilibrium_SplitDilatation.H"
 #include "addToRunTimeSelectionTable.H"
 
 // * * * * * * * * * * * * * * Static Data Members * * * * * * * * * * * * * //
@@ -32,11 +32,11 @@ namespace Foam
 {
 namespace thermalPhaseChangeModels
 {
-    defineTypeNameAndDebug(HiLoRelaxedSplit, 0);
+    defineTypeNameAndDebug(InterfaceEquilibrium_SplitDilatation, 0);
     addToRunTimeSelectionTable
     (
         thermalPhaseChangeModel,
-        HiLoRelaxedSplit,
+        InterfaceEquilibrium_SplitDilatation,
         dictionary
     );
 }
@@ -44,7 +44,8 @@ namespace thermalPhaseChangeModels
 
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
 
-Foam::thermalPhaseChangeModels::HiLoRelaxedSplit::HiLoRelaxedSplit
+Foam::thermalPhaseChangeModels::InterfaceEquilibrium_SplitDilatation::
+InterfaceEquilibrium_SplitDilatation
 (
         const word& name,
         const dictionary& thermalPhaseChangeProperties,
@@ -127,7 +128,7 @@ Foam::thermalPhaseChangeModels::HiLoRelaxedSplit::HiLoRelaxedSplit
 
 // * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * * //
 
-void Foam::thermalPhaseChangeModels::HiLoRelaxedSplit::calcQ_pc()
+void Foam::thermalPhaseChangeModels::InterfaceEquilibrium_SplitDilatation::calcQ_pc()
 {
     // Get the sets of interface cell face pairs for evaporation/condensation
     std::vector<MeshGraph::CellFacePair> CondIntCellFacePairs;
@@ -259,7 +260,7 @@ void Foam::thermalPhaseChangeModels::HiLoRelaxedSplit::calcQ_pc()
 
 
 //- Gets volume generation (split and applied slightly away from interface)
-void Foam::thermalPhaseChangeModels::HiLoRelaxedSplit::calcPCV()
+void Foam::thermalPhaseChangeModels::InterfaceEquilibrium_SplitDilatation::calcPCV()
 {
     // Get some local references to helpful fields
     const volScalarField& Q_pc_ = this->Q_pc();
@@ -432,7 +433,7 @@ void Foam::thermalPhaseChangeModels::HiLoRelaxedSplit::calcPCV()
 
 
 
-bool Foam::thermalPhaseChangeModels::HiLoRelaxedSplit::
+bool Foam::thermalPhaseChangeModels::InterfaceEquilibrium_SplitDilatation::
 read(const dictionary& thermalPhaseChangeProperties)
 {
     thermalPhaseChangeModel::read(thermalPhaseChangeProperties);

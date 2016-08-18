@@ -22,7 +22,7 @@ License
     along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
 
 Class
-    Foam::thermalPhaseChangeModel::Yang
+    Foam::thermalPhaseChangeModel::EmpiricalRateParameter
 
 Description
     This model implements the empirical rate parameter phase change
@@ -32,12 +32,12 @@ Description
 
 
 SourceFiles
-    Yang.C
+    EmpiricalRateParameter.C
 
 \*--------------------------------------------------------------------*/
 
-#ifndef Yang_H
-#define Yang_H
+#ifndef EmpiricalRateParameter_H
+#define EmpiricalRateParameter_H
 
 #include "thermalPhaseChangeModel.H"
 #include "MeshGraph.H"
@@ -50,10 +50,10 @@ namespace thermalPhaseChangeModels
 {
 
 /*--------------------------------------------------------------------*\
-                              Class Yang
+                              Class EmpiricalRateParameter
 \*--------------------------------------------------------------------*/
 
-class Yang
+class EmpiricalRateParameter
 :
     public thermalPhaseChangeModel
 {
@@ -73,13 +73,13 @@ class Yang
 public:
 
     //- Runtime type information
-    TypeName("Yang");
+    TypeName("EmpiricalRateParameter");
 
 
     // Constructors
 
     //- construct from components
-    Yang
+    EmpiricalRateParameter
     (
         const word& name,
         const dictionary& thermalPhaseChangeProperties,
@@ -90,7 +90,7 @@ public:
 
 
     //- Destructor
-    ~Yang()
+    ~EmpiricalRateParameter()
     {}
 
 

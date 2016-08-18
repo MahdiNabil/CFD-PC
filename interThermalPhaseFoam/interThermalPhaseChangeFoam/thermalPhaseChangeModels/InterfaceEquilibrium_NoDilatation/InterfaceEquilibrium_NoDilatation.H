@@ -22,7 +22,7 @@ License
     along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
 
 Class
-    Foam::thermalPhaseChangeModel::HiLoNoPCV
+    Foam::thermalPhaseChangeModel::InterfaceEquilibrium_NoDilatation
 
 Description
     This model forces wall and interface cells to the equilibrium state,
@@ -39,12 +39,12 @@ Description
 
 
 SourceFiles
-    HiLoNoPCV.C
+    InterfaceEquilibrium_NoDilatation.C
 
 \*--------------------------------------------------------------------*/
 
-#ifndef HiLoNoPCV_H
-#define HiLoNoPCV_H
+#ifndef InterfaceEquilibrium_NoDilatation_H
+#define InterfaceEquilibrium_NoDilatation_H
 
 #include "thermalPhaseChangeModel.H"
 #include "MeshGraph.H"
@@ -57,10 +57,10 @@ namespace thermalPhaseChangeModels
 {
 
 /*--------------------------------------------------------------------*\
-                              Class HiLoNoPCV
+                 Class InterfaceEquilibrium_NoDilatation
 \*--------------------------------------------------------------------*/
 
-class HiLoNoPCV
+class InterfaceEquilibrium_NoDilatation
 :
     public thermalPhaseChangeModel
 {
@@ -96,13 +96,13 @@ class HiLoNoPCV
 public:
 
     //- Runtime type information
-    TypeName("HiLoNoPCV");
+    TypeName("InterfaceEquilibrium_NoDilatation");
 
 
     // Constructors
 
     //- construct from components
-    HiLoNoPCV
+    InterfaceEquilibrium_NoDilatation
     (
         const word& name,
         const dictionary& thermalPhaseChangeProperties,
@@ -113,7 +113,7 @@ public:
 
 
     //- Destructor
-    ~HiLoNoPCV()
+    ~InterfaceEquilibrium_NoDilatation()
     {}
 
 
