@@ -22,7 +22,7 @@ License
     along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
 
 Class
-    Foam::thermalPhaseChangeModel::HiLoRelaxed
+    Foam::thermalPhaseChangeModel::InterfaceEquilibrium_NoDilatation
 
 Description
     This model forces wall and interface cells to the equilibrium state,
@@ -33,20 +33,18 @@ Description
     This model uses different interface thresholds for identifying
     evaporating and condensing cell pairs.
 
-    This is similar to the previous HiLoFacePair code, but the phase change
-    rate is numerically relaxed by some user-defined value (should be <= 1,
-    where 0 is no phase change, and 1 is no relaxation). This seems to help
-    with overshooting where the temperature in a cell can go from superheated
-    to subcooled in one time step.
+    This version has phase change heating and phase fraction change, but no
+    volumetric source. Convenient for cases where there is an unlimited
+    source of low momentum phase (e.g. film evaporation or condensation)
 
 
 SourceFiles
-    HiLoRelaxed.C
+    InterfaceEquilibrium_NoDilatation.C
 
 \*--------------------------------------------------------------------*/
 
-#ifndef HiLoRelaxed_H
-#define HiLoRelaxed_H
+#ifndef InterfaceEquilibrium_NoDilatation_H
+#define InterfaceEquilibrium_NoDilatation_H
 
 #include "thermalPhaseChangeModel.H"
 #include "MeshGraph.H"
@@ -59,50 +57,52 @@ namespace thermalPhaseChangeModels
 {
 
 /*--------------------------------------------------------------------*\
-                            Class HiLoRelaxed
+                 Class InterfaceEquilibrium_NoDilatation
 \*--------------------------------------------------------------------*/
 
-class HiLoRelaxed
+class InterfaceEquilibrium_NoDilatation
 :
     public thermalPhaseChangeModel
 {
 
 // Private Member Functions
 
-    //- Calculate and return the phase change heat rate
+    // Calculate the phase change heat rate
     void calcQ_pc();
 
-    //- This phase change model needs access to the mesh:
+    // This phase change model needs access to the mesh:
     const fvMesh& mesh_;
 
-    //- Phase change heat
+    // Phase change heat
     volScalarField Q_pc_;
 
-    //- Graph of mesh grid, used for finding interface cells
+    // Graph of mesh grid, used for finding interface cells
     MeshGraph InterfaceMeshGraph;
 
-    //- Field for tracking Interface cells
+    // Field for tracking Interface cells
     volScalarField InterfaceField_;
 
-    //- Field for blocking evaporation on wall cells
+    // Field for blocking evaporation on wall cells
     volScalarField WallField;
 
-    // Scalar parameters for identifying condensation and evaporation int. 
+    // Volume change field (from phase change)
+    volScalarField PCVField;
+
+    // Scalar parameters for identifying condensation and evaporation int.
     // cell pairs:
     scalar CondThresh;
     scalar EvapThresh;
-    scalar RelaxFac; //The relaxation factor (0-1)
 
 public:
 
     //- Runtime type information
-    TypeName("HiLoRelaxed");
+    TypeName("InterfaceEquilibrium_NoDilatation");
 
 
     // Constructors
 
     //- construct from components
-    HiLoRelaxed
+    InterfaceEquilibrium_NoDilatation
     (
         const word& name,
         const dictionary& thermalPhaseChangeProperties,
@@ -113,7 +113,7 @@ public:
 
 
     //- Destructor
-    ~HiLoRelaxed()
+    ~InterfaceEquilibrium_NoDilatation()
     {}
 
 
@@ -137,6 +137,14 @@ public:
             return InterfaceField_;
         }
         
+        //- Gets volume generation (split and applied slightly away from 
+        //  interface)
+        tmp<volScalarField> PCV() const
+        {
+            return PCVField;
+        }
+
+
 
         //- Read the transportProperties dictionary and update
         bool read(const dictionary& thermalPhaseChangeProperties);

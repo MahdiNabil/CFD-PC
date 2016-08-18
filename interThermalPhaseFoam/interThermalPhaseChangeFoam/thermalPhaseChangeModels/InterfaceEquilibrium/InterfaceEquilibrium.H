@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2016 Alex Rattner and Mahdi Nabil
+    \\  /    A nd           | Copyright (C) 2016 Alex Rattner
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -22,22 +22,31 @@ License
     along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
 
 Class
-    Foam::thermalPhaseChangeModel::Yang
+    Foam::thermalPhaseChangeModel::InterfaceEquilibrium
 
 Description
-    This model implements the empirical rate parameter phase change
-    formulation of Yang, Z., Peng, X. F., & Ye, P. (2008). Numerical and
-    experimental investigation of two phase flow during boiling in a coiled
-    tube. International Journal of Heat and Mass Transfer, 51(5), 1003-1016.
+    This model forces wall and interface cells to the equilibrium state,
+    causing evaporation or condensation as appropriate. The phase change
+    heat term is limited to not produce/sink more than the volume of a 
+    cell in a single time step(like the courantAlpha limit).
+
+    This model uses different interface thresholds for identifying
+    evaporating and condensing cell pairs.
+
+    This is similar to the previous HiLoFacePair code, but the phase change
+    rate is numerically relaxed by some user-defined value (should be <= 1,
+    where 0 is no phase change, and 1 is no relaxation). This seems to help
+    with overshooting where the temperature in a cell can go from superheated
+    to subcooled in one time step.
 
 
 SourceFiles
-    Yang.C
+    InterfaceEquilibrium.C
 
 \*--------------------------------------------------------------------*/
 
-#ifndef Yang_H
-#define Yang_H
+#ifndef InterfaceEquilibrium_H
+#define InterfaceEquilibrium_H
 
 #include "thermalPhaseChangeModel.H"
 #include "MeshGraph.H"
@@ -50,10 +59,10 @@ namespace thermalPhaseChangeModels
 {
 
 /*--------------------------------------------------------------------*\
-                              Class Yang
+                            Class InterfaceEquilibrium
 \*--------------------------------------------------------------------*/
 
-class Yang
+class InterfaceEquilibrium
 :
     public thermalPhaseChangeModel
 {
@@ -63,23 +72,37 @@ class Yang
     //- Calculate and return the phase change heat rate
     void calcQ_pc();
 
+    //- This phase change model needs access to the mesh:
+    const fvMesh& mesh_;
+
     //- Phase change heat
     volScalarField Q_pc_;
 
-    // declaring rl and rv
-    dimensionedScalar rl;
-    dimensionedScalar rv;
+    //- Graph of mesh grid, used for finding interface cells
+    MeshGraph InterfaceMeshGraph;
+
+    //- Field for tracking Interface cells
+    volScalarField InterfaceField_;
+
+    //- Field for blocking evaporation on wall cells
+    volScalarField WallField;
+
+    // Scalar parameters for identifying condensation and evaporation int. 
+    // cell pairs:
+    scalar CondThresh;
+    scalar EvapThresh;
+    scalar RelaxFac; //The relaxation factor (0-1)
 
 public:
 
     //- Runtime type information
-    TypeName("Yang");
+    TypeName("InterfaceEquilibrium");
 
 
     // Constructors
 
     //- construct from components
-    Yang
+    InterfaceEquilibrium
     (
         const word& name,
         const dictionary& thermalPhaseChangeProperties,
@@ -90,7 +113,7 @@ public:
 
 
     //- Destructor
-    ~Yang()
+    ~InterfaceEquilibrium()
     {}
 
 
@@ -107,6 +130,13 @@ public:
         {
             calcQ_pc();
         }
+
+        //- Return interface cells marker field:
+        tmp<volScalarField> InterfaceField() const
+        {
+            return InterfaceField_;
+        }
+        
 
         //- Read the transportProperties dictionary and update
         bool read(const dictionary& thermalPhaseChangeProperties);

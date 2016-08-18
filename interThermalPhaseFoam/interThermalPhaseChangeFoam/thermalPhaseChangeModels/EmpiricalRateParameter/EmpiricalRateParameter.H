@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2016 Alex Rattner
+    \\  /    A nd           | Copyright (C) 2016 Alex Rattner and Mahdi Nabil
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -22,29 +22,22 @@ License
     along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
 
 Class
-    Foam::thermalPhaseChangeModel::HiLoNoPCV
+    Foam::thermalPhaseChangeModel::EmpiricalRateParameter
 
 Description
-    This model forces wall and interface cells to the equilibrium state,
-    causing evaporation or condensation as appropriate. The phase change
-    heat term is limited to not produce/sink more than the volume of a 
-    cell in a single time step(like the courantAlpha limit).
-
-    This model uses different interface thresholds for identifying
-    evaporating and condensing cell pairs.
-
-    This version has phase change heating and phase fraction change, but no
-    volumetric source. Convenient for cases where there is an unlimited
-    source of low momentum phase (e.g. film evaporation or condensation)
+    This model implements the empirical rate parameter phase change
+    formulation of Yang, Z., Peng, X. F., & Ye, P. (2008). Numerical and
+    experimental investigation of two phase flow during boiling in a coiled
+    tube. International Journal of Heat and Mass Transfer, 51(5), 1003-1016.
 
 
 SourceFiles
-    HiLoNoPCV.C
+    EmpiricalRateParameter.C
 
 \*--------------------------------------------------------------------*/
 
-#ifndef HiLoNoPCV_H
-#define HiLoNoPCV_H
+#ifndef EmpiricalRateParameter_H
+#define EmpiricalRateParameter_H
 
 #include "thermalPhaseChangeModel.H"
 #include "MeshGraph.H"
@@ -57,52 +50,36 @@ namespace thermalPhaseChangeModels
 {
 
 /*--------------------------------------------------------------------*\
-                              Class HiLoNoPCV
+                              Class EmpiricalRateParameter
 \*--------------------------------------------------------------------*/
 
-class HiLoNoPCV
+class EmpiricalRateParameter
 :
     public thermalPhaseChangeModel
 {
 
 // Private Member Functions
 
-    // Calculate the phase change heat rate
+    //- Calculate and return the phase change heat rate
     void calcQ_pc();
 
-    // This phase change model needs access to the mesh:
-    const fvMesh& mesh_;
-
-    // Phase change heat
+    //- Phase change heat
     volScalarField Q_pc_;
 
-    // Graph of mesh grid, used for finding interface cells
-    MeshGraph InterfaceMeshGraph;
-
-    // Field for tracking Interface cells
-    volScalarField InterfaceField_;
-
-    // Field for blocking evaporation on wall cells
-    volScalarField WallField;
-
-    // Volume change field (from phase change)
-    volScalarField PCVField;
-
-    // Scalar parameters for identifying condensation and evaporation int.
-    // cell pairs:
-    scalar CondThresh;
-    scalar EvapThresh;
+    // declaring rl and rv
+    dimensionedScalar rl;
+    dimensionedScalar rv;
 
 public:
 
     //- Runtime type information
-    TypeName("HiLoNoPCV");
+    TypeName("EmpiricalRateParameter");
 
 
     // Constructors
 
     //- construct from components
-    HiLoNoPCV
+    EmpiricalRateParameter
     (
         const word& name,
         const dictionary& thermalPhaseChangeProperties,
@@ -113,7 +90,7 @@ public:
 
 
     //- Destructor
-    ~HiLoNoPCV()
+    ~EmpiricalRateParameter()
     {}
 
 
@@ -130,21 +107,6 @@ public:
         {
             calcQ_pc();
         }
-
-        //- Return interface cells marker field:
-        tmp<volScalarField> InterfaceField() const
-        {
-            return InterfaceField_;
-        }
-        
-        //- Gets volume generation (split and applied slightly away from 
-        //  interface)
-        tmp<volScalarField> PCV() const
-        {
-            return PCVField;
-        }
-
-
 
         //- Read the transportProperties dictionary and update
         bool read(const dictionary& thermalPhaseChangeProperties);

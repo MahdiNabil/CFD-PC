@@ -22,7 +22,7 @@ License
     along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
 
 Class
-    Foam::thermalPhaseChangeModel::HiLoRelaxedSplit
+    Foam::thermalPhaseChangeModel::InterfaceEquilibrium_SplitDilatation
 
 Description
     This model forces wall and interface cells to the equilibrium state,
@@ -45,12 +45,12 @@ Description
 
 
 SourceFiles
-    HiLoRelaxedSplit.C
+    InterfaceEquilibrium_SplitDilatation.C
 
 \*--------------------------------------------------------------------*/
 
-#ifndef HiLoRelaxedSplit_H
-#define HiLoRelaxedSplit_H
+#ifndef InterfaceEquilibrium_SplitDilatation_H
+#define InterfaceEquilibrium_SplitDilatation_H
 
 #include "thermalPhaseChangeModel.H"
 #include "MeshGraph.H"
@@ -63,10 +63,10 @@ namespace thermalPhaseChangeModels
 {
 
 /*--------------------------------------------------------------------*\
-                        Class HiLoRelaxedSplit
+                Class InterfaceEquilibrium_SplitDilatation
 \*--------------------------------------------------------------------*/
 
-class HiLoRelaxedSplit
+class InterfaceEquilibrium_SplitDilatation
 :
     public thermalPhaseChangeModel
 {
@@ -106,13 +106,13 @@ class HiLoRelaxedSplit
 public:
 
     //- Runtime type information
-    TypeName("HiLoRelaxedSplit");
+    TypeName("InterfaceEquilibrium_SplitDilatation");
 
 
     // Constructors
 
     //- construct from components
-    HiLoRelaxedSplit
+    InterfaceEquilibrium_SplitDilatation
     (
         const word& name,
         const dictionary& thermalPhaseChangeProperties,
@@ -123,7 +123,7 @@ public:
 
 
     //- Destructor
-    ~HiLoRelaxedSplit()
+    ~InterfaceEquilibrium_SplitDilatation()
     {}
 
 
