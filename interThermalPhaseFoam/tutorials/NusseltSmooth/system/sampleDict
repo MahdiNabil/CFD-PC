@@ -1,0 +1,54 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  2.4.0                                 |
+|   \\  /    A nd           | Web:      www.OpenFOAM.org                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    object      sampleDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+setFormat raw;
+
+surfaceFormat vtk;
+
+formatOptions
+{
+    ensight
+    {
+        format  ascii;
+    }
+}
+
+interpolationScheme cell;
+
+// Fields to sample.
+fields
+(
+    alpha1
+    T
+);
+
+sets
+(
+    lineX1
+    {
+        type        midPoint;
+        axis        x;
+
+        //- cavity. Slightly perturbed so not to align with face or edge.
+        start       (0      0.0041 5E-5);
+        end         (0.0008 0.0041 5E-5);
+
+    }
+
+);
+
+
+// *********************************************************************** //

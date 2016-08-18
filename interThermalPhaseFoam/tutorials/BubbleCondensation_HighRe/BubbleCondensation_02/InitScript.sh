@@ -23,5 +23,6 @@ cp -r A/* 0/
 mv 0/alpha1.org 0/alpha1
 setFields
 rm -r Bubble_Condensation.dat
-interThermalPhaseChangeFoam
+decomposePar
+mpirun -np 4 interThermalPhaseChangeFoam -parallel
 
