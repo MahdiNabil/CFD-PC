@@ -5,3 +5,6 @@ wmake libso incompressibleTwoPhaseThermalMixture
 wmake interThermalPhaseChangeFoam
 cd Libraries
 ./Allwmake.sh
+cd ../utilities
+wmake interThermalPhaseChangeFoam_Cond
+
